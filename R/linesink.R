@@ -1,5 +1,23 @@
 
-linesink <- function(x0 = 1, y0 = 0, x1 = 1, y1 = 1, sigma = 1, ...) {
+#' Create a strength-specified line-sink analytic element
+#'
+#' [linesink()] creates a line-sink analytic element with constant specified strength.
+#'
+#' @param x0 numeric, starting x location of line-sink
+#' @param y0 numeric, starting y location of line-sink
+#' @param x1 numeric, ending x location of line-sink
+#' @param y1 numeric, ending y location of line-sink
+#' @param sigma numeric, specified strength of line-sink, i.e. discharge per length of line-sink.
+#'     Positive is out of aquifer.
+#' @param ... ignored
+#'
+#' @return Strength-specified line-sink analytic element which is an object of class `linesink` and inherits from `element`.
+#' @export
+#' @seealso [headlinesink()]
+#' @examples
+#' linesink(-75, 50, 100, 50, sigma = 1)
+#'
+linesink <- function(x0, y0, x1, y1, sigma, ...) {
   ls <- element(sigma)
   ls$z0 <- x0 + y0 * 1i
   ls$z1 <- x1 + y1 * 1i
@@ -7,6 +25,42 @@ linesink <- function(x0 = 1, y0 = 0, x1 = 1, y1 = 1, sigma = 1, ...) {
   class(ls) <- c('linesink', class(ls))
   return(ls)
 }
+
+#' Create a head-specified line-sink analytic element
+#'
+#' [headlinesink()] creates a line-sink analytic element with constant specified head. The discharge
+#'    into the line-sink per unit length is computed by solving the corresponding `aem` model.
+#'
+#' @param TR numeric, transmissivity value of aquifer
+#' @param x0 numeric, starting x location of line-sink
+#' @param y0 numeric, starting y location of line-sink
+#' @param x1 numeric, ending x location of line-sink
+#' @param y1 numeric, ending y location of line-sink
+#' @param hc numeric, specified hydraulic head of the line-sink
+#' @param ... ignored
+#'
+#' @return Head-specified line-sink analytic element which is an object of class `headlinesink` and inherits from `linesink`.
+#' @export
+#' @seealso [linesink()]
+#' @examples
+#' headlinesink(TR = 100, -75, 50, 100, 50, hc = 10)
+#'
+headlinesink <- function(TR, x0, y0, x1, y1, hc, ...) {
+  hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0)
+  hls$xc <- 0.5*(x0 + x1)
+  hls$yc <- 0.5*(y0 + y1)
+  hls$pc <- TR*hc
+  hls$nunknowns <- 1
+  class(hls) <- c('headlinesink', 'headequation', class(hls))
+  return(hls)
+}
+
+#'
+#' @param linesink line-sink analytic element of class `linesink` or inherits from it.
+#'
+#' @return complex potential influence of `linesink` evaluated at points `x y`.
+#' @noRd
+#'
 omegainf.linesink <- function(linesink, x, y, ...) {
   zeta <- x + y * 1i
   Z <- (2 * zeta - (linesink$z0 + linesink$z1)) / (linesink$z1 - linesink$z0)
@@ -16,12 +70,20 @@ omegainf.linesink <- function(linesink, x, y, ...) {
   omi <- linesink$L / (4*pi) * (zp1*log(zp1) - zm1*log(zm1))
   return(omi)
 }
-headlinesink <- function(TR, x0 = 0, y0 = 0, x1 = 1, y1 = 1, hc = 1, ...) {
-  hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0)
-  hls$xc <- 0.5*(x0 + x1)
-  hls$yc <- 0.5*(y0 + y1)
-  hls$pc <- TR*hc
-  hls$nunknowns <- 1
-  class(hls) <- c('headlinesink', 'headequation', class(hls))
-  return(hls)
+
+#'
+#' @param linesink line-sink analytic element of class `linesink` or inherits from it.
+#'
+#' @return complex discharge influence of `linesink` evaluated at points `x y`.
+#' @noRd
+#'
+discinf.linesink <- function(linesink, x, y, ...) {
+  zeta <- x + y * 1i
+  Z <- (2 * zeta - (linesink$z0 + linesink$z1)) / (linesink$z1 - linesink$z0)
+  tol <- 1e-12
+  zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
+  zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
+  m <- linesink$z1 - linesink$z0
+  wi <- -(linesink$L / (4*pi)) * (2*(log(zp1) - log(zm1))/m)
+  return(wi)
 }

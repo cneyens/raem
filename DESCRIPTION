@@ -2,12 +2,22 @@ Package: raem
 Title: Analytic Element Modelling of Steady Single-Layer Groundwater Flow
 Version: 0.0.0.9000
 Authors@R: 
-    person("Cas", "Neyens", , "cas.neyens@example.com", role = c("aut", "cre"))
+    person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre"))
 Description: Analytic element modelling of steady-state single-layer
-    groundwater flow. Elements such as wells, areasinks or linesinks
-    can be placed arbitrarily. The hydraulic head, potential and
-    streamfunction can be computed at any location in the field.
+    groundwater flow. Elements such as wells, area-sinks or line-sinks
+    can be placed arbitrarily. The hydraulic head, potential,
+    streamfunction and discharge vector can be computed at any location in the field.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Collate: 
+    'equation.R'
+    'aem.R'
+    'areasink.R'
+    'constant.R'
+    'element.R'
+    'linesink.R'
+    'plot.R'
+    'uniform-flow.R'
+    'well.R'
