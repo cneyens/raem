@@ -161,19 +161,20 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' head(ml, xg, yg, as.grid = TRUE)
 #'
 head.aem <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
+  # TODO implement unconfined/confined flow
   hd <- potential(aem, x, y, as.grid = as.grid, ...) / aem$TR
   return(hd)
 }
 
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `disc` at
-#' @param y numeric y coordinates to evaluate `disc` at
+#' @param x numeric x coordinates to evaluate `domega` at
+#' @param y numeric y coordinates to evaluate `domega` at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
 #' @param ... ignored
 #'
 #' @export
-#' @rdname disc
+#' @rdname domega
 #' @include equation.R
 #' @examples
 #' TR <- 100
@@ -181,13 +182,13 @@ head.aem <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 #' ml <- aem(TR = 100, w, uf)
 #'
-#' disc(ml, c(50, 0), c(25, -25))
+#' domega(ml, c(50, 0), c(25, -25))
 #'
 #' xg <- seq(-100, 100, length = 500)
 #' yg <- seq(-75, 75, length = 100)
-#' disc(ml, xg, yg, as.grid = TRUE)
+#' domega(ml, xg, yg, as.grid = TRUE)
 #'
-disc.aem <- function(aem, x, y, as.grid = FALSE, ...) {
+domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   if(as.grid) {
     df <- expand.grid(x = x, y = y)
     gx <- df$x
@@ -196,10 +197,10 @@ disc.aem <- function(aem, x, y, as.grid = FALSE, ...) {
     gx <- x
     gy <- y
   }
-  w <- lapply(aem$elements, disc, x = gx, y = gy)
+  w <- lapply(aem$elements, domega, x = gx, y = gy)
   w <- colSums(do.call(rbind, w))
   # w <- 0 + 0i
-  # for(i in aem$elements) w <- w + disc(i, gx, gy)
+  # for(i in aem$elements) w <- w + domega(i, gx, gy)
 
   if(as.grid) {
     w <- matrix(w, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
@@ -212,14 +213,14 @@ disc.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 # TODO Qz
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `disvec` at
-#' @param y numeric y coordinates to evaluate `disvec` at
+#' @param x numeric x coordinates to evaluate `discharge` at
+#' @param y numeric y coordinates to evaluate `discharge` at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
 #' @param magnitude logical, should the magnitude of the discharge vector be returned as well? Default to `FALSE`. See details.
 #' @param ... ignored
 #'
 #' @export
-#' @rdname disvec
+#' @rdname discharge
 #' @include equation.R
 #' @examples
 #' TR <- 100
@@ -227,14 +228,14 @@ disc.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 #' ml <- aem(TR = 100, w, uf)
 #'
-#' disvec(ml, c(50, 0), c(25, -25), magnitude = TRUE)
+#' discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
 #'
 #' xg <- seq(-100, 100, length = 500)
 #' yg <- seq(-75, 75, length = 100)
-#' disvec(ml, xg, yg, as.grid = TRUE)
+#' discharge(ml, xg, yg, as.grid = TRUE)
 #'
-disvec.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
-  W <- disc(aem, x, y, as.grid = as.grid, ...)
+discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
+  W <- domega(aem, x, y, as.grid = as.grid, ...)
   Qx <- Re(W)
   Qy <- -Im(W)
   if(magnitude) {

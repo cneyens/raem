@@ -70,7 +70,7 @@ omegainf.well <- function(well, x, y, ...) {
 #' @return complex discharge influence of `well` evaluated at points `x y`.
 #' @noRd
 #'
-discinf.well <- function(well, x, y, ...) {
+domegainf.well <- function(well, x, y, ...) {
   zeta <- x + y*1i
   wi <- -1/(2*pi * (zeta - well$zetaw))
   return(wi)

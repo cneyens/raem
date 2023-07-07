@@ -42,6 +42,6 @@ omegainf.constant <- function(constant, x, y, ...) {
 #' @return complex discharge influence of `constant` evaluated at points `x y`.
 #' @noRd
 #'
-discinf.constant <- function(constant, x, y, ...) {
+domegainf.constant <- function(constant, x, y, ...) {
   return(c(0 + 0i))
 }

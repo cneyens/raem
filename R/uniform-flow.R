@@ -38,7 +38,7 @@ omegainf.uf <- function(uf, x, y, ...) {
 #' @return complex discharge influence of `uf` evaluated at points `x y`.
 #' @noRd
 #'
-discinf.uf <- function(uf, x, y, ...) {
+domegainf.uf <- function(uf, x, y, ...) {
   omi <- omegainf(uf, x, y, ...)
   zeta <- x + y*1i
   wi <- -omi/zeta

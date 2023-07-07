@@ -42,9 +42,9 @@ omegainf.areasink <- function(areasink, x, y, ...) {
 #' @param areasink
 #'
 #' @return complex discharge influence of `areasink` evaluated at points `x y`.
-#' @rdname disc
+#' @rdname domega
 #'
-disc.areasink <- function(areasink, x, y, ...) { # TODO, absolute values not correct
+domega.areasink <- function(areasink, x, y, ...) { # TODO, absolute values not correct
   # Haitjema 1995, eq. 5.30, for exfiltration
   Rs <- areasink$R
   r <- sqrt((x - areasink$xc)^2 + (y - areasink$yc)^2)

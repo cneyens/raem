@@ -51,5 +51,5 @@ potential(w, c(50, 0), c(-25, 25))
 
 }
 \seealso{
-\code{\link[=head.aem]{head.aem()}}, \code{\link[=omega]{omega()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=disc]{disc()}}, \code{\link[=disvec]{disvec()}}
+\code{\link[=head.aem]{head.aem()}}, \code{\link[=omega]{omega()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=domega]{domega()}}, \code{\link[=discharge]{discharge()}}
 }

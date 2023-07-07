@@ -46,7 +46,7 @@ equation <- function(element, aem, ...) {
 #'     marginal vectors `x` and `y` containing the complex potential values at the grid points.
 #' @export
 #' @rdname omega
-#' @seealso [head.aem()], [potential()], [streamfunction()], [disc()], [disvec()]
+#' @seealso [head.aem()], [potential()], [streamfunction()], [domega()], [discharge()]
 #'
 omega <- function(...) UseMethod('omega')
 
@@ -62,7 +62,7 @@ omega <- function(...) UseMethod('omega')
 #'     marginal vectors `x` and `y` containing the discharge potential values at the grid points.
 #' @export
 #' @rdname potential
-#' @seealso [head.aem()], [omega()], [streamfunction()], [disc()], [disvec()]
+#' @seealso [head.aem()], [omega()], [streamfunction()], [domega()], [discharge()]
 #'
 potential <- function(...) UseMethod('potential')
 
@@ -78,13 +78,13 @@ potential <- function(...) UseMethod('potential')
 #'     marginal vectors `x` and `y` containing the streamfunction values at the grid points.
 #' @export
 #' @rdname streamfunction
-#' @seealso [head.aem()], [omega()], [potential()], [disc()], [disvec()]
+#' @seealso [head.aem()], [omega()], [potential()], [domega()], [discharge()]
 #'
 streamfunction <- function(...) UseMethod('streamfunction')
 
 #' Calculate the complex discharge
 #'
-#' [disc()] computes the complex discharge for an `aem` or `element` object
+#' [domega()] computes the complex discharge for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
 #' @param ... ignored
@@ -93,14 +93,14 @@ streamfunction <- function(...) UseMethod('streamfunction')
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
 #' @export
-#' @rdname disc
-#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [disvec()]
+#' @rdname domega
+#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [discharge()]
 #'
-disc <- function(...) UseMethod('disc')
+domega <- function(...) UseMethod('domega')
 
 #' Calculate the discharge vector
 #'
-#' [disvec()] computes the `Qx, Qy` and `Qz` components of the discharge vector for an `aem` or `element` object
+#' [discharge()] computes the `Qx, Qy` and `Qz` components of the discharge vector for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
 #' @param ... ignored
@@ -114,10 +114,10 @@ disc <- function(...) UseMethod('disc')
 #'     the magnitude of the discharge vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`.
 #'
 #' @export
-#' @rdname disvec
-#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [disvec()]
+#' @rdname discharge
+#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [discharge()]
 #'
-disvec <- function(...) UseMethod('disvec')
+discharge <- function(...) UseMethod('discharge')
 
 #' Calculate the potential influence
 #'
@@ -131,7 +131,7 @@ disvec <- function(...) UseMethod('disvec')
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the potential influence values at the grid points.
 #' @noRd
-#' @seealso [omegainf()], [discinf()]
+#' @seealso [omegainf()], [domegainf()]
 #'
 potinf <- function(...) UseMethod('potinf')
 
@@ -147,15 +147,15 @@ potinf <- function(...) UseMethod('potinf')
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex potential influence values at the grid points.
 #' @noRd
-#' @seealso [potinf()], [discinf()]
+#' @seealso [potinf()], [domegainf()]
 #'
 omegainf <- function(...) UseMethod('omegainf')
 
 #' Calculate the complex discharge influence
 #'
-#' [discinf()] computes the complex discharge influence at the given x and y coordinates.
-#' @param x numeric x coordinates to evaluate `discinf` at
-#' @param y numeric y coordinates to evaluate `discinf` at
+#' [domegainf()] computes the complex discharge influence at the given x and y coordinates.
+#' @param x numeric x coordinates to evaluate `domegainf` at
+#' @param y numeric y coordinates to evaluate `domegainf` at
 #' @param ... ignored
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the complex discharge influence values at `x` and `y`.
@@ -164,4 +164,4 @@ omegainf <- function(...) UseMethod('omegainf')
 #' @noRd
 #' @seealso [omegainf()], [potinf()]
 #'
-discinf <- function(...) UseMethod('omegainf')
+domegainf <- function(...) UseMethod('domegainf')

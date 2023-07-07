@@ -43,5 +43,5 @@ streamfunction(ml, xg, yg, as.grid = TRUE)
 
 }
 \seealso{
-\code{\link[=head.aem]{head.aem()}}, \code{\link[=omega]{omega()}}, \code{\link[=potential]{potential()}}, \code{\link[=disc]{disc()}}, \code{\link[=disvec]{disvec()}}
+\code{\link[=head.aem]{head.aem()}}, \code{\link[=omega]{omega()}}, \code{\link[=potential]{potential()}}, \code{\link[=domega]{domega()}}, \code{\link[=discharge]{discharge()}}
 }

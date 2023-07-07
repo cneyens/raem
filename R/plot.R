@@ -116,14 +116,14 @@ contour.aem <- function(aem, x, y, z = c('head', 'streamfunction', 'potential'),
 #' plot(uf) # empty
 #'
 plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
-  if(any('well' %in% class(element))) {
+  if(inherits(element, 'well')) {
     pts <- c(Re(element$zetaw), Im(element$zetaw))
     if(add) {
       return(points(pts[1], pts[2], pch = pch, cex = cex, ...))
     } else {
       return(plot(pts[1], pts[2], pch = pch, cex = cex, ...))
     }
-  } else if(any(c('headlinesink', 'linesink') %in% class(element))) {
+  } else if(inherits(element, 'linesink')) {
     x <- c(Re(element$z0), Re(element$z1))
     y <- c(Im(element$z0), Im(element$z1))
     if(add) {

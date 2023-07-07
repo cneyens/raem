@@ -62,13 +62,13 @@ potinf.element <- function(element, x, y, ...) {
 #' @param element analytic element of class `element`
 #'
 #' @export
-#' @rdname disc
+#' @rdname domega
 #' @examples
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' disc(w, c(50, 0), c(-25, 25))
+#' domega(w, c(50, 0), c(-25, 25))
 #'
-disc.element <- function(element, x, y, ...) {
-  wi <- element$parameter * discinf(element, x, y, ...)
+domega.element <- function(element, x, y, ...) {
+  wi <- element$parameter * domegainf(element, x, y, ...)
   return(wi)
 }
 
@@ -76,14 +76,14 @@ disc.element <- function(element, x, y, ...) {
 #' @param element analytic element of class `element`
 #'
 #' @export
-#' @rdname disvec
+#' @rdname discharge
 #'
 #' @examples
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' disvec(w, c(50, 0), c(-25, 25))
-#' disvec(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
+#' discharge(w, c(50, 0), c(-25, 25))
+#' discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
 #'
-disvec.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
+discharge.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
   if(as.grid) {
     df <- expand.grid(x = x, y = y)
     gx <- df$x
@@ -92,7 +92,7 @@ disvec.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE, ..
     gx <- x
     gy <- y
   }
-  W <- disc(element, x, y, ...)
+  W <- domega(element, x, y, ...)
   Qx <- Re(W)
   Qy <- -Im(W)
   if(magnitude) {

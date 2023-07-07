@@ -77,7 +77,7 @@ omegainf.linesink <- function(linesink, x, y, ...) {
 #' @return complex discharge influence of `linesink` evaluated at points `x y`.
 #' @noRd
 #'
-discinf.linesink <- function(linesink, x, y, ...) {
+domegainf.linesink <- function(linesink, x, y, ...) {
   zeta <- x + y * 1i
   Z <- (2 * zeta - (linesink$z0 + linesink$z1)) / (linesink$z1 - linesink$z0)
   tol <- 1e-12
