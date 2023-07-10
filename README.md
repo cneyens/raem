@@ -59,7 +59,8 @@ plot(m, add = TRUE)
 
 <img src="man/figures/README-plot-head-1.png" width="100%" />
 
-Compute particle traces along `y = 200` and add to plot:
+Compute particle traces along `y = 200` at 20 intervals per year for 10
+years and add to plot:
 
 ``` r
 paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, times = seq(0, 10*365, 365/20))
