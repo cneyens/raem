@@ -8,7 +8,7 @@
 #'
 #' @return Object of class `aem` which is a list consisting of `TR`, a list containing all
 #'    elements, and a logical `solved` indicating if the model is solved.
-#' @details If an element of class `headequation` is supplied, `solved` is called on the `aem`
+#' @details If an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
 #'
@@ -256,7 +256,24 @@ discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
   return(Q)
 }
 
-
+#' Title
+#'
+#' @param aem
+#' @param x
+#' @param y
+#' @param n
+#' @param b
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+velocity <- function(aem, x, y, n, b, ...) {
+  Q <- discharge(aem, x, y, ...)
+  v <- Q/(b*n)
+  return(v)
+}
 
 #' Solve an `aem` model
 #'

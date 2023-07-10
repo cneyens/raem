@@ -188,3 +188,48 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
     invisible()
   }
 }
+
+
+#' Title
+#'
+#' @param x
+#' @param y
+#' @param add
+#' @param type
+#' @param arrows
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot.tracelines <- function(x, y, add = FALSE, type = 'l', arrows = FALSE, ...) {
+  if(!inherits(x, 'list')) {
+    x <- list(x)
+  }
+  if(add) {
+    if(arrows) {
+      for(i in seq_along(x)) {
+        arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
+               x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
+               ...)
+      }
+    } else {
+      for(i in seq_along(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
+    }
+  } else {
+    plot(x[[1]][,2], x[[1]][,3], type = type, ...)
+    if(length(x) > 1) {
+      if(arrows) {
+        for(i in seq_along(x[-1])) {
+          arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
+                 x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
+                 ...)
+        }
+      } else {
+        for(i in seq_along(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
+      }
+    }
+    for(i in seq_along(x[-1])) lines(x[[i]][,2], x[[i]][,3], type = type, ...)
+  }
+}

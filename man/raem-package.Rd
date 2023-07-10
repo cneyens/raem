@@ -4,9 +4,9 @@
 \name{raem-package}
 \alias{raem}
 \alias{raem-package}
-\title{raem: Analytic Element Modelling of Steady Single-Layer Groundwater Flow}
+\title{raem: Analytic Element Modeling of Steady Single-Layer Groundwater Flow}
 \description{
-Analytic element modelling of steady-state single-layer groundwater flow. Elements such as wells, area-sinks or line-sinks can be placed arbitrarily. The hydraulic head, potential, streamfunction and discharge vector can be computed at any location in the field.
+Analytic element modeling of steady-state single-layer groundwater flow. Elements such as wells, area-sinks or line-sinks can be placed arbitrarily. The hydraulic head, potential, streamfunction and discharge vector can be computed at any location in the field.
 }
 \author{
 \strong{Maintainer}: Cas Neyens \email{cas.neyens@gmail.com}

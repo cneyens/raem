@@ -19,7 +19,7 @@ elements, and a logical \code{solved} indicating if the model is solved.
 \code{\link[=aem]{aem()}} creates an analytic element model to which elements can be added
 }
 \details{
-If an element of class \code{headequation} is supplied, \code{solved} is called on the \code{aem}
+If an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}
 object before it is returned.
 }
 \examples{
