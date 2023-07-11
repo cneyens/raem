@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-`raem` provides a set of R functions to model steady-state single-layer
+`raem` is an R package for modeling steady-state single-layer
 groundwater flow using analytic elements.
 
 ## Installation
@@ -57,7 +57,7 @@ contour(m, xg, yg, z = 'head', col = 'dodgerblue3', nlevels = 20, asp = 1)
 plot(m, add = TRUE)
 ```
 
-<img src="man/figures/README-plot-head-1.png" width="100%" />
+<img src="man/figures/README-plot-head-1.png" width="80%" />
 
 Compute particle traces along `y = 200` at 20 intervals per year for 10
 years and add to plot:
@@ -67,4 +67,4 @@ paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, times = seq(0, 10*365, 
 plot(paths, add = TRUE, col = 'orange3')
 ```
 
-<img src="man/figures/README-plot-traces-1.png" width="100%" />
+<img src="man/figures/README-plot-traces-1.png" width="80%" />

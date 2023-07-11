@@ -58,8 +58,9 @@ headwell <- function(TR, xw, yw, hw, rw = 0.3, ...) {
 #' @noRd
 #'
 omegainf.well <- function(well, x, y, ...) {
-  zminzw <- x + 1i * y - well$zetaw
-  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw, zminzw)
+  zminzw <- (x + 1i*y) - well$zetaw
+  alpha <- atan2(y, x)
+  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw*exp(alpha*1i), zminzw)
   omi <- 1/(2*pi) * log(zminzw)
   return(omi)
 }
@@ -71,7 +72,9 @@ omegainf.well <- function(well, x, y, ...) {
 #' @noRd
 #'
 domegainf.well <- function(well, x, y, ...) {
-  zeta <- x + y*1i
-  wi <- -1/(2*pi * (zeta - well$zetaw))
+  zminzw <- (x + 1i*y) - well$zetaw
+  alpha <- atan2(y, x)
+  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw*exp(alpha*1i), zminzw)
+  wi <- -1/(2*pi*zminzw)
   return(wi)
 }

@@ -39,6 +39,10 @@ omegainf.uf <- function(uf, x, y, ...) {
 #' @noRd
 #'
 domegainf.uf <- function(uf, x, y, ...) {
+  # handle NA when x = y = 0
+  x <- ifelse(x == 0 & y == 0, 1e-12, x)
+  y <- ifelse(x == 0 & y == 0, 1e-12, y)
+
   omi <- omegainf(uf, x, y, ...)
   zeta <- x + y*1i
   wi <- -omi/zeta

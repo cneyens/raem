@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%",
+  out.width = "80%",
   echo = TRUE
 )
 knitr::opts_knit$set(
@@ -22,7 +22,7 @@ knitr::opts_knit$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-`raem` provides a set of R functions to model steady-state single-layer groundwater flow using analytic elements.
+`raem` is an R package for modeling steady-state single-layer groundwater flow using analytic elements.
 
 ## Installation
 

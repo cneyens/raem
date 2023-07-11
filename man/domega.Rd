@@ -3,7 +3,7 @@
 \name{domega}
 \alias{domega}
 \alias{domega.aem}
-\alias{domega.areasink}
+\alias{domegainf.areasink}
 \alias{domega.element}
 \title{Calculate the complex discharge}
 \usage{
@@ -11,7 +11,7 @@ domega(...)
 
 \method{domega}{aem}(aem, x, y, as.grid = FALSE, ...)
 
-\method{domega}{areasink}(areasink, x, y, ...)
+\method{domegainf}{areasink}(areasink, x, y, ...)
 
 \method{domega}{element}(element, x, y, ...)
 }
@@ -26,7 +26,7 @@ domega(...)
 
 \item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
 
-\item{areasink}{}
+\item{areasink}{area-sink analytic element of class \code{areasink} or inherits from it.}
 
 \item{element}{analytic element of class \code{element}}
 }

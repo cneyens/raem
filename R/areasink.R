@@ -25,7 +25,7 @@ areasink <- function(xc, yc, N, R, ...) {
 }
 
 #'
-#' @param areasink
+#' @param areasink area-sink analytic element of class `areasink` or inherits from it.
 #'
 #' @return complex potential influence of `areasink` evaluated at points `x y`.
 #' @noRd
@@ -37,20 +37,17 @@ omegainf.areasink <- function(areasink, x, y, ...) {
   return(phi)
 }
 
-# TODO fix this
 #'
-#' @param areasink
+#' @param areasink area-sink analytic element of class `areasink` or inherits from it.
 #'
 #' @return complex discharge influence of `areasink` evaluated at points `x y`.
 #' @rdname domega
 #'
-domega.areasink <- function(areasink, x, y, ...) { # TODO, absolute values not correct
-  # Haitjema 1995, eq. 5.30, for exfiltration
+domegainf.areasink <- function(areasink, x, y, ...) {
   Rs <- areasink$R
   r <- sqrt((x - areasink$xc)^2 + (y - areasink$yc)^2)
-  # Bakker & Post, 2022, eq. 6.39 & 6.40
-  Qr <- areasink$parameter * ifelse(r <= Rs, r/2, Rs^2/(2*r))
-  W <- (Qr*(x - areasink$xc)/(2*pi*r^2)) + (-Qr*(y - areasink$yc)/(2*pi*r^2))*1i # not sure about this
+  Qr <- ifelse(r <= Rs, r/2, Rs^2/(2*r)) # Haitjema 1995, eq. 5.30, for exfiltration
+  W <- Qr*x/r - 1i*(Qr*y/r) # polar to cartesian
   W[r < 1e-15] <- 0 + 0i # continuous across boundary
   return(W)
 }
