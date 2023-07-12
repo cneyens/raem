@@ -126,10 +126,10 @@ discharge.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE,
 #' @export
 #'
 #' @examples
-#' aem(TR = 100) |>
-#'     add_element(constant(TR = 100, xc = 0, yc = 1000, hc = 12),
+#' aem(k = 10, top = 10, base = 0, n = 0.2) |>
+#'     add_element(constant(xc = 0, yc = 1000, hc = 12),
 #'                 name = 'rf') |>
-#'     add_element(headwell(TR = 100, xw = 0, yw = 100, rw = 0.3, hw = 8),
+#'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hw = 8),
 #'                 name = 'headwell', solve = TRUE)
 #'
 add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {

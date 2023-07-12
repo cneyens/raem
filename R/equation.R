@@ -20,7 +20,7 @@ equation <- function(element, aem, ...) {
   # TODO return 0 if !inherits(element, 'headequation')
   if(!inherits(element, 'headequation')) stop('element should be of class headequation', call. = FALSE)
   row <- vector(mode = 'numeric')
-  rhs <- element$pc
+  rhs <- head_to_potential(aem, element$hc)
   xc <- element$xc
   yc <- element$yc
   for(i in aem$elements) {
@@ -46,7 +46,7 @@ equation <- function(element, aem, ...) {
 #'     marginal vectors `x` and `y` containing the complex potential values at the grid points.
 #' @export
 #' @rdname omega
-#' @seealso [head.aem()], [potential()], [streamfunction()], [domega()], [discharge()]
+#' @seealso [heads()], [potential()], [streamfunction()], [domega()], [discharge()]
 #'
 omega <- function(...) UseMethod('omega')
 
@@ -62,7 +62,7 @@ omega <- function(...) UseMethod('omega')
 #'     marginal vectors `x` and `y` containing the discharge potential values at the grid points.
 #' @export
 #' @rdname potential
-#' @seealso [head.aem()], [omega()], [streamfunction()], [domega()], [discharge()]
+#' @seealso [heads()], [omega()], [streamfunction()], [domega()], [discharge()]
 #'
 potential <- function(...) UseMethod('potential')
 
@@ -78,7 +78,7 @@ potential <- function(...) UseMethod('potential')
 #'     marginal vectors `x` and `y` containing the streamfunction values at the grid points.
 #' @export
 #' @rdname streamfunction
-#' @seealso [head.aem()], [omega()], [potential()], [domega()], [discharge()]
+#' @seealso [heads()], [omega()], [potential()], [domega()], [discharge()]
 #'
 streamfunction <- function(...) UseMethod('streamfunction')
 
@@ -94,7 +94,7 @@ streamfunction <- function(...) UseMethod('streamfunction')
 #'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
 #' @export
 #' @rdname domega
-#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [discharge()]
+#' @seealso [heads()], [omega()], [potential()], [streamfunction()], [discharge()]
 #'
 domega <- function(...) UseMethod('domega')
 
@@ -115,7 +115,7 @@ domega <- function(...) UseMethod('domega')
 #'
 #' @export
 #' @rdname discharge
-#' @seealso [head.aem()], [omega()], [potential()], [streamfunction()], [discharge()]
+#' @seealso [heads()], [omega()], [potential()], [streamfunction()], [discharge()]
 #'
 discharge <- function(...) UseMethod('discharge')
 
@@ -165,3 +165,20 @@ omegainf <- function(...) UseMethod('omegainf')
 #' @seealso [omegainf()], [potinf()]
 #'
 domegainf <- function(...) UseMethod('domegainf')
+
+#' Title
+#'
+#' @param aem
+#' @param h
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+head_to_potential <- function(aem, h, ...) {
+  # TODO unconfined flow
+  # export ??
+  pot <- h * aem$k * (aem$top - aem$base)
+  return(pot)
+}

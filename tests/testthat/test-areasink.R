@@ -1,6 +1,7 @@
 test_that('areasink complex discharge works', {
-  TR <- 100; N <- 1e-3; R <- 700;
-  m <- aem(TR, areasink(0, 0, N, R))
+  N <- 1e-3; R <- 700;
+  m <- aem(k = 10, top = 10, base = 0, n = 0.2,
+           areasink(0, 0, N, R))
   exact <- function(r) ifelse(r <= R, N*r/2, N*R^2/(2*r))
 
   # exact at origin

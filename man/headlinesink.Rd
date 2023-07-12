@@ -4,11 +4,9 @@
 \alias{headlinesink}
 \title{Create a head-specified line-sink analytic element}
 \usage{
-headlinesink(TR, x0, y0, x1, y1, hc, ...)
+headlinesink(x0, y0, x1, y1, hc, ...)
 }
 \arguments{
-\item{TR}{numeric, transmissivity value of aquifer}
-
 \item{x0}{numeric, starting x location of line-sink}
 
 \item{y0}{numeric, starting y location of line-sink}
@@ -29,7 +27,7 @@ Head-specified line-sink analytic element which is an object of class \code{head
 into the line-sink per unit length is computed by solving the corresponding \code{aem} model.
 }
 \examples{
-headlinesink(TR = 100, -75, 50, 100, 50, hc = 10)
+headlinesink(-75, 50, 100, 50, hc = 10)
 
 }
 \seealso{

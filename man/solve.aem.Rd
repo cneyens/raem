@@ -26,10 +26,10 @@ solve.
 Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automatically calls \code{\link[=solve.aem]{solve.aem()}}.
 }
 \examples{
-TR <- 100
-rf <- constant(TR, -500, 0, 20)
-hdw <- headwell(TR = TR, xw = 0, yw = 100, rw = 0.3, hw = 8)
-ml <- aem(TR = TR) |>
+
+rf <- constant(-500, 0, 20)
+hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hw = 8)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
            add_element(rf, name = 'rf') |>
            add_element(hdw, name = 'headwell')
 ml <- solve(ml)

@@ -7,7 +7,7 @@
 uniformflow(TR, gradient, angle, ...)
 }
 \arguments{
-\item{TR}{numeric, transmissivity value of aquifer}
+\item{TR}{numeric, constant transmissivity value used to define the discharge.}
 
 \item{gradient}{numeric, hydraulic gradient. Positive in the direction of flow.}
 
@@ -22,6 +22,13 @@ Analytic element of constant uniform flow which is an object of class \code{uf} 
 \description{
 \code{\link[=uniformflow]{uniformflow()}} creates a analytic element of constant uniform background flow.
 }
+\details{
+\code{TR} and \code{gradient} are multiplied to obtain the discharge which remains
+constant throughout the system, independent of the saturated thickness of the aquifer.
+
+Although flow is in the direction of the \emph{negative} gradient, \code{gradient} is specified here
+as positive in the direction of flow for convenience.
+}
 \examples{
-uniformflow(gradient = 0.002, angle = -45, TR = 100) # South-eastern direction
+uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
 }

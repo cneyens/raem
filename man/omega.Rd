@@ -35,10 +35,10 @@ marginal vectors \code{x} and \code{y} containing the complex potential values a
 at the given x and y coordinates.
 }
 \examples{
-TR <- 100
+
 w <- well(xw = 50, yw = 0, Q = 200)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-ml <- aem(TR = 100, w, uf)
+uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 
 omega(ml, c(50, 0), c(25, -25))
 
@@ -50,5 +50,5 @@ omega(w, c(50, 0), c(-25, 25))
 
 }
 \seealso{
-\code{\link[=head.aem]{head.aem()}}, \code{\link[=potential]{potential()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=domega]{domega()}}, \code{\link[=discharge]{discharge()}}
+\code{\link[=heads]{heads()}}, \code{\link[=potential]{potential()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=domega]{domega()}}, \code{\link[=discharge]{discharge()}}
 }

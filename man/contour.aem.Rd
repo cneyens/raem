@@ -4,7 +4,7 @@
 \alias{contour.aem}
 \title{Display contours of a computed variable}
 \usage{
-\method{contour}{aem}(aem, x, y, z = c("head", "streamfunction", "potential"), ...)
+\method{contour}{aem}(aem, x, y, z = c("heads", "streamfunction", "potential"), asp = 1, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -13,9 +13,11 @@
 
 \item{y}{numeric x coordinates at which the values in \code{z} are computed These must be in ascending order.}
 
-\item{z}{character indicating which variable to plot. Possible values are \code{head} (default),
+\item{z}{character indicating which variable to plot. Possible values are \code{heads} (default),
 \code{streamfunction}, \code{potential}, \code{Q} (magnitude of discharge vector), \code{Qx}, \code{Qy}, \code{Qz},
 (x, y and z components of the discharge vector) and \code{velocity}.}
+
+\item{asp}{the \code{y/x} aspect ratio, see \code{\link[=plot.window]{plot.window()}}. Defaults to 1 (equal unit lengths).}
 
 \item{...}{additional arguments passed to \code{\link[=contour]{contour()}}}
 }
@@ -28,16 +30,16 @@ existing plot.
 to and existing plot.
 }
 \examples{
-TR <- 100
+
 w <- well(xw = 50, yw = 0, Q = 200)
 wi <- well(xw = 0, yw = 0, Q = -100)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-ml <- aem(TR = 100, w, wi, uf)
+uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf)
 
 xg <- seq(-100, 100, length = 500)
 yg <- seq(-75, 75, length = 100)
 
-contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
+contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
 contour(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3', drawlabels = FALSE, add = TRUE)
 
 }

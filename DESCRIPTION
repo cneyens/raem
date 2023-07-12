@@ -6,7 +6,8 @@ Authors@R:
 Description: Analytic element modeling of steady-state single-layer
     groundwater flow. Elements such as wells, area-sinks or line-sinks
     can be placed arbitrarily. The hydraulic head, potential,
-    streamfunction and discharge vector can be computed at any location in the field.
+    streamfunction, discharge and velocity vector can be computed at any location 
+    in the field. Tracelines can be computed numerically in three dimensions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -19,13 +20,11 @@ Collate:
     'element.R'
     'linesink.R'
     'plot.R'
-    'raem-package.R'
     'tracelines.R'
     'uniform-flow.R'
     'well.R'
 Imports: 
-    deSolve,
-    utils
+    deSolve
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

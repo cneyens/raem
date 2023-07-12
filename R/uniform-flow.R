@@ -3,17 +3,23 @@
 #'
 #' [uniformflow()] creates a analytic element of constant uniform background flow.
 #'
-#' @param TR numeric, transmissivity value of aquifer
+#' @param TR numeric, constant transmissivity value used to define the discharge.
 #' @param gradient numeric, hydraulic gradient. Positive in the direction of flow.
 #' @param angle numeric, angle of the primary direction of background flow,
 #'    in degrees counterclockwise from the x-axis.
 #' @param ... ignored
 #'
+#' @details `TR` and `gradient` are multiplied to obtain the discharge which remains
+#'     constant throughout the system, independent of the saturated thickness of the aquifer.
+#'
+#' Although flow is in the direction of the *negative* gradient, `gradient` is specified here
+#'     as positive in the direction of flow for convenience.
+#'
 #' @return Analytic element of constant uniform flow which is an object of class `uf` and inherits from `element`.
 #' @export
 #'
 #' @examples
-#' uniformflow(gradient = 0.002, angle = -45, TR = 100) # South-eastern direction
+#' uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
 uniformflow <- function(TR, gradient, angle, ...) {
   uf <- element(gradient * TR)
   uf$udir <- exp(-1i * (angle*pi/180))
@@ -40,11 +46,11 @@ omegainf.uf <- function(uf, x, y, ...) {
 #'
 domegainf.uf <- function(uf, x, y, ...) {
   # handle NA when x = y = 0
-  x <- ifelse(x == 0 & y == 0, 1e-12, x)
-  y <- ifelse(x == 0 & y == 0, 1e-12, y)
+  xx <- ifelse(x == 0 & y == 0, 1e-12, x)
+  yy <- ifelse(x == 0 & y == 0, 1e-12, y)
 
-  omi <- omegainf(uf, x, y, ...)
-  zeta <- x + y*1i
+  omi <- omegainf(uf, xx, yy, ...)
+  zeta <- xx + yy*1i
   wi <- -omi/zeta
   return(wi)
 }

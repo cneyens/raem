@@ -4,16 +4,22 @@
 \alias{aem}
 \title{Create a analytic element model}
 \usage{
-aem(TR, ...)
+aem(k, top, base, n, ...)
 }
 \arguments{
-\item{TR}{numeric, transmissivity value of aquifer}
+\item{k}{numeric, hydraulic conductivity of aquifer}
+
+\item{top}{numeric, top elevation of aquifer}
+
+\item{base}{numeric, base elevation of aquifer}
+
+\item{n}{numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
 
 \item{...}{objects of class \code{element}, or a single list with \code{element} objects}
 }
 \value{
-Object of class \code{aem} which is a list consisting of \code{TR}, a list containing all
-elements, and a logical \code{solved} indicating if the model is solved.
+Object of class \code{aem} which is a list consisting of \code{k}, \code{top}, \code{base}, \code{n},
+a list containing all elements, and a logical \code{solved} indicating if the model is solved.
 }
 \description{
 \code{\link[=aem]{aem()}} creates an analytic element model to which elements can be added
@@ -23,12 +29,17 @@ If an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{
 object before it is returned.
 }
 \examples{
-TR <- 100
+k <- 10
+top <- 10
+base <- 0
+n <- 0.2
+TR <- k * (top - base)
+
 w <- well(xw = 50, yw = 0, Q = 200)
-rf <- constant(TR, xc = -500, yc = 0, h = 20)
+rf <- constant(xc = -500, yc = 0, h = 20)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 
-aem(TR, w, rf, uf)
-aem(TR, list(w, rf, uf))
+aem(k, top, base, n, w, rf, uf)
+aem(k, top, base, n, list(w, rf, uf))
 
 }

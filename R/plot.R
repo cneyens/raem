@@ -59,9 +59,10 @@ image_to_matrix <- function(m) {
 #' @param aem `aem` object
 #' @param x numeric x coordinates at which the values in `z` are computed These must be in ascending order.
 #' @param y numeric x coordinates at which the values in `z` are computed These must be in ascending order.
-#' @param z character indicating which variable to plot. Possible values are `head` (default),
+#' @param z character indicating which variable to plot. Possible values are `heads` (default),
 #'    `streamfunction`, `potential`, `Q` (magnitude of discharge vector), `Qx`, `Qy`, `Qz`,
 #'    (x, y and z components of the discharge vector) and `velocity`.
+#' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
 #' @param ... additional arguments passed to [contour()]
 #'
 #' @return Contour plot of variable `z`, or added contour plot of variable `z` to an
@@ -69,27 +70,27 @@ image_to_matrix <- function(m) {
 #' @export
 #'
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
 #' wi <- well(xw = 0, yw = 0, Q = -100)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, wi, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf)
 #'
 #' xg <- seq(-100, 100, length = 500)
 #' yg <- seq(-75, 75, length = 100)
 #'
-#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
+#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
 #' contour(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3', drawlabels = FALSE, add = TRUE)
 #'
-contour.aem <- function(aem, x, y, z = c('head', 'streamfunction', 'potential'), ...) {
+contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential'), asp = 1, ...) {
   z <- match.arg(z)
   m <- switch(z,
-              head = head(aem, x, y, as.grid = TRUE),
+              heads = heads(aem, x, y, as.grid = TRUE),
               streamfunction = streamfunction(aem, x, y, as.grid = TRUE),
               potential = potential(aem, x, y, as.grid = TRUE)
   )
   m <- matrix_to_image(m)
-  return(contour(x = x, y = y, z = m, ...))
+  return(contour(x = x, y = y, z = m, asp = asp, ...))
 }
 
 #' Plot the location of an analytic element with a point or line geometry
@@ -160,7 +161,7 @@ plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' wi <- well(xw = 0, yw = 0, Q = -100)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 #' ls <- linesink(-75, 50, 100, 50, sigma = 1)
-#' ml <- aem(TR = 100, w, wi, uf, ls)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, ls)
 #'
 #' plot(ml, xlim = c(-100, 100), ylim = c(-75, 75))
 #'
@@ -193,7 +194,7 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
 #' Title
 #'
 #' @param x
-#' @param y
+#' @param y ignored
 #' @param add
 #' @param type
 #' @param arrows
@@ -203,8 +204,8 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
 #' @export
 #'
 #' @examples
-plot.tracelines <- function(x, y, add = FALSE, type = 'l', arrows = FALSE, ...) {
-  if(!inherits(x, 'list')) {
+plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, ...) {
+  if(!is.list(x)) {
     x <- list(x)
   }
   if(add) {
@@ -231,5 +232,28 @@ plot.tracelines <- function(x, y, add = FALSE, type = 'l', arrows = FALSE, ...) 
       }
     }
     for(i in seq_along(x[-1])) lines(x[[i]][,2], x[[i]][,3], type = type, ...)
+  }
+}
+
+
+#' Title
+#'
+#' @param capzone
+#' @param col
+#' @param add
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot.capzone <- function(capzone, col = "#BEBEBE90", add = FALSE, ...) {
+  if(add) {
+    polygon(capzone, col = col, ...)
+  } else {
+    frame()
+    plot.window(range(capzone[,1]), range(capzone[,2]))
+    polygon(capzone, col = col, ...)
+    axis(1); axis(2); box()
   }
 }

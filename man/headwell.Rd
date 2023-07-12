@@ -4,11 +4,9 @@
 \alias{headwell}
 \title{Create a analytic element of a well with a constant head}
 \usage{
-headwell(TR, xw, yw, hw, rw = 0.3, ...)
+headwell(xw, yw, hw, rw = 0.3, ...)
 }
 \arguments{
-\item{TR}{numeric, transmissivity value of aquifer}
-
 \item{xw}{numeric, x location of the well}
 
 \item{yw}{numeric, y location of the well}
@@ -27,6 +25,6 @@ Analytic element of a well with constant head which is an object of class \code{
 into the well is computed by solving the corresponding \code{aem} model.
 }
 \examples{
-headwell(xw = 400, yw = 300, hw = 20, rw = 0.3, TR = 100)
+headwell(xw = 400, yw = 300, hw = 20, rw = 0.3)
 
 }

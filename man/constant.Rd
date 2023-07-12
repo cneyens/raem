@@ -4,11 +4,9 @@
 \alias{constant}
 \title{Create a constant-head analytic element}
 \usage{
-constant(TR, xc, yc, hc, ...)
+constant(xc, yc, hc, ...)
 }
 \arguments{
-\item{TR}{numeric, transmissivity of aquifer at the reference point.}
-
 \item{xc}{numeric, x location of the reference point.}
 
 \item{yc}{numeric, y location of the reference point.}
@@ -25,6 +23,6 @@ Constant-head analytic element point which is an object of class \code{constant}
 as the reference point.
 }
 \examples{
-rf <- constant(TR = 100, xc = -100, yc = 0, hc = 10)
+rf <- constant(xc = -100, yc = 0, hc = 10)
 
 }

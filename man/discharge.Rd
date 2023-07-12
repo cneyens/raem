@@ -41,10 +41,10 @@ the magnitude of the discharge vector, calculated as \code{sqrt(Qx^2 + Qy^2 + Qz
 at the given x and y coordinates.
 }
 \examples{
-TR <- 100
+
 w <- well(xw = 50, yw = 0, Q = 200)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-ml <- aem(TR = 100, w, uf)
+uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 
 discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
 
@@ -58,5 +58,5 @@ discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
 
 }
 \seealso{
-\code{\link[=head.aem]{head.aem()}}, \code{\link[=omega]{omega()}}, \code{\link[=potential]{potential()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=discharge]{discharge()}}
+\code{\link[=heads]{heads()}}, \code{\link[=omega]{omega()}}, \code{\link[=potential]{potential()}}, \code{\link[=streamfunction]{streamfunction()}}, \code{\link[=discharge]{discharge()}}
 }

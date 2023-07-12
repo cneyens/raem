@@ -31,7 +31,7 @@ w <- well(xw = 50, yw = 0, Q = 200)
 wi <- well(xw = 0, yw = 0, Q = -100)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 ls <- linesink(-75, 50, 100, 50, sigma = 1)
-ml <- aem(TR = 100, w, wi, uf, ls)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, ls)
 
 plot(ml, xlim = c(-100, 100), ylim = c(-75, 75))
 

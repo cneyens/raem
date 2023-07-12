@@ -31,7 +31,6 @@ linesink <- function(x0, y0, x1, y1, sigma, ...) {
 #' [headlinesink()] creates a line-sink analytic element with constant specified head. The discharge
 #'    into the line-sink per unit length is computed by solving the corresponding `aem` model.
 #'
-#' @param TR numeric, transmissivity value of aquifer
 #' @param x0 numeric, starting x location of line-sink
 #' @param y0 numeric, starting y location of line-sink
 #' @param x1 numeric, ending x location of line-sink
@@ -43,13 +42,13 @@ linesink <- function(x0, y0, x1, y1, sigma, ...) {
 #' @export
 #' @seealso [linesink()]
 #' @examples
-#' headlinesink(TR = 100, -75, 50, 100, 50, hc = 10)
+#' headlinesink(-75, 50, 100, 50, hc = 10)
 #'
-headlinesink <- function(TR, x0, y0, x1, y1, hc, ...) {
+headlinesink <- function(x0, y0, x1, y1, hc, ...) {
   hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0)
   hls$xc <- 0.5*(x0 + x1)
   hls$yc <- 0.5*(y0 + y1)
-  hls$pc <- TR*hc
+  hls$hc <- hc
   hls$nunknowns <- 1
   class(hls) <- c('headlinesink', 'headequation', class(hls))
   return(hls)

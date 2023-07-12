@@ -28,7 +28,6 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' [headwell()] creates an analytic element of a well with a constant, specified head. The discharge
 #'    into the well is computed by solving the corresponding `aem` model.
 #'
-#' @param TR numeric, transmissivity value of aquifer
 #' @param xw numeric, x location of the well
 #' @param yw numeric, y location of the well
 #' @param hw numeric, specified hydraulic head in the well
@@ -39,13 +38,13 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' @export
 #'
 #' @examples
-#' headwell(xw = 400, yw = 300, hw = 20, rw = 0.3, TR = 100)
+#' headwell(xw = 400, yw = 300, hw = 20, rw = 0.3)
 #'
-headwell <- function(TR, xw, yw, hw, rw = 0.3, ...) {
+headwell <- function(xw, yw, hw, rw = 0.3, ...) {
   hwe <- well(xw = xw, yw = yw, Q = 0, rw = rw)
   hwe$xc <- xw + rw
   hwe$yc <- yw
-  hwe$pc <- TR * hw
+  hwe$hc <- hw
   hwe$nunknowns <- 1
   class(hwe) <- c('headwell', 'headequation', class(hwe))
   return(hwe)

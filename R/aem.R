@@ -3,30 +3,44 @@
 #'
 #' [aem()] creates an analytic element model to which elements can be added
 #'
-#' @param TR numeric, transmissivity value of aquifer
+#' @param k numeric, hydraulic conductivity of aquifer
+#' @param top numeric, top elevation of aquifer
+#' @param base numeric, base elevation of aquifer
+#' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
 #' @param ... objects of class `element`, or a single list with `element` objects
 #'
-#' @return Object of class `aem` which is a list consisting of `TR`, a list containing all
-#'    elements, and a logical `solved` indicating if the model is solved.
+#' @return Object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
+#'    a list containing all elements, and a logical `solved` indicating if the model is solved.
 #' @details If an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
 #'
 #' @examples
-#' TR <- 100
+#' k <- 10
+#' top <- 10
+#' base <- 0
+#' n <- 0.2
+#' TR <- k * (top - base)
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' rf <- constant(TR, xc = -500, yc = 0, h = 20)
+#' rf <- constant(xc = -500, yc = 0, h = 20)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 #'
-#' aem(TR, w, rf, uf)
-#' aem(TR, list(w, rf, uf))
+#' aem(k, top, base, n, w, rf, uf)
+#' aem(k, top, base, n, list(w, rf, uf))
 #'
-aem <- function(TR, ...) {
+aem <- function(k, top, base, n, ...) {
+  # TODO remove TR from list
   l <- list(...)
   if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) l <- l[[1]]
   names(l) <- sapply(substitute(...()), deparse)
-  if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied objects should be analytic elements', call. = FALSE)
-  aem <- list(TR = TR, elements = l, solved = FALSE)
+  if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class {element}', call. = FALSE)
+  if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class {element}')
+  if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class {element}')
+  if(inherits(base, 'element') || !is.numeric(base)) stop('base should be numeric, not of class {element}')
+  if(inherits(n, 'element') || !is.numeric(n)) stop('n should be numeric, not of class {element}')
+
+  aem <- list(k = k, top = top, base = base, n = n, elements = l, solved = FALSE)
   class(aem) <- 'aem'
 
   if(any(vapply(aem$elements, function(i) inherits(i, 'headequation'), TRUE))) {
@@ -47,10 +61,10 @@ aem <- function(TR, ...) {
 #' @rdname omega
 #' @include equation.R
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 #'
 #' omega(ml, c(50, 0), c(25, -25))
 #'
@@ -90,10 +104,10 @@ omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @rdname potential
 #' @include equation.R
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 #'
 #' potential(ml, c(50, 0), c(25, -25))
 #'
@@ -117,10 +131,10 @@ potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @rdname streamfunction
 #' @include equation.R
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 #'
 #' streamfunction(ml, c(50, 0), c(25, -25))
 #'
@@ -135,13 +149,15 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 
 #' Calculate the hydraulic head
 #'
-#' [head.aem()] computes the hydraulic head at the given x and y coordinates.
+#' [heads()] computes the hydraulic head at the given x and y coordinates.
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `head` at
-#' @param y numeric y coordinates to evaluate `head` at
+#' @param x numeric x coordinates to evaluate `heads` at
+#' @param y numeric y coordinates to evaluate `heads` at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
 #' @param ... ignored
+#'
+#' @details Not to be confused with [utils::head()], which returns the first part of an object.
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the hydraulic head values at `x` and `y`.
 #'     If `as.grid = TRUE`, a matrix of dimensions c(`length(y), length(x)`) described by
@@ -149,20 +165,20 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @export
 #'
 #' @examples
-#' TR <- 100
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
 #'
-#' head(ml, c(50, 0), c(25, -25))
+#' w <- well(xw = 50, yw = 0, Q = 200)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
+#'
+#' heads(ml, c(50, 0), c(25, -25))
 #'
 #' xg <- seq(-100, 100, length = 500)
 #' yg <- seq(-75, 75, length = 100)
-#' head(ml, xg, yg, as.grid = TRUE)
+#' heads(ml, xg, yg, as.grid = TRUE)
 #'
-head.aem <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
+heads <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
   # TODO implement unconfined/confined flow
-  hd <- potential(aem, x, y, as.grid = as.grid, ...) / aem$TR
+  hd <- potential(aem, x, y, as.grid = as.grid, ...) / (aem$k * (aem$top - aem$base))
   return(hd)
 }
 
@@ -177,10 +193,10 @@ head.aem <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
 #' @rdname domega
 #' @include equation.R
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 #'
 #' domega(ml, c(50, 0), c(25, -25))
 #'
@@ -223,10 +239,10 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @rdname discharge
 #' @include equation.R
 #' @examples
-#' TR <- 100
+#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-#' ml <- aem(TR = 100, w, uf)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
 #'
 #' discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
 #'
@@ -261,18 +277,58 @@ discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
 #' @param aem
 #' @param x
 #' @param y
-#' @param n
-#' @param b
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-velocity <- function(aem, x, y, n, b, ...) {
+darcy <- function(aem, x, y, ...) {
+  # TODO add z
   Q <- discharge(aem, x, y, ...)
-  v <- Q/(b*n)
+  b <- satthick(aem, x, y, ...)
+  q <- Q / b
+  return(q)
+}
+
+#' Title
+#'
+#' @param aem
+#' @param x
+#' @param y
+#' @param n
+#' @param b
+#' @param R
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+velocity <- function(aem, x, y, R = 1, ...) {
+  # TODO add z
+  q <- darcy(aem, x, y, ...)
+  v <- q / (aem$n * R)
   return(v)
+}
+
+#' Title
+#'
+#' @param aem
+#' @param x
+#' @param y
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+satthick <- function(aem, x, y, as.grid = FALSE, ...) {
+  # TODO adjust for unconfined flow
+  # TODO as.grid = TRUE
+  d <- aem$top - aem$base
+  b <- rep(d, max(length(x), length(y)))
+  return(b)
 }
 
 #' Solve an `aem` model
@@ -293,10 +349,10 @@ velocity <- function(aem, x, y, n, b, ...) {
 #' @export
 #'
 #' @examples
-#' TR <- 100
-#' rf <- constant(TR, -500, 0, 20)
-#' hdw <- headwell(TR = TR, xw = 0, yw = 100, rw = 0.3, hw = 8)
-#' ml <- aem(TR = TR) |>
+#'
+#' rf <- constant(-500, 0, 20)
+#' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hw = 8)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'            add_element(rf, name = 'rf') |>
 #'            add_element(hdw, name = 'headwell')
 #' ml <- solve(ml)
