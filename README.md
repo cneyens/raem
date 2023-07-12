@@ -52,7 +52,7 @@ Find the head and discharge at two locations `x = 50, y = 200` and
 `x = 100, y = 200`:
 
 ``` r
-heads(m, c(50, 100), 200)
+heads(m, x = c(50, 100), y = 200)
 #> [1] 8.368770 8.333135
 
 discharge(m, c(50, 100), 200) # [L^2 / T]
@@ -78,8 +78,8 @@ plot(m, add = TRUE)
 
 <img src="man/figures/README-plot-head-1.png" width="100%" />
 
-Compute particle traces along `y = 200` at 20 intervals per year for 5
-years and add to plot:
+Compute particle traces starting along `y = 200` at 20 intervals per
+year for 5 years and add to plot:
 
 ``` r
 paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, times = seq(0, 5*365, 365/20))
