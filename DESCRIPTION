@@ -19,8 +19,8 @@ Collate:
     'constant.R'
     'element.R'
     'linesink.R'
-    'plot.R'
     'tracelines.R'
+    'plot.R'
     'uniform-flow.R'
     'well.R'
 Imports: 

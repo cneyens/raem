@@ -45,6 +45,7 @@ omega(ml, c(50, 0), c(25, -25))
 xg <- seq(-100, 100, length = 500)
 yg <- seq(-75, 75, length = 100)
 omega(ml, xg, yg, as.grid = TRUE)
+
 w <- well(xw = 50, yw = 0, Q = 200)
 omega(w, c(50, 0), c(-25, 25))
 

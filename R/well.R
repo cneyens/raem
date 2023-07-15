@@ -51,7 +51,7 @@ headwell <- function(xw, yw, hw, rw = 0.3, ...) {
 }
 
 #'
-#' @param well
+#' @param well well analytic element of class `well` or inherits from it.
 #'
 #' @return complex potential influence of `well` evaluated at points `x y`.
 #' @noRd
@@ -65,7 +65,7 @@ omegainf.well <- function(well, x, y, ...) {
 }
 
 #'
-#' @param well
+#' @param well well analytic element of class `well` or inherits from it.
 #'
 #' @return complex discharge influence of `well` evaluated at points `x y`.
 #' @noRd

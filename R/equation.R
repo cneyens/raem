@@ -182,3 +182,19 @@ head_to_potential <- function(aem, h, ...) {
   pot <- h * aem$k * (aem$top - aem$base)
   return(pot)
 }
+
+#' Title
+#'
+#' @param aem
+#' @param pot
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+potential_to_head <- function(aem, pot, ...) {
+  # TODO unconfined flow
+  h <- pot / (aem$k * (aem$top - aem$base))
+  return(h)
+}

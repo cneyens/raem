@@ -40,4 +40,9 @@ xg <- seq(-100, 100, length = 500)
 yg <- seq(-75, 75, length = 100)
 heads(ml, xg, yg, as.grid = TRUE)
 
+# do not confuse with utils::head, which will give error
+\dontrun{
+head(ml, c(50, 0), c(25, -25))
+}
+
 }

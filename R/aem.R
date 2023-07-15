@@ -9,9 +9,9 @@
 #' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
 #' @param ... objects of class `element`, or a single list with `element` objects
 #'
-#' @return Object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
+#' @return [aem()] returns an object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
 #'    a list containing all elements, and a logical `solved` indicating if the model is solved.
-#' @details If an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
+#' @details When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
 #'
@@ -71,7 +71,7 @@ aem <- function(k, top, base, n, ...) {
 #' xg <- seq(-100, 100, length = 500)
 #' yg <- seq(-75, 75, length = 100)
 #' omega(ml, xg, yg, as.grid = TRUE)
-
+#'
 omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   if(as.grid) {
     df <- expand.grid(x = x, y = y) # increasing x and y values
@@ -176,8 +176,14 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' yg <- seq(-75, 75, length = 100)
 #' heads(ml, xg, yg, as.grid = TRUE)
 #'
-heads <- function(aem, x, y, as.grid = FALSE, ...) { # rename as heads ???
+#' # do not confuse with utils::head, which will give error
+#' \dontrun{
+#' head(ml, c(50, 0), c(25, -25))
+#' }
+#'
+heads <- function(aem, x, y, as.grid = FALSE, ...) {
   # TODO implement unconfined/confined flow
+  # TODO use [potential_to_head()]
   hd <- potential(aem, x, y, as.grid = as.grid, ...) / (aem$k * (aem$top - aem$base))
   return(hd)
 }
@@ -251,6 +257,7 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' discharge(ml, xg, yg, as.grid = TRUE)
 #'
 discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
+  # TODO add z
   W <- domega(aem, x, y, as.grid = as.grid, ...)
   Qx <- Re(W)
   Qy <- -Im(W)

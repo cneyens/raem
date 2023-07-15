@@ -84,6 +84,7 @@ domega.element <- function(element, x, y, ...) {
 #' discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
 #'
 discharge.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
+  # TODO add z
   if(as.grid) {
     df <- expand.grid(x = x, y = y)
     gx <- df$x

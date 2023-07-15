@@ -65,10 +65,9 @@ image_to_matrix <- function(m) {
 #' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
 #' @param ... additional arguments passed to [contour()]
 #'
-#' @return Contour plot of variable `z`, or added contour plot of variable `z` to an
-#'     existing plot.
 #' @export
-#'
+#' @rdname aem
+#' @include aem.R
 #' @examples
 #'
 #' w <- well(xw = 50, yw = 0, Q = 200)
@@ -93,10 +92,6 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
   return(contour(x = x, y = y, z = m, asp = asp, ...))
 }
 
-#' Plot the location of an analytic element with a point or line geometry
-#'
-#' [plot.element()] plots the planar location of an analytic element with a point
-#'    or line geometry or adds it to an existing plot.
 #'
 #' @param element analytic element of class `element` to plot. If not a point or line geometry, nothing is plotted.
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
@@ -104,9 +99,9 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
 #' @param cex numeric symbol size value, defaults to `0.75`.
 #' @param ... additional arguments passed to [plot()]
 #'
-#' @return Plot of the planar location of the element, if any, or added to the existing plot.
 #' @export
-#'
+#' @rdname aem
+#' @include aem.R
 #' @examples
 #' ls <- linesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, sigma = 0.1)
 #' w <- well(xw = 50, yw = 0, Q = 200)
@@ -141,10 +136,9 @@ plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
   }
 }
 
-#' Plot the locations of all elements in an `aem` object with point or line geometries
 #'
 #' [plot.aem()] plots the planar locations of all analytic elements with a point or line geometry
-#'    in an `aem` object, or adds them to an existing plot.
+#'    in an `aem` object by calling [plot.element()] on them, or adds them to an existing plot.
 #'
 #' @param aem `aem` object
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
@@ -153,9 +147,9 @@ plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' @param frame.plot logical, should a border be drawn around the plot. Defaults to `TRUE`.
 #' @param ... additional arguments passed to [plot()].
 #'
-#' @return Plot of the planar location of all analytic elements, or added to the existing plot.
 #' @export
-#'
+#' @rdname aem
+#' @include aem.R
 #' @examples
 #' w <- well(xw = 50, yw = 0, Q = 200)
 #' wi <- well(xw = 0, yw = 0, Q = -100)
@@ -191,7 +185,6 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
 }
 
 
-#' Title
 #'
 #' @param x
 #' @param y ignored
@@ -200,9 +193,9 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
 #' @param arrows
 #' @param ...
 #'
-#' @return
 #' @export
-#'
+#' @rdname tracelines
+#' @include tracelines.R
 #' @examples
 plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, ...) {
   if(!is.list(x)) {
@@ -236,15 +229,15 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 }
 
 
-#' Title
 #'
 #' @param capzone
 #' @param col
 #' @param add
 #' @param ...
 #'
-#' @return
 #' @export
+#' @rdname capzone
+#' @include tracelines.R
 #'
 #' @examples
 plot.capzone <- function(capzone, col = "#BEBEBE90", add = FALSE, ...) {
