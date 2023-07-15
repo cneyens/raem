@@ -2,13 +2,18 @@
 % Please edit documentation in R/equation.R
 \name{head_to_potential}
 \alias{head_to_potential}
+\alias{potential_to_head}
 \title{Title}
 \usage{
 head_to_potential(aem, h, ...)
+
+potential_to_head(aem, pot, ...)
 }
 \arguments{
 \item{...}{}
 }
 \description{
+Title
+
 Title
 }

@@ -52,13 +52,14 @@ aem <- function(k, top, base, n, ...) {
 
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `omega` at
-#' @param y numeric y coordinates to evaluate `omega` at
+#' @param x numeric x coordinates to evaluate at
+#' @param y numeric y coordinates to evaluate at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
 #' @param ... ignored
 #'
 #' @export
-#' @rdname omega
+#' @rdname state-variables
+#' @name state-variables
 #' @include equation.R
 #' @examples
 #'
@@ -94,25 +95,12 @@ omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 }
 
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `potential` at
-#' @param y numeric y coordinates to evaluate `potential` at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
-#'
 #' @export
-#' @rdname potential
+#' @rdname state-variables
+#' @name state-variables
 #' @include equation.R
 #' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
-#'
 #' potential(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
 #' potential(ml, xg, yg, as.grid = TRUE)
 #'
 potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
@@ -121,25 +109,12 @@ potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 }
 
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `streamfunction` at
-#' @param y numeric y coordinates to evaluate `streamfunction` at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
-#'
 #' @export
-#' @rdname streamfunction
+#' @rdname state-variables
+#' @name state-variables
 #' @include equation.R
 #' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
-#'
 #' streamfunction(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
 #' streamfunction(ml, xg, yg, as.grid = TRUE)
 #'
 streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
@@ -147,36 +122,19 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   return(sf)
 }
 
-#' Calculate the hydraulic head
 #'
-#' [heads()] computes the hydraulic head at the given x and y coordinates.
+#' @description [heads()] computes the hydraulic head at the given x and y coordinates.
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `heads` at
-#' @param y numeric y coordinates to evaluate `heads` at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
-#'
-#' @details Not to be confused with [utils::head()], which returns the first part of an object.
-#'
-#' @return A vector of `length(x)` (equal to `length(y)`) with the hydraulic head values at `x` and `y`.
-#'     If `as.grid = TRUE`, a matrix of dimensions c(`length(y), length(x)`) described by
-#'     marginal vectors `x` and `y` containing the hydraulic head values at the grid points.
+#' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
+#' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
+#'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
 #' @export
-#'
+#' @rdname state-variables
+#' @name state-variables
 #' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
-#'
 #' heads(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
 #' heads(ml, xg, yg, as.grid = TRUE)
-#'
-#' # do not confuse with utils::head, which will give error
+#' # do not confuse heads() with utils::head, which will give error
 #' \dontrun{
 #' head(ml, c(50, 0), c(25, -25))
 #' }
@@ -190,13 +148,14 @@ heads <- function(aem, x, y, as.grid = FALSE, ...) {
 
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `domega` at
-#' @param y numeric y coordinates to evaluate `domega` at
+#' @param x numeric x coordinates to evaluate at
+#' @param y numeric y coordinates to evaluate at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
 #' @param ... ignored
 #'
 #' @export
-#' @rdname domega
+#' @rdname flow
+#' @name flow
 #' @include equation.R
 #' @examples
 #'
@@ -234,26 +193,15 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 
 # TODO Qz
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `discharge` at
-#' @param y numeric y coordinates to evaluate `discharge` at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param magnitude logical, should the magnitude of the discharge vector be returned as well? Default to `FALSE`. See details.
+#' @param magnitude logical, should the magnitude of the flow vector be returned as well? Default to `FALSE`. See details.
 #' @param ... ignored
 #'
 #' @export
-#' @rdname discharge
+#' @rdname flow
+#' @name flow
 #' @include equation.R
 #' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
-#'
 #' discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
 #' discharge(ml, xg, yg, as.grid = TRUE)
 #'
 discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
@@ -279,42 +227,34 @@ discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
   return(Q)
 }
 
-#' Title
 #'
-#' @param aem
-#' @param x
-#' @param y
-#' @param ...
-#'
-#' @return
 #' @export
-#'
+#' @rdname flow
+#' @name flow
 #' @examples
-darcy <- function(aem, x, y, ...) {
+#' darcy(ml, c(50, 0), c(25, -25), magnitude = TRUE)
+#' darcy(ml, xg, yg, as.grid = TRUE)
+#'
+darcy.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
   # TODO add z
-  Q <- discharge(aem, x, y, ...)
-  b <- satthick(aem, x, y, ...)
+  Q <- discharge(aem, x, y, as.grid = as.grid, magnitude = magnitude, ...)
+  b <- satthick(aem, x, y, as.grid = as.grid, ...)
   q <- Q / b
   return(q)
 }
 
-#' Title
+#' @param R numeric, retardation coefficient. Defaults to 1 (no retardation).
 #'
-#' @param aem
-#' @param x
-#' @param y
-#' @param n
-#' @param b
-#' @param R
-#' @param ...
-#'
-#' @return
 #' @export
-#'
+#' @rdname flow
+#' @name flow
 #' @examples
-velocity <- function(aem, x, y, R = 1, ...) {
+#' velocity(ml, c(50, 0), c(25, -25), magnitude = TRUE, R = 5)
+#' velocity(ml, xg, yg, as.grid = TRUE, R = 5)
+#'
+velocity.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
   # TODO add z
-  q <- darcy(aem, x, y, ...)
+  q <- darcy(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...)
   v <- q / (aem$n * R)
   return(v)
 }

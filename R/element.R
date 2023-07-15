@@ -23,10 +23,10 @@ element <- function(p, un = 0, ...) {
 #' @param element analytic element of class `element`
 #'
 #' @export
-#' @rdname omega
-#'
+#' @rdname state-variables
+#' @name state-variables
 #' @examples
-#' w <- well(xw = 50, yw = 0, Q = 200)
+#' # For elements
 #' omega(w, c(50, 0), c(-25, 25))
 #'
 omega.element <- function(element, x, y, ...) {
@@ -35,18 +35,27 @@ omega.element <- function(element, x, y, ...) {
 }
 
 #'
-#' @param element analytic element of class `element`
-#'
 #' @export
-#' @rdname potential
-#'
+#' @rdname state-variables
+#' @name state-variables
 #' @examples
-#' w <- well(xw = 50, yw = 0, Q = 200)
 #' potential(w, c(50, 0), c(-25, 25))
 #'
 potential.element <- function(element, x, y, ...) {
   pt <- Re(omega(element, x, y, ...))
   return(pt)
+}
+
+#'
+#' @export
+#' @rdname state-variables
+#' @name state-variables
+#' @examples
+#' streamfunction(w, c(50, 0), c(-25, 25))
+#'
+streamfunction.element <- function(element, x, y, ...) {
+  sf <- Im(omega(element, x, y, ...))
+  return(sf)
 }
 
 #'
@@ -62,9 +71,10 @@ potinf.element <- function(element, x, y, ...) {
 #' @param element analytic element of class `element`
 #'
 #' @export
-#' @rdname domega
+#' @rdname flow
+#' @name flow
 #' @examples
-#' w <- well(xw = 50, yw = 0, Q = 200)
+#' # For elements
 #' domega(w, c(50, 0), c(-25, 25))
 #'
 domega.element <- function(element, x, y, ...) {
@@ -73,13 +83,10 @@ domega.element <- function(element, x, y, ...) {
 }
 
 #'
-#' @param element analytic element of class `element`
-#'
 #' @export
-#' @rdname discharge
-#'
+#' @rdname flow
+#' @name flow
 #' @examples
-#' w <- well(xw = 50, yw = 0, Q = 200)
 #' discharge(w, c(50, 0), c(-25, 25))
 #' discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
 #'

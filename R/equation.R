@@ -34,90 +34,110 @@ equation <- function(element, aem, ...) {
 
 }
 
-#' Calculate the complex potential
+#' @title Calculate state-variables
 #'
-#' [omega()] computes the complex potential for an `aem` or `element` object
+#' @description [omega()] computes the complex potential for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @param ... ignored
-#'
-#' @return A vector of `length(x)` (equal to `length(y)`) with the complex potential values at `x` and `y`.
+#' @return For [omega()], a vector of `length(x)` (equal to `length(y)`) with the complex potential values at `x` and `y`.
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex potential values at the grid points.
 #' @export
-#' @rdname omega
-#' @seealso [heads()], [potential()], [streamfunction()], [domega()], [discharge()]
+#' @rdname state-variables
+#' @name state-variables
+#' @seealso [flow()], [satthick()], [head_to_potential()]
 #'
 omega <- function(...) UseMethod('omega')
 
-#' Calculate the discharge potential
 #'
-#' [potential()] computes the discharge potential for an `aem` or `element` object
+#' @description [potential()] computes the discharge potential for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @param ... ignored
-#'
-#' @return A vector of `length(x)` (equal to `length(y)`) with the discharge potential values at `x` and `y`.
-#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
-#'     marginal vectors `x` and `y` containing the discharge potential values at the grid points.
+#' @return For [potential()], the same as for [omega()] but containing the discharge potential values
+#'    evaluated at `x` and `y`, which are the real components of [omega()].
 #' @export
-#' @rdname potential
-#' @seealso [heads()], [omega()], [streamfunction()], [domega()], [discharge()]
+#' @rdname state-variables
+#' @name state-variables
 #'
 potential <- function(...) UseMethod('potential')
 
-#' Calculate the streamfunction
 #'
-#' [streamfunction()] computes the streamfunction for an `aem` or `element` object
+#' @description [streamfunction()] computes the streamfunction for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @param ... ignored
-#'
-#' @return A vector of `length(x)` (equal to `length(y)`) with the streamfunction values at `x` and `y`.
-#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
-#'     marginal vectors `x` and `y` containing the streamfunction values at the grid points.
+#' @return For [streamfunction()], the same as for [omega()] but containing the streamfunction values
+#'    evaluated at `x` and `y`, which are the imaginary components of [omega()].
 #' @export
-#' @rdname streamfunction
-#' @seealso [heads()], [omega()], [potential()], [domega()], [discharge()]
+#' @rdname state-variables
+#' @name state-variables
 #'
 streamfunction <- function(...) UseMethod('streamfunction')
 
-#' Calculate the complex discharge
+#' @title Calculate flow variables
 #'
-#' [domega()] computes the complex discharge for an `aem` or `element` object
+#' @description [domega()] computes the complex discharge for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @param ... ignored
-#'
-#' @return A vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`.
+#' @return For [domega()],  vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
+#'     [domega()] is the derivate of [omega()] in the x and y directions.
+#'
 #' @export
-#' @rdname domega
-#' @seealso [heads()], [omega()], [potential()], [streamfunction()], [discharge()]
+#' @rdname flow
+#' @name flow
+#' @seealso [state-variables()], [satthick()], [head_to_potential()]
 #'
 domega <- function(...) UseMethod('domega')
 
-#' Calculate the discharge vector
 #'
-#' [discharge()] computes the `Qx, Qy` and `Qz` components of the discharge vector for an `aem` or `element` object
-#'     at the given x and y coordinates.
+#' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` or `element` object
+#'     at the given x, y and z coordinates.
 #'
-#' @param ... ignored
+#' @return For [discharge()], a matrix of dimensions `c(length(x), 3)` with the `x, y` and `z` components (`Qx`, `Qy` and `Qz`)
+#'    of the discharge vector at coordinates `x`, `y` and `z`. If `as.grid = TRUE`, an array of dimensions
+#'    `c(length(y), length(x), 3)` described by marginal vectors `x` and `y` (columns and rows)
+#'    containing the `x, y` and `z` components of the discharge vector (`Qx`, `Qy` and `Qz`).
 #'
-#' @return A matrix of dimensions `c(length(x), 3)` with the `Qx, Qy` and `Qz` components of
-#'     the discharge vector at `x` and `y`. If `as.grid = TRUE`, an array of dimensions
-#'     `c(length(y), length(x), 3)` described by marginal vectors `x` and `y` (columns and rows)
-#'     containing the `Qx, Qy` and `Qz` components of the discharge vector.
+#' The `x` component of [discharge()] is the real value of [domega()], the `y` component
+#'    the imaginary component and `z` is calculated based on area-sink strengths.
 #'
 #' If `magnitude = TRUE`, the last dimension of the returned matrix is expanded to include
-#'     the magnitude of the discharge vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`.
+#'     the magnitude of the discharge/darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
+#'     (or `sqrt(qx^2 + qy^2 + qz^2)` or `sqrt(vx^2 + vy^2 + vz^2)`, respectively).
 #'
 #' @export
-#' @rdname discharge
-#' @seealso [heads()], [omega()], [potential()], [streamfunction()], [discharge()]
+#' @rdname flow
+#' @name flow
 #'
 discharge <- function(...) UseMethod('discharge')
+
+#'
+#' @description [darcy()] computes the `x, y` and `z` components of the Darcy flux vector (also called specific discharge vector)
+#'    for an `aem` object at the given x, y and z coordinates.
+#'
+#' @details There is no [darcy()] or [velocity()] method for an object of class `element` because an `aem` object is required
+#'    to calculate the saturated thickness using [satthick()].
+#' @export
+#' @return For [darcy()], the same as for [discharge()] but with the `x`, `y` and `z` components of the
+#'    Darcy flux vector (`qx`, `qy` and `qz`). The value are computed by dividing the values of [discharge()] by the saturated thickness.
+#' @rdname flow
+#' @name flow
+#'
+darcy <- function(...) UseMethod('darcy')
+
+#'
+#' @description [velocity()] computes the `x, y` and `z` components of the average linear groundwater flow velocity vector
+#'     for an `aem` object at the given x, y and z coordinates.
+#'
+#' @export
+#' @return For [velocity()], the same as for [discharge()] but with the `x`, `y` and `z` components of the
+#'    average linear groundwater flow velocity vector (`vx`, `vy` and `vz`). The values are computed by dividing
+#'    the [darcy()] values by the effective porosity and the retardation coefficient.
+#' @rdname flow
+#' @name flow
+#'
+velocity <- function(...) UseMethod('velocity')
 
 #' Calculate the potential influence
 #'
@@ -174,7 +194,7 @@ domegainf <- function(...) UseMethod('domegainf')
 #'
 #' @return
 #' @export
-#'
+#' @rdname head_to_potential
 #' @examples
 head_to_potential <- function(aem, h, ...) {
   # TODO unconfined flow
@@ -191,7 +211,7 @@ head_to_potential <- function(aem, h, ...) {
 #'
 #' @return
 #' @export
-#'
+#' @rdname head_to_potential
 #' @examples
 potential_to_head <- function(aem, pot, ...) {
   # TODO unconfined flow
