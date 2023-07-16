@@ -5,7 +5,16 @@
 \alias{plot.capzone}
 \title{Calculate capture zone of a well element}
 \usage{
-capzone(aem, well, time, npar = 30, dt = time/100, as.poly = TRUE, ...)
+capzone(
+  aem,
+  well,
+  time,
+  npar = 30,
+  dt = time/100,
+  zstart = aem$base,
+  as.poly = TRUE,
+  ...
+)
 
 \method{plot}{capzone}(capzone, col = "#BEBEBE90", add = FALSE, ...)
 }
@@ -20,13 +29,15 @@ capzone(aem, well, time, npar = 30, dt = time/100, as.poly = TRUE, ...)
 
 \item{dt}{numeric, time discretization used in the particle tracking. Defaults \code{time / 100}.}
 
+\item{zstart}{numeric vector with the starting elevations of the particles. Defaults to the base of the aquifer. See details.}
+
 \item{as.poly}{logical, should the convex hull of the traces (default) be returned or the paths. See details.}
 
 \item{...}{}
 }
 \value{
-\code{\link[=capzone]{capzone()}} returns an object of class \code{capzone} if \code{as.poly = TRUE}, which is a matrix with \code{npar} rows
-and columns \code{x} and \code{y} specifying the coordinates of the convex hull delineating the \code{time} capture zone of \code{well}.
+\code{\link[=capzone]{capzone()}} returns an object of class \code{capzone} if \code{as.poly = TRUE}, which is a matrix with columns \code{x} and \code{y}
+specifying the coordinates of the convex hull delineating the \code{time} capture zone of \code{well}.
 If \code{as.poly = FALSE}, the output of \code{\link[=tracelines]{tracelines()}} is returned directly.
 }
 \description{
@@ -35,7 +46,11 @@ particle tracking until the requested time is reached.
 }
 \details{
 Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}} and setting the \code{forward = FALSE}.
-Initial particle locations are computed by equally spacing \code{npar} locations at the well radius.
+Initial particle locations are computed by equally spacing \code{npar} locations at the well radius and repeating this
+for all \code{zstart} elevations. The total number of particles equals \code{npar * length(zstart)}.
+
+Note that different \code{zstart} values only have an effect in models with vertical flow components, i.e. models with area-sinks.
+
 If \code{as.poly = TRUE}, the convex hull of all particle locations is computed and returned. If \code{FALSE},
 the output of \code{\link[=tracelines]{tracelines()}} is returned.
 }
@@ -61,6 +76,20 @@ yg <- seq(-500, 500, length = 100)
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
 plot(cp10, add = TRUE)
+
+# model with vertical flow components
+as <- areasink(0, 0, N = 0.001, R = 1500)
+m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
+
+# three different starting levels, returns convex hull of all particles
+cp5 <- capzone(m, w1, time = 5*365, zstart = c(0, 5, 8))
+
+contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+plot(cp5, add = TRUE)
+
+# one starting level at z = 8, smaller zone
+cp5_z8 <- capzone(m, w1, time = 5*365, zstart = 8)
+plot(cp5_z8, add = TRUE, col = 'orange3')
 
 }
 \seealso{

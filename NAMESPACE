@@ -3,7 +3,6 @@
 S3method(contour,aem)
 S3method(darcy,aem)
 S3method(discharge,aem)
-S3method(discharge,element)
 S3method(domega,aem)
 S3method(domega,element)
 S3method(omega,aem)

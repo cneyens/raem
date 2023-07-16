@@ -82,46 +82,6 @@ domega.element <- function(element, x, y, ...) {
   return(wi)
 }
 
-#'
-#' @export
-#' @rdname flow
-#' @name flow
-#' @examples
-#' discharge(w, c(50, 0), c(-25, 25))
-#' discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
-#'
-discharge.element <- function(element, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
-  # TODO add z
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y)
-    gx <- df$x
-    gy <- df$y
-  } else {
-    gx <- x
-    gy <- y
-  }
-  W <- domega(element, x, y, ...)
-  Qx <- Re(W)
-  Qy <- -Im(W)
-  if(magnitude) {
-    qv <- c(Qx, Qy, sqrt(Qx^2 + Qy^2))
-    ndim <- 3
-    nms <- c('Qx', 'Qy', 'Q')
-  } else {
-    qv <- c(Qx, Qy)
-    ndim <- 2
-    nms <- c('Qx', 'Qy')
-  }
-
-  if(as.grid) {
-    Q <- array(qv, dim = c(length(x), length(y), ndim), dimnames = list(NULL, NULL, nms)) # as used by {image} or {contour}. NROW and NCOL are switched
-    Q <- image_to_matrix(Q)
-  } else {
-    Q <- matrix(qv, ncol = ndim, dimnames = list(NULL, nms))
-  }
-  return(Q)
-}
-
 #' Add element to existing `aem` object
 #'
 #' @param aem `aem` object

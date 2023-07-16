@@ -150,8 +150,8 @@ heads <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @param aem `aem` object
 #' @param x numeric x coordinates to evaluate at
 #' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
+#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
+#' @param ... ignored or arguments passed from [velocity()] or [darcy()] to [discharge()].
 #'
 #' @export
 #' @rdname flow
@@ -161,7 +161,8 @@ heads <- function(aem, x, y, as.grid = FALSE, ...) {
 #'
 #' w <- well(xw = 50, yw = 0, Q = 200)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
+#' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)
 #'
 #' domega(ml, c(50, 0), c(25, -25))
 #'
@@ -191,38 +192,72 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 }
 
 
-# TODO Qz
 #'
+#' @param z numeric z coordinates to evaluate at
 #' @param magnitude logical, should the magnitude of the flow vector be returned as well? Default to `FALSE`. See details.
-#' @param ... ignored
+#' @param verbose logical, if `TRUE` (default), warnings with regards to setting `Qz` to NA are printed. See details.
 #'
+#' @details If the `z` coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
+#'    the aquifer top for confined conditions), or below the aquifer base, `Qz` values are set to NA with a warning (if `verbose = TRUE`).
+#'    The `Qx` and `Qy` values are not set to NA, for convenience in specifying the `z` coordinate when only lateral flow
+#'    is of interest.
 #' @export
 #' @rdname flow
 #' @name flow
 #' @include equation.R
 #' @examples
-#' discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
-#' discharge(ml, xg, yg, as.grid = TRUE)
+#' discharge(ml, c(50, 0), c(25, -25), z = ml$top)
+#' discharge(ml, c(50, 0), c(25, -25), z = c(ml$top, 5), magnitude = TRUE)
+#' discharge(ml, xg, yg, z = ml$top, as.grid = TRUE)
+#' discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
 #'
-discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
-  # TODO add z
-  W <- domega(aem, x, y, as.grid = as.grid, ...)
+discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verbose = TRUE, ...) {
+  if(as.grid) {
+    df <- expand.grid(x = x, y = y, z = z)
+    gx <- df$x
+    gy <- df$y
+    gz <- df$z
+  } else {
+    gx <- x
+    gy <- y
+    gz <- z
+  }
+
+  # Get Qx and Qy
+  W <- domega(aem, gx, gy, as.grid = FALSE, ...)
   Qx <- Re(W)
   Qy <- -Im(W)
+
+  # Get Qz: depends on area-sinks
+  # TODO leakage at bottom
+  # TODO unconfined flow
+  ntotal <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink'), i$parameter, 0), 0.0)
+  Qz <- -(gz - aem$base) * sum(ntotal) # TODO unconfined flow
+
+  # set Qz to NA if z coordinate above saturated part or below aquifer base
+  # TODO keep this behaviour? Shouldn't Qx and Qy also be set to NA?
+  outside_v <- outside_vertical(aem, gx, gy, gz)$outside
+  if(any(outside_v) && verbose) {
+    warning('Setting Qz values to NA for z above saturated aquifer level or below aquifer base', call. = FALSE)
+  }
+  Qz <- ifelse(outside_v, NA, Qz)
+  # Qx <- ifelse(outside_v, NA, Qx)
+  # Qy <- ifelse(outside_v, NA, Qy)
+
   if(magnitude) {
-    qv <- c(Qx, Qy, sqrt(Qx^2 + Qy^2))
-    ndim <- 3
-    nms <- c('Qx', 'Qy', 'Q')
+    qv <- cbind(Qx, Qy, Qz, sqrt(Qx^2 + Qy^2 + Qz^2))
+    ndim <- 4
+    nms <- c('Qx', 'Qy', 'Qz', 'Q')
   } else {
-    qv <- c(Qx, Qy)
-    ndim <- 2
-    nms <- c('Qx', 'Qy')
+    qv <- cbind(Qx, Qy, Qz)
+    ndim <- 3
+    nms <- c('Qx', 'Qy', 'Qz')
   }
   if(as.grid) {
-    Q <- array(qv, dim = c(dim(Qx), ndim), dimnames = list(NULL, NULL, nms)) # as used by {image} or {contour}. NROW and NCOL are switched
+    Q <- array(c(qv), dim = c(length(x), length(y), length(z), ndim), dimnames = list(NULL, NULL, NULL, nms)) # as used by {image} or {contour}. NROW and NCOL are switched
     Q <- image_to_matrix(Q)
   } else {
-    Q <- matrix(qv, ncol = ndim, dimnames = list(NULL, nms))
+    Q <- matrix(c(qv), ncol = ndim, dimnames = list(NULL, nms))
   }
   return(Q)
 }
@@ -232,14 +267,13 @@ discharge.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
 #' @rdname flow
 #' @name flow
 #' @examples
-#' darcy(ml, c(50, 0), c(25, -25), magnitude = TRUE)
-#' darcy(ml, xg, yg, as.grid = TRUE)
+#' darcy(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE)
+#' darcy(ml, xg, yg, 10, as.grid = TRUE)
 #'
-darcy.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
-  # TODO add z
-  Q <- discharge(aem, x, y, as.grid = as.grid, magnitude = magnitude, ...)
+darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
+  Q <- discharge(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
   b <- satthick(aem, x, y, as.grid = as.grid, ...)
-  q <- Q / b
+  q <- Q / array(b, dim = dim(Q))
   return(q)
 }
 
@@ -249,12 +283,11 @@ darcy.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...) {
 #' @rdname flow
 #' @name flow
 #' @examples
-#' velocity(ml, c(50, 0), c(25, -25), magnitude = TRUE, R = 5)
-#' velocity(ml, xg, yg, as.grid = TRUE, R = 5)
+#' velocity(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE, R = 5)
+#' velocity(ml, xg, yg, 5, as.grid = TRUE, R = 5)
 #'
-velocity.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
-  # TODO add z
-  q <- darcy(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...)
+velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
+  q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
   v <- q / (aem$n * R)
   return(v)
 }
@@ -264,18 +297,31 @@ velocity.aem <- function(aem, x, y, as.grid = FALSE, magnitude = FALSE, R = 1, .
 #' @param aem
 #' @param x
 #' @param y
-#' @param ...
+#' @param ... ignored
 #'
 #' @return
 #' @export
 #'
 #' @examples
 satthick <- function(aem, x, y, as.grid = FALSE, ...) {
+
+  if(as.grid) {
+    df <- expand.grid(x = x, y = y) # increasing x and y values
+    gx <- df$x
+    gy <- df$y
+  } else {
+    gx <- x
+    gy <- y
+  }
+
   # TODO adjust for unconfined flow
-  # TODO as.grid = TRUE
   d <- aem$top - aem$base
-  b <- rep(d, max(length(x), length(y)))
-  return(b)
+  mb <- cbind(x = gx, y = gy, b = d)[,'b'] # recycle x and y
+  if(as.grid) {
+    mb <- matrix(mb, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
+    mb <- image_to_matrix(mb)
+  }
+  return(mb)
 }
 
 #' Solve an `aem` model

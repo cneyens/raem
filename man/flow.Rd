@@ -11,7 +11,6 @@
 \alias{darcy.aem}
 \alias{velocity.aem}
 \alias{domega.element}
-\alias{discharge.element}
 \title{Calculate flow variables}
 \usage{
 domega(...)
@@ -24,18 +23,25 @@ velocity(...)
 
 \method{domega}{aem}(aem, x, y, as.grid = FALSE, ...)
 
-\method{discharge}{aem}(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...)
+\method{discharge}{aem}(
+  aem,
+  x,
+  y,
+  z,
+  as.grid = FALSE,
+  magnitude = FALSE,
+  verbose = TRUE,
+  ...
+)
 
-\method{darcy}{aem}(aem, x, y, as.grid = FALSE, magnitude = FALSE, ...)
+\method{darcy}{aem}(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...)
 
-\method{velocity}{aem}(aem, x, y, as.grid = FALSE, magnitude = FALSE, R = 1, ...)
+\method{velocity}{aem}(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...)
 
 \method{domega}{element}(element, x, y, ...)
-
-\method{discharge}{element}(element, x, y, as.grid = FALSE, magnitude = FALSE, ...)
 }
 \arguments{
-\item{...}{ignored}
+\item{...}{ignored or arguments passed from \code{\link[=velocity]{velocity()}} or \code{\link[=darcy]{darcy()}} to \code{\link[=discharge]{discharge()}}.}
 
 \item{aem}{\code{aem} object}
 
@@ -43,9 +49,13 @@ velocity(...)
 
 \item{y}{numeric y coordinates to evaluate at}
 
-\item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
+\item{as.grid}{logical, should a matrix be returned? Defaults to \code{FALSE}. See details.}
+
+\item{z}{numeric z coordinates to evaluate at}
 
 \item{magnitude}{logical, should the magnitude of the flow vector be returned as well? Default to \code{FALSE}. See details.}
+
+\item{verbose}{logical, if \code{TRUE} (default), warnings with regards to setting \code{Qz} to NA are printed. See details.}
 
 \item{R}{numeric, retardation coefficient. Defaults to 1 (no retardation).}
 
@@ -55,26 +65,28 @@ velocity(...)
 For \code{\link[=domega]{domega()}},  vector of \code{length(x)} (equal to \code{length(y)}) with the complex discharge values at \code{x} and \code{y},
 If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
 marginal vectors \code{x} and \code{y} containing the complex discharge values at the grid points.
-\code{\link[=domega]{domega()}} is the derivate of \code{\link[=omega]{omega()}} in the x and y directions.
+\code{\link[=domega]{domega()}} is the derivative of \code{\link[=omega]{omega()}} in the x and y directions.
 
-For \code{\link[=discharge]{discharge()}}, a matrix of dimensions \code{c(length(x), 3)} with the \verb{x, y} and \code{z} components (\code{Qx}, \code{Qy} and \code{Qz})
+For \code{\link[=discharge]{discharge()}}, a matrix with the number of rows equal to the number of points to evaluate
+the discharge vector at, and with columns \code{Qx}, \code{Qy} and \code{Qz} corresponding to \verb{x, y} and \code{z} components
 of the discharge vector at coordinates \code{x}, \code{y} and \code{z}. If \code{as.grid = TRUE}, an array of dimensions
-\code{c(length(y), length(x), 3)} described by marginal vectors \code{x} and \code{y} (columns and rows)
-containing the \verb{x, y} and \code{z} components of the discharge vector (\code{Qx}, \code{Qy} and \code{Qz}).
+\code{c(length(y), length(x), length(z), 3)} described by marginal vectors \code{x}, \code{y} and \code{z} (columns, rows and third dimension)
+containing the \verb{x, y} and \code{z} components of the discharge vector (\code{Qx}, \code{Qy} and \code{Qz}) as the fourth dimension.
 
 The \code{x} component of \code{\link[=discharge]{discharge()}} is the real value of \code{\link[=domega]{domega()}}, the \code{y} component
-the imaginary component and \code{z} is calculated based on area-sink strengths.
+the imaginary component and the \code{z} component is calculated based on area-sink strengths.
 
-If \code{magnitude = TRUE}, the last dimension of the returned matrix is expanded to include
+If \code{magnitude = TRUE}, the last dimension of the returned array is expanded to include
 the magnitude of the discharge/darcy/velocity vector, calculated as \code{sqrt(Qx^2 + Qy^2 + Qz^2)}
 (or \code{sqrt(qx^2 + qy^2 + qz^2)} or \code{sqrt(vx^2 + vy^2 + vz^2)}, respectively).
 
 For \code{\link[=darcy]{darcy()}}, the same as for \code{\link[=discharge]{discharge()}} but with the \code{x}, \code{y} and \code{z} components of the
-Darcy flux vector (\code{qx}, \code{qy} and \code{qz}). The value are computed by dividing the values of \code{\link[=discharge]{discharge()}} by the saturated thickness.
+Darcy flux vector (\code{qx}, \code{qy} and \code{qz}). The value are computed by dividing the values of \code{\link[=discharge]{discharge()}} by
+the saturated thickness at \code{x}, \code{y} and \code{z}.
 
 For \code{\link[=velocity]{velocity()}}, the same as for \code{\link[=discharge]{discharge()}} but with the \code{x}, \code{y} and \code{z} components of the
 average linear groundwater flow velocity vector (\code{vx}, \code{vy} and \code{vz}). The values are computed by dividing
-the \code{\link[=darcy]{darcy()}} values by the effective porosity and the retardation coefficient.
+the \code{\link[=darcy]{darcy()}} values by the effective porosity (\code{aem$n}) and the retardation coefficient \code{R}.
 }
 \description{
 \code{\link[=domega]{domega()}} computes the complex discharge for an \code{aem} or \code{element} object
@@ -90,14 +102,20 @@ for an \code{aem} object at the given x, y and z coordinates.
 for an \code{aem} object at the given x, y and z coordinates.
 }
 \details{
-There is no \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}} method for an object of class \code{element} because an \code{aem} object is required
-to calculate the saturated thickness using \code{\link[=satthick]{satthick()}}.
+There is no \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}} method for an object of class \code{element} because an \code{aem} object is required
+to obtain the aquifer base and top.
+
+If the \code{z} coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
+the aquifer top for confined conditions), or below the aquifer base, \code{Qz} values are set to NA with a warning (if \code{verbose = TRUE}).
+The \code{Qx} and \code{Qy} values are not set to NA, for convenience in specifying the \code{z} coordinate when only lateral flow
+is of interest.
 }
 \examples{
 
 w <- well(xw = 50, yw = 0, Q = 200)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
+as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)
 
 domega(ml, c(50, 0), c(25, -25))
 
@@ -105,20 +123,19 @@ xg <- seq(-100, 100, length = 500)
 yg <- seq(-75, 75, length = 100)
 domega(ml, xg, yg, as.grid = TRUE)
 
-discharge(ml, c(50, 0), c(25, -25), magnitude = TRUE)
-discharge(ml, xg, yg, as.grid = TRUE)
+discharge(ml, c(50, 0), c(25, -25), z = ml$top)
+discharge(ml, c(50, 0), c(25, -25), z = c(ml$top, 5), magnitude = TRUE)
+discharge(ml, xg, yg, z = ml$top, as.grid = TRUE)
+discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
 
-darcy(ml, c(50, 0), c(25, -25), magnitude = TRUE)
-darcy(ml, xg, yg, as.grid = TRUE)
+darcy(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE)
+darcy(ml, xg, yg, 10, as.grid = TRUE)
 
-velocity(ml, c(50, 0), c(25, -25), magnitude = TRUE, R = 5)
-velocity(ml, xg, yg, as.grid = TRUE, R = 5)
+velocity(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE, R = 5)
+velocity(ml, xg, yg, 5, as.grid = TRUE, R = 5)
 
 # For elements
 domega(w, c(50, 0), c(-25, 25))
-
-discharge(w, c(50, 0), c(-25, 25))
-discharge(w, c(50, 0), c(-25, 25), as.grid = TRUE, magnitude = TRUE)
 
 }
 \seealso{

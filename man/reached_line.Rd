@@ -21,6 +21,9 @@ logical indicating if particle is on line
 \description{
 Check if particle has reached a line element
 }
+\details{
+This assumes a fully penetrating line segment over the entire aquifer thickness.
+}
 \examples{
 ls <- headlinesink(-75, 50, 100, 50, 10)
 reached_line(ls, 50, 20)

@@ -81,7 +81,7 @@ streamfunction <- function(...) UseMethod('streamfunction')
 #' @return For [domega()],  vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
-#'     [domega()] is the derivate of [omega()] in the x and y directions.
+#'     [domega()] is the derivative of [omega()] in the x and y directions.
 #'
 #' @export
 #' @rdname flow
@@ -94,17 +94,22 @@ domega <- function(...) UseMethod('domega')
 #' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` or `element` object
 #'     at the given x, y and z coordinates.
 #'
-#' @return For [discharge()], a matrix of dimensions `c(length(x), 3)` with the `x, y` and `z` components (`Qx`, `Qy` and `Qz`)
+#' @details There is no [discharge()], [darcy()] or [velocity()] method for an object of class `element` because an `aem` object is required
+#'    to obtain the aquifer base and top.
+#'
+#' @return For [discharge()], a matrix with the number of rows equal to the number of points to evaluate
+#'    the discharge vector at, and with columns `Qx`, `Qy` and `Qz` corresponding to `x, y` and `z` components
 #'    of the discharge vector at coordinates `x`, `y` and `z`. If `as.grid = TRUE`, an array of dimensions
-#'    `c(length(y), length(x), 3)` described by marginal vectors `x` and `y` (columns and rows)
-#'    containing the `x, y` and `z` components of the discharge vector (`Qx`, `Qy` and `Qz`).
+#'    `c(length(y), length(x), length(z), 3)` described by marginal vectors `x`, `y` and `z` (columns, rows and third dimension)
+#'    containing the `x, y` and `z` components of the discharge vector (`Qx`, `Qy` and `Qz`) as the fourth dimension.
 #'
 #' The `x` component of [discharge()] is the real value of [domega()], the `y` component
-#'    the imaginary component and `z` is calculated based on area-sink strengths.
+#'    the imaginary component and the `z` component is calculated based on area-sink strengths.
 #'
-#' If `magnitude = TRUE`, the last dimension of the returned matrix is expanded to include
+#' If `magnitude = TRUE`, the last dimension of the returned array is expanded to include
 #'     the magnitude of the discharge/darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
 #'     (or `sqrt(qx^2 + qy^2 + qz^2)` or `sqrt(vx^2 + vy^2 + vz^2)`, respectively).
+#'
 #'
 #' @export
 #' @rdname flow
@@ -116,11 +121,10 @@ discharge <- function(...) UseMethod('discharge')
 #' @description [darcy()] computes the `x, y` and `z` components of the Darcy flux vector (also called specific discharge vector)
 #'    for an `aem` object at the given x, y and z coordinates.
 #'
-#' @details There is no [darcy()] or [velocity()] method for an object of class `element` because an `aem` object is required
-#'    to calculate the saturated thickness using [satthick()].
 #' @export
 #' @return For [darcy()], the same as for [discharge()] but with the `x`, `y` and `z` components of the
-#'    Darcy flux vector (`qx`, `qy` and `qz`). The value are computed by dividing the values of [discharge()] by the saturated thickness.
+#'    Darcy flux vector (`qx`, `qy` and `qz`). The value are computed by dividing the values of [discharge()] by
+#'    the saturated thickness at `x`, `y` and `z`.
 #' @rdname flow
 #' @name flow
 #'
@@ -133,7 +137,7 @@ darcy <- function(...) UseMethod('darcy')
 #' @export
 #' @return For [velocity()], the same as for [discharge()] but with the `x`, `y` and `z` components of the
 #'    average linear groundwater flow velocity vector (`vx`, `vy` and `vz`). The values are computed by dividing
-#'    the [darcy()] values by the effective porosity and the retardation coefficient.
+#'    the [darcy()] values by the effective porosity (`aem$n`) and the retardation coefficient `R`.
 #' @rdname flow
 #' @name flow
 #'
@@ -198,7 +202,6 @@ domegainf <- function(...) UseMethod('domegainf')
 #' @examples
 head_to_potential <- function(aem, h, ...) {
   # TODO unconfined flow
-  # export ??
   pot <- h * aem$k * (aem$top - aem$base)
   return(pot)
 }

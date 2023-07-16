@@ -17,11 +17,13 @@
 matrix_to_image <- function(m) {
   dims <- dim(m)
   ndim <- length(dims)
-  stopifnot(ndim <= 3)
+  stopifnot(ndim <= 4)
   if(ndim == 2) {
     return(t(m[dims[1]:1,]))
+  } else if(ndim == 3) {
+    return(aperm(m[dims[1]:1,,, drop = FALSE], c(2, 1, 3)))
   } else {
-    return(aperm(m[dims[1]:1,,], c(2, 1, 3)))
+    return(aperm(m[dims[1]:1,,,, drop = FALSE], c(2, 1, 3, 4)))
   }
 }
 
@@ -43,11 +45,13 @@ matrix_to_image <- function(m) {
 image_to_matrix <- function(m) {
   dims <- dim(m)
   ndim <- length(dims)
-  stopifnot(ndim <= 3)
+  stopifnot(ndim <= 4)
   if(ndim == 2) {
     return(t(m[,dims[2]:1]))
+  } else if(ndim == 3) {
+    return(aperm(m[,dims[2]:1,, drop = FALSE], c(2, 1, 3)))
   } else {
-    return(aperm(m[,dims[2]:1,], c(2, 1, 3)))
+    return(aperm(m[,dims[2]:1,,, drop = FALSE], c(2, 1, 3, 4)))
   }
 }
 

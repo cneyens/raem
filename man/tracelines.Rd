@@ -10,6 +10,7 @@ tracelines(
   aem,
   x0,
   y0,
+  z0,
   times,
   forward = TRUE,
   R = 1,
@@ -29,6 +30,8 @@ endpoints(tracelines, ...)
 
 \item{y0}{numeric vector, starting \code{y} locations of the particles}
 
+\item{z0}{numeric vector, starting \code{z} locations of the particles}
+
 \item{times}{numeric vector with the times at which locations should be registered}
 
 \item{forward}{logical, should be forward (\code{TRUE}; default) or backward (\code{FALSE}) tracking be performed.}
@@ -47,13 +50,13 @@ endpoints(tracelines, ...)
 }
 \value{
 \code{\link[=tracelines]{tracelines()}} returns an object of class \code{tracelines} which is a list with length equal to the number of particles where each list element contains
-a matrix with columns \code{time}, \code{x} and \code{y} specifying the registered time and coordinates of the particle as is it tracked through the flow field.
+a matrix with columns \code{time}, \code{x}, \code{y} and \code{z} specifying the registered time and coordinates of the particle as is it tracked through the flow field.
 
 The final row represents either the location at the maximum \code{times} value or, if the particle terminated prematurely, the time and location of the termination.
 
 The matrices are ordered in increasing time. By connecting the coordinates, the tracelines can be produced.
 
-\code{\link[=endpoints]{endpoints()}} returns a matrix with columns \code{time}, \code{x} and \code{y} specifying the final time and coordinates
+\code{\link[=endpoints]{endpoints()}} returns a matrix with columns \code{time}, \code{x}, \code{y} and \code{z} specifying the final time and coordinates
 of the particles in the \code{tracelines} object.
 }
 \description{
@@ -65,13 +68,20 @@ tracelines.
 }
 \details{
 \link[deSolve:lsoda]{deSolve::lsoda} is used to numerically integrate the velocity vector.
-Particles are terminated when they have reached the inner annulus of well elements or when they
-have crossed a line element. The returned time value is the time of termination.
+
+Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
+have crossed a line element or when they travel above the saturated aquifer level (i.e.
+the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
+Note that these last two conditions can only occur in models with vertical flow components, i.e. models with area-sinks.
+The returned time value is the time of termination.
 
 The \code{tfunc} argument can be used to specify additional termination events. It is a function (or a list of functions) that
 takes arguments \code{t}, \code{coords} and \code{parms}. These are, respectively, a numeric value with the current tracking time,
 a numeric vector of length 3 with the current \code{x}, \code{y} and \code{z} coordinates of the particle, and a list with elements
 \code{aem} and \code{R}. It should return a single logical value indicating if the particle should terminate. See examples.
+
+If initial particle locations are above the saturated aquifer level, they are reset to this elevation with a warning.
+Initial particle locations below the aquifer base are reset at the aquifer base with a warning.
 
 Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with \code{-1}).
 }
@@ -84,8 +94,8 @@ R <- 5
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 
-m <- aem(k, top, base, n = 0.2, uf, rf)
-paths <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), times = seq(0, 50*365, 365 / 20), R = R)
+m <- aem(k, top, base, n = n, uf, rf)
+paths <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), z = top, times = seq(0, 25*365, 365 / 20))
 endp <- endpoints(paths)
 
 xg <- seq(-500, 500, length = 100)
@@ -96,8 +106,8 @@ plot(paths, add = TRUE, col = 'orange3')
 points(endp[, c('x', 'y')])
 
 # Backward tracking
-paths_back <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), times = seq(0, 50*365, 365 / 20),
-                         R = 1, forward = FALSE)
+paths_back <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), z = top, times = seq(0, 25*365, 365 / 20),
+                         R = R, forward = FALSE)
 plot(paths_back, add = TRUE, col = 'forestgreen')
 
 # Termination at wells and linesinks
@@ -109,7 +119,7 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 
-paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, times = seq(0, 5*365, 365 / 20))
+paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z = top, times = seq(0, 5*365, 365 / 20))
 plot(paths, add = TRUE, col = 'orange3')
 
 # User-defined termination in rectangular zone
@@ -120,11 +130,25 @@ termf <- function(t, coords, parms) {
   in_poly <- x <= max(tzone[,'x']) & x >= min(tzone[,'x']) & y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
   return(in_poly)
 }
-paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, times = seq(0, 5*365, 365 / 20), tfunc = termf)
+paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z = top, times = seq(0, 5*365, 365 / 20), tfunc = termf)
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
-polygon(termf)
+polygon(tzone)
 plot(paths, add = TRUE, col = 'orange3')
+
+# model with vertical flow due to area-sink
+as <- areasink(xc = 0, yc = 0, N = 0.001, R = 1500)
+m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
+
+# starting z0 locations are above aquifer top and will be reset to top with warning
+paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z0 = top + 0.5, times = seq(0, 5*365, 365 / 20))
+
+contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+plot(m, add = TRUE)
+plot(paths, add = TRUE, col = 'orange3')
+
+# plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
+plot(paths[[4]][,c('y', 'z')], type = 'l')
 
 }
 \seealso{

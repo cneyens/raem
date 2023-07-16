@@ -7,7 +7,7 @@
 satthick(aem, x, y, as.grid = FALSE, ...)
 }
 \arguments{
-\item{...}{}
+\item{...}{ignored}
 }
 \description{
 Title
