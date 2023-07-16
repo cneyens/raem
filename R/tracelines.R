@@ -65,7 +65,7 @@ point_on_line <- function(l0, l1, p, width = 0, tol = 1e-6) {
 #' @details This assumes a fully penetrating line segment over the entire aquifer thickness.
 #'
 #' @return logical indicating if particle is on line
-#' @noRD
+#' @noRd
 #'
 #' @examples
 #' ls <- headlinesink(-75, 50, 100, 50, 10)
@@ -358,7 +358,7 @@ endpoints <- function(tracelines, ...) {
 #' plot(cp5, add = TRUE)
 #' plot(cp10, add = TRUE)
 #'
-#'# model with vertical flow components
+#' # model with vertical flow components
 #' as <- areasink(0, 0, N = 0.001, R = 1500)
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'

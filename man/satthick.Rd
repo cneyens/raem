@@ -2,13 +2,46 @@
 % Please edit documentation in R/aem.R
 \name{satthick}
 \alias{satthick}
-\title{Title}
+\title{Compute the saturated thickness}
 \usage{
 satthick(aem, x, y, as.grid = FALSE, ...)
 }
 \arguments{
+\item{aem}{\code{aem} object}
+
+\item{x}{numeric x coordinates to evaluate at}
+
+\item{y}{numeric y coordinates to evaluate at}
+
+\item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
+
 \item{...}{ignored}
 }
+\value{
+\code{\link[=satthick]{satthick()}} returns a vector of \code{length(x)} (equal to \code{length(y)}) with the saturated thicknesses at \code{x} and \code{y}.
+If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
+marginal vectors \code{x} and \code{y} containing the saturated thicknesses at the grid points.
+}
 \description{
-Title
+\code{\link[=satthick]{satthick()}} computes the saturated thickness of the aquifer of an \code{aem} object
+at the given x and y coordinates.
+}
+\details{
+If the aquifer is confined at \code{x} and \code{y}, the saturated thickness equals the aquifer thickness.
+For flow with variable saturated thickness, if the aquifer is unconfined at \code{x} and \code{y}, the saturated thickness
+it is calculated as the hydraulic head at \code{x} and \code{y} minus the aquifer base.
+}
+\examples{
+uf <- uniformflow(100, 0.001, 0)
+rf <- constant(-1000, 0, 11)
+m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf)
+
+satthick(m, x = c(-200, 0, 200), y = 0) # confined
+satthick(m, x = seq(-500, 500, length = 100),
+         y = seq(-250, 250, length = 100), as.grid = TRUE)
+# TODO add unconfined example
+
+}
+\seealso{
+\code{\link[=flow]{flow()}}, \code{\link[=state-variables]{state-variables()}}
 }

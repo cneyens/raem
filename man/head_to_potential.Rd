@@ -3,17 +3,49 @@
 \name{head_to_potential}
 \alias{head_to_potential}
 \alias{potential_to_head}
-\title{Title}
+\title{Convert hydraulic head to potential and vice versa}
 \usage{
 head_to_potential(aem, h, ...)
 
-potential_to_head(aem, pot, ...)
+potential_to_head(aem, phi, ...)
 }
 \arguments{
-\item{...}{}
+\item{aem}{\code{aem} object}
+
+\item{h}{numeric hydraulic head values as vector or matrix.}
+
+\item{...}{ignored}
+
+\item{phi}{numeric discharge potential values as vector or matrix.}
+}
+\value{
+\code{\link[=head_to_potential]{head_to_potential()}} returns the discharge potentials calculated from \code{h}, in the same
+structure as \code{h}.
+
+\code{\link[=potential_to_head]{potential_to_head()}} returns the hydraulic heads calculated from \code{phi}, in the same
+structure as \code{phi}.
 }
 \description{
-Title
+\code{\link[=head_to_potential]{head_to_potential()}} calculates the discharge potential from the hydraulic head.
 
-Title
+\code{\link[=potential_to_head]{potential_to_head()}} calculates the hydraulic head from the discharge potential.
+}
+\examples{
+
+k <- 10
+top <- 10; base <- 0
+uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
+rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
+w1 <- well(200, 50, Q = 250)
+m <- aem(k, top, base, n = 0.2, uf, rf, w1)
+
+xg <- seq(-500, 500, length = 100)
+yg <- seq(-250, 250, length = 100)
+
+h <- heads(m, x = xg, y = yg, as.grid = TRUE)
+head_to_potential(m, h)
+
+phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
+potential_to_head(m, phi)
+
 }

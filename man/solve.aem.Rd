@@ -4,10 +4,12 @@
 \alias{solve.aem}
 \title{Solve an \code{aem} model}
 \usage{
-\method{solve}{aem}(aem, ...)
+\method{solve}{aem}(a, b, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{a}{\code{aem} object}
+
+\item{b}{ignored}
 
 \item{...}{ignored}
 }

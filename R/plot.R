@@ -55,9 +55,8 @@ image_to_matrix <- function(m) {
   }
 }
 
-#' Display contours of a computed variable
 #'
-#' [contour.aem()] creates a contour plot of a computed variable, or adds the contour lines
+#' @description [contour.aem()] creates a contour plot of a computed variable, or adds the contour lines
 #'     to and existing plot.
 #'
 #' @param aem `aem` object
@@ -67,7 +66,6 @@ image_to_matrix <- function(m) {
 #'    `streamfunction`, `potential`, `Q` (magnitude of discharge vector), `Qx`, `Qy`, `Qz`,
 #'    (x, y and z components of the discharge vector) and `velocity`.
 #' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
-#' @param ... additional arguments passed to [contour()]
 #'
 #' @export
 #' @rdname aem
@@ -96,12 +94,13 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
   return(contour(x = x, y = y, z = m, asp = asp, ...))
 }
 
+#' @description [plot.element()] plots the location of an analytic element with point or line geometry.
 #'
-#' @param element analytic element of class `element` to plot. If not a point or line geometry, nothing is plotted.
+#' @param x `aem` object, or analytic element of class `element` to plot. If not a point or line geometry, nothing is plotted.
+#' @param y ignored
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param pch numeric point symbol value, defaults to `16`.
 #' @param cex numeric symbol size value, defaults to `0.75`.
-#' @param ... additional arguments passed to [plot()]
 #'
 #' @export
 #' @rdname aem
@@ -115,13 +114,19 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
 #' plot(w, add = TRUE)
 #' plot(uf) # empty
 #'
-plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
+plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
+  element <- x
   if(inherits(element, 'well')) {
-    pts <- c(Re(element$zetaw), Im(element$zetaw))
+    x <- Re(element$zetaw)
+    y <- Im(element$zetaw)
+    if(inherits(element, 'headwell')) {
+      x[2] <- element$xc
+      y[2] <- element$yc
+    }
     if(add) {
-      return(points(pts[1], pts[2], pch = pch, cex = cex, ...))
+      return(points(x, y, pch = pch, cex = cex, ...))
     } else {
-      return(plot(pts[1], pts[2], pch = pch, cex = cex, ...))
+      return(plot(x, y, pch = pch, cex = cex, ...))
     }
   } else if(inherits(element, 'linesink')) {
     x <- c(Re(element$z0), Re(element$z1))
@@ -141,15 +146,12 @@ plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
 }
 
 #'
-#' [plot.aem()] plots the planar locations of all analytic elements with a point or line geometry
+#' @description [plot.aem()] plots the planar locations of all analytic elements with a point or line geometry
 #'    in an `aem` object by calling [plot.element()] on them, or adds them to an existing plot.
 #'
-#' @param aem `aem` object
-#' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param xlim numeric, plot limits along the x-axis. Required if `add = FALSE`.
 #' @param ylim numeric, plot limits along the y-axis. Required if `add = FALSE`.
 #' @param frame.plot logical, should a border be drawn around the plot. Defaults to `TRUE`.
-#' @param ... additional arguments passed to [plot()].
 #'
 #' @export
 #' @rdname aem
@@ -169,7 +171,8 @@ plot.element <- function(element, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
 #' plot(ml, add = TRUE)
 #'
-plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
+plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
+  aem <- x
   if(add) {
     pl <- lapply(aem$elements, plot, add = add, ...)
     invisible(pl)
@@ -190,17 +193,22 @@ plot.aem <- function(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
 
 
 #'
-#' @param x
+#' @param x object of class `tracelines`
 #' @param y ignored
-#' @param add
-#' @param type
-#' @param arrows
-#' @param ...
+#' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
+#' @param type character indicating what type of plot to draw. See [plot()]. Defaults to `'l'` (lines).
+#' @param arrows logical indicating if arrows should be drawn using [arrows()]. Defaults to `FALSE`.
+#' @param ... additional arguments passed to [plot()] or [arrows()].
 #'
 #' @export
 #' @rdname tracelines
 #' @include tracelines.R
 #' @examples
+#'
+#' # plot arrows
+#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
+#'
 plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, ...) {
   if(!is.list(x)) {
     x <- list(x)
@@ -234,23 +242,25 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 
 
 #'
-#' @param capzone
-#' @param col
-#' @param add
-#' @param ...
+#' @description [plot.capzone()] plots a `capzone` object as a polygon.
+#'
+#' @param x object of class `capzone`
+#' @param y ignored
+#' @param col colour of polygon. Defaults to a light grey with reduced opacity.
+#' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
+#' @param ... additional arguments passed to [tracelines()] for [capzone()] or additional arguments passed to [polygon()] when plotting.
 #'
 #' @export
 #' @rdname capzone
 #' @include tracelines.R
 #'
-#' @examples
-plot.capzone <- function(capzone, col = "#BEBEBE90", add = FALSE, ...) {
+plot.capzone <- function(x, y = NULL, col = "#BEBEBE90", add = FALSE, ...) {
   if(add) {
-    polygon(capzone, col = col, ...)
+    polygon(x, col = col, ...)
   } else {
     frame()
-    plot.window(range(capzone[,1]), range(capzone[,2]))
-    polygon(capzone, col = col, ...)
+    plot.window(range(x[,1]), range(x[,2]))
+    polygon(x, col = col, ...)
     axis(1); axis(2); box()
   }
 }

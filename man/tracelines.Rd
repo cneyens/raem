@@ -42,11 +42,19 @@ endpoints(tracelines, ...)
 
 \item{tol}{numeric tolerance used to define when particles have crossed a line element. Defaults to 0.1 length units.}
 
-\item{...}{}
+\item{...}{additional arguments passed to \code{\link[=plot]{plot()}} or \code{\link[=arrows]{arrows()}}.}
 
 \item{tracelines}{object of class \code{tracelines} as returned by \code{\link[=tracelines]{tracelines()}}}
 
+\item{x}{object of class \code{tracelines}}
+
 \item{y}{ignored}
+
+\item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
+
+\item{type}{character indicating what type of plot to draw. See \code{\link[=plot]{plot()}}. Defaults to \code{'l'} (lines).}
+
+\item{arrows}{logical indicating if arrows should be drawn using \code{\link[=arrows]{arrows()}}. Defaults to \code{FALSE}.}
 }
 \value{
 \code{\link[=tracelines]{tracelines()}} returns an object of class \code{tracelines} which is a list with length equal to the number of particles where each list element contains
@@ -149,6 +157,11 @@ plot(paths, add = TRUE, col = 'orange3')
 
 # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 plot(paths[[4]][,c('y', 'z')], type = 'l')
+
+
+# plot arrows
+contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
 
 }
 \seealso{

@@ -41,7 +41,7 @@ omegainf.areasink <- function(areasink, x, y, ...) {
 #' @param areasink area-sink analytic element of class `areasink` or inherits from it.
 #'
 #' @return complex discharge influence of `areasink` evaluated at points `x y`.
-#' @rdname domega
+#' @noRd
 #'
 domegainf.areasink <- function(areasink, x, y, ...) {
   Rs <- areasink$R

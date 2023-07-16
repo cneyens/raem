@@ -16,7 +16,7 @@ capzone(
   ...
 )
 
-\method{plot}{capzone}(capzone, col = "#BEBEBE90", add = FALSE, ...)
+\method{plot}{capzone}(x, y = NULL, col = "#BEBEBE90", add = FALSE, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -33,7 +33,15 @@ capzone(
 
 \item{as.poly}{logical, should the convex hull of the traces (default) be returned or the paths. See details.}
 
-\item{...}{}
+\item{...}{additional arguments passed to \code{\link[=tracelines]{tracelines()}} for \code{\link[=capzone]{capzone()}} or additional arguments passed to \code{\link[=polygon]{polygon()}} when plotting.}
+
+\item{x}{object of class \code{capzone}}
+
+\item{y}{ignored}
+
+\item{col}{colour of polygon. Defaults to a light grey with reduced opacity.}
+
+\item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 }
 \value{
 \code{\link[=capzone]{capzone()}} returns an object of class \code{capzone} if \code{as.poly = TRUE}, which is a matrix with columns \code{x} and \code{y}
@@ -43,6 +51,8 @@ If \code{as.poly = FALSE}, the output of \code{\link[=tracelines]{tracelines()}}
 \description{
 \code{\link[=capzone]{capzone()}} determines the capture zone of a well element in the flow field by performing backward
 particle tracking until the requested time is reached.
+
+\code{\link[=plot.capzone]{plot.capzone()}} plots a \code{capzone} object as a polygon.
 }
 \details{
 Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}} and setting the \code{forward = FALSE}.

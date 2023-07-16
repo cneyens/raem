@@ -190,34 +190,53 @@ omegainf <- function(...) UseMethod('omegainf')
 #'
 domegainf <- function(...) UseMethod('domegainf')
 
-#' Title
+#' Convert hydraulic head to potential and vice versa
 #'
-#' @param aem
-#' @param h
-#' @param ...
+#' [head_to_potential()] calculates the discharge potential from the hydraulic head.
 #'
-#' @return
+#' @param aem `aem` object
+#' @param h numeric hydraulic head values as vector or matrix.
+#' @param ... ignored
+#'
+#' @return [head_to_potential()] returns the discharge potentials calculated from `h`, in the same
+#'    structure as `h`.
 #' @export
 #' @rdname head_to_potential
 #' @examples
+#'
+#' k <- 10
+#' top <- 10; base <- 0
+#' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
+#' rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
+#' w1 <- well(200, 50, Q = 250)
+#' m <- aem(k, top, base, n = 0.2, uf, rf, w1)
+#'
+#' xg <- seq(-500, 500, length = 100)
+#' yg <- seq(-250, 250, length = 100)
+#'
+#' h <- heads(m, x = xg, y = yg, as.grid = TRUE)
+#' head_to_potential(m, h)
+#'
 head_to_potential <- function(aem, h, ...) {
   # TODO unconfined flow
-  pot <- h * aem$k * (aem$top - aem$base)
-  return(pot)
+  phi <- h * aem$k * (aem$top - aem$base)
+  return(phi)
 }
 
-#' Title
+#' @description [potential_to_head()] calculates the hydraulic head from the discharge potential.
 #'
-#' @param aem
-#' @param pot
-#' @param ...
+#' @param phi numeric discharge potential values as vector or matrix.
 #'
-#' @return
 #' @export
+#' @return [potential_to_head()] returns the hydraulic heads calculated from `phi`, in the same
+#'    structure as `phi`.
 #' @rdname head_to_potential
 #' @examples
-potential_to_head <- function(aem, pot, ...) {
+#' phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
+#' potential_to_head(m, phi)
+#'
+potential_to_head <- function(aem, phi, ...) {
   # TODO unconfined flow
-  h <- pot / (aem$k * (aem$top - aem$base))
+  h <- phi / (aem$k * (aem$top - aem$base))
   return(h)
 }

@@ -4,16 +4,22 @@
 \alias{headwell}
 \title{Create a analytic element of a well with a constant head}
 \usage{
-headwell(xw, yw, hw, rw = 0.3, ...)
+headwell(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...)
 }
 \arguments{
 \item{xw}{numeric, x location of the well}
 
 \item{yw}{numeric, y location of the well}
 
-\item{hw}{numeric, specified hydraulic head in the well}
+\item{hc}{numeric, specified hydraulic head at the collocation point.}
 
 \item{rw}{numeric, radius of the well. Defaults to 0.3 (meter).}
+
+\item{xc}{numeric, x location of the collocation point. See details. Defaults to \code{xw}.}
+
+\item{yc}{numeric, y location of the collocation point. See details. Defaults to \code{yw}.}
+
+\item{rc}{numeric, radius of the collocation point. See details. Defaults to \code{rw}.}
 
 \item{...}{ignored}
 }
@@ -22,9 +28,17 @@ Analytic element of a well with constant head which is an object of class \code{
 }
 \description{
 \code{\link[=headwell]{headwell()}} creates an analytic element of a well with a constant, specified head. The discharge
-into the well is computed by solving the corresponding \code{aem} model.
+into the well is computed by solving the corresponding \code{aem} model. The head can be specified at
+the well or at any other location.
+}
+\details{
+The discharge from the well at location \verb{xw yw} is computed by solving the \code{aem} model given
+the specified head \code{hc}. This head can be specified at any point, called the collocation point (at \verb{xc yc}).
+This can be used to compute the discharge of the well by specifying the head at some other location.
+By default, the location of the well and the collocation point are the same.
 }
 \examples{
-headwell(xw = 400, yw = 300, hw = 20, rw = 0.3)
+headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
+headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500)
 
 }

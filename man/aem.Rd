@@ -11,9 +11,9 @@ aem(k, top, base, n, ...)
 
 \method{contour}{aem}(aem, x, y, z = c("heads", "streamfunction", "potential"), asp = 1, ...)
 
-\method{plot}{element}(element, add = FALSE, pch = 16, cex = 0.75, ...)
+\method{plot}{element}(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...)
 
-\method{plot}{aem}(aem, add = FALSE, xlim, ylim, frame.plot = TRUE, ...)
+\method{plot}{aem}(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...)
 }
 \arguments{
 \item{k}{numeric, hydraulic conductivity of aquifer}
@@ -24,21 +24,19 @@ aem(k, top, base, n, ...)
 
 \item{n}{numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
 
-\item{...}{additional arguments passed to \code{\link[=plot]{plot()}}.}
+\item{...}{objects of class \code{element}, or a single list with \code{element} objects}
 
 \item{aem}{\code{aem} object}
 
-\item{x}{numeric x coordinates at which the values in \code{z} are computed These must be in ascending order.}
+\item{x}{\code{aem} object, or analytic element of class \code{element} to plot. If not a point or line geometry, nothing is plotted.}
 
-\item{y}{numeric x coordinates at which the values in \code{z} are computed These must be in ascending order.}
+\item{y}{ignored}
 
 \item{z}{character indicating which variable to plot. Possible values are \code{heads} (default),
 \code{streamfunction}, \code{potential}, \code{Q} (magnitude of discharge vector), \code{Qx}, \code{Qy}, \code{Qz},
 (x, y and z components of the discharge vector) and \code{velocity}.}
 
 \item{asp}{the \code{y/x} aspect ratio, see \code{\link[=plot.window]{plot.window()}}. Defaults to 1 (equal unit lengths).}
-
-\item{element}{analytic element of class \code{element} to plot. If not a point or line geometry, nothing is plotted.}
 
 \item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 
@@ -61,6 +59,11 @@ a list containing all elements, and a logical \code{solved} indicating if the mo
 
 \code{\link[=contour.aem]{contour.aem()}} creates a contour plot of a computed variable, or adds the contour lines
 to and existing plot.
+
+\code{\link[=plot.element]{plot.element()}} plots the location of an analytic element with point or line geometry.
+
+\code{\link[=plot.aem]{plot.aem()}} plots the planar locations of all analytic elements with a point or line geometry
+in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} on them, or adds them to an existing plot.
 }
 \details{
 When calling \code{\link[=aem]{aem()}}, if an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}

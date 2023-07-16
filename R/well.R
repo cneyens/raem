@@ -26,25 +26,35 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' Create a analytic element of a well with a constant head
 #'
 #' [headwell()] creates an analytic element of a well with a constant, specified head. The discharge
-#'    into the well is computed by solving the corresponding `aem` model.
+#'    into the well is computed by solving the corresponding `aem` model. The head can be specified at
+#'    the well or at any other location.
 #'
 #' @param xw numeric, x location of the well
 #' @param yw numeric, y location of the well
-#' @param hw numeric, specified hydraulic head in the well
+#' @param hc numeric, specified hydraulic head at the collocation point.
 #' @param rw numeric, radius of the well. Defaults to 0.3 (meter).
+#' @param xc numeric, x location of the collocation point. See details. Defaults to `xw`.
+#' @param yc numeric, y location of the collocation point. See details. Defaults to `yw`.
+#' @param rc numeric, radius of the collocation point. See details. Defaults to `rw`.
 #' @param ... ignored
+#'
+#' @details The discharge from the well at location `xw yw` is computed by solving the `aem` model given
+#'    the specified head `hc`. This head can be specified at any point, called the collocation point (at `xc yc`).
+#'    This can be used to compute the discharge of the well by specifying the head at some other location.
+#'    By default, the location of the well and the collocation point are the same.
 #'
 #' @return Analytic element of a well with constant head which is an object of class `headwell` and inherits from `well`.
 #' @export
 #'
 #' @examples
-#' headwell(xw = 400, yw = 300, hw = 20, rw = 0.3)
+#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
+#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500)
 #'
-headwell <- function(xw, yw, hw, rw = 0.3, ...) {
+headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...) {
   hwe <- well(xw = xw, yw = yw, Q = 0, rw = rw)
-  hwe$xc <- xw + rw
-  hwe$yc <- yw
-  hwe$hc <- hw
+  hwe$xc <- xc + rc
+  hwe$yc <- yc
+  hwe$hc <- hc
   hwe$nunknowns <- 1
   class(hwe) <- c('headwell', 'headequation', class(hwe))
   return(hwe)
