@@ -11,9 +11,9 @@ test_that('well potential and discharge is exact', {
   expect_equal(potential(w, 0, 100), pot.thiem(0, 100))
   expect_equal(potential(w, 100, 100), pot.thiem(100, 100))
 
-  expect_equal(c(discharge(w, 100, 0)), dis.thiem(100, 0))
-  expect_equal(c(discharge(w, 0, 100)), dis.thiem(0, 100))
-  expect_equal(c(discharge(w, 100, 100)), dis.thiem(100, 100))
+  expect_equal(c(Re(domega(w, 100, 0, 0)), -Im(domega(w, 100, 0, 0))), dis.thiem(100, 0))
+  expect_equal(c(Re(domega(w, 0, 100, 0)), -Im(domega(w, 0, 100, 0))), dis.thiem(0, 100))
+  expect_equal(c(Re(domega(w, 100, 100, 0)), -Im(domega(w, 100, 100, 0))), dis.thiem(100, 100))
 
 })
 
@@ -27,11 +27,27 @@ test_that("well singularities are handled", {
   expect_equal(potential(w, 0, 0), potential(w, rw, 0))
   expect_equal(potential(w, -0.1, 0.1), potential(w, rw, 0))
 
-  expect_equal(discharge(w, 0, 0), discharge(w, rw, 0)) # Qy = 0
+  expect_equal(domega(w, 0, 0, 0), domega(w, rw, 0, 0)) # Qy = 0
 
   # coordinates of -0.1, 0.1 projected onto annulus of radius rw
   x <- -0.1; y <- 0.1
   xrw <- rw*cos(atan2(y, x)); yrw <- rw*sin(atan2(y, x))
-  expect_equal(discharge(w, -0.1, 0.1), discharge(w, xrw, yrw))
+  expect_equal(domega(w, -0.1, 0.1, 0), domega(w, xrw, yrw, 0))
+
+})
+
+test_that("headwell works correctly", {
+
+  k <- 10; top <- 10; base <- 0; n <- 0.2
+  rf <- constant(-1000, 0, 10)
+  hw <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3)
+  m <- aem(k, top, base, n, rf, hw)
+
+  expect_equal(heads(m, 200 + 0.3, 100), 8)
+
+  hw2 <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3, xc = 100, yc = 100, rc = 0)
+  m <- aem(k, top, base, n, rf, hw2)
+
+  expect_equal(heads(m, 100, 100), 8)
 
 })

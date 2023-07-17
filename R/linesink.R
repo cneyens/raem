@@ -54,7 +54,7 @@ headlinesink <- function(x0, y0, x1, y1, hc, ...) {
   hls$yc <- 0.5*(y0 + y1)
   hls$hc <- hc
   hls$nunknowns <- 1
-  class(hls) <- c('headlinesink', 'headequation', class(hls))
+  class(hls) <- c('headlinesink', class(hls))
   return(hls)
 }
 

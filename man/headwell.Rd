@@ -33,13 +33,13 @@ the well or at any other location.
 }
 \details{
 The discharge from the well at location \verb{xw yw} is computed by solving the \code{aem} model given
-the specified head \code{hc}. This head can be specified at any point, called the collocation point (at \verb{xc yc}).
+the specified head \code{hc}. This head can be specified at any point, called the collocation point.
 This can be used to compute the discharge of the well by specifying the head at some other location.
 The head is specified at \code{xc + rc}, \code{yc}. By default, the location of the well and the collocation point are the same.
 }
 \examples{
 headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
-headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500)
+headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500, rc = 0)
 
 }
 \seealso{

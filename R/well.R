@@ -39,7 +39,7 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' @param ... ignored
 #'
 #' @details The discharge from the well at location `xw yw` is computed by solving the `aem` model given
-#'    the specified head `hc`. This head can be specified at any point, called the collocation point (at `xc yc`).
+#'    the specified head `hc`. This head can be specified at any point, called the collocation point.
 #'    This can be used to compute the discharge of the well by specifying the head at some other location.
 #'    The head is specified at `xc + rc`, `yc`. By default, the location of the well and the collocation point are the same.
 #'
@@ -48,7 +48,7 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' @seealso [well()]
 #' @examples
 #' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
-#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500)
+#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500, rc = 0)
 #'
 headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...) {
   hwe <- well(xw = xw, yw = yw, Q = 0, rw = rw)
@@ -56,7 +56,7 @@ headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...) {
   hwe$yc <- yc
   hwe$hc <- hc
   hwe$nunknowns <- 1
-  class(hwe) <- c('headwell', 'headequation', class(hwe))
+  class(hwe) <- c('headwell', class(hwe))
   return(hwe)
 }
 

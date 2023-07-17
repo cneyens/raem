@@ -59,7 +59,8 @@ aem(k, top, base, n, ...)
 }
 \value{
 \code{\link[=aem]{aem()}} returns an object of class \code{aem} which is a list consisting of \code{k}, \code{top}, \code{base}, \code{n},
-a list containing all elements, and a logical \code{solved} indicating if the model is solved.
+a list containing all elements with the names of the objects specified in \code{...}, and a logical \code{solved}
+indicating if the model is solved.
 
 The solved \code{aem} object, i.e. after finding the solution
 to the system of equations as constructed by the contained elements.
@@ -81,11 +82,13 @@ in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} o
 When calling \code{\link[=aem]{aem()}}, if an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}
 object before it is returned.
 
-In order to be solved, \code{aem} should contain at least
-1 \code{headequation} element.
 \code{\link[=solve.aem]{solve.aem()}} sets up the system of equations, and calls \code{\link[=solve]{solve()}} to
 solve.
+
 Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automatically calls \code{\link[=solve.aem]{solve.aem()}}.
+
+If the analytic element has a point geometry and has a collocation point
+(e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted.
 }
 \examples{
 k <- 10
@@ -99,7 +102,7 @@ rf <- constant(xc = -500, yc = 0, h = 20)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 
 aem(k, top, base, n, w, rf, uf)
-aem(k, top, base, n, list(w, rf, uf))
+aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf))
 
 
 rf <- constant(-500, 0, 20)

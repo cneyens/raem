@@ -7,10 +7,11 @@
 #' @param top numeric, top elevation of aquifer
 #' @param base numeric, base elevation of aquifer
 #' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
-#' @param ... objects of class `element`, or a single list with `element` objects
+#' @param ... objects of class `element`, or a single (names) list with `element` objects
 #'
 #' @return [aem()] returns an object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
-#'    a list containing all elements, and a logical `solved` indicating if the model is solved.
+#'    a list containing all elements with the names of the objects specified in `...`, and a logical `solved`
+#'    indicating if the model is solved.
 #' @details When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
@@ -27,13 +28,14 @@
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 #'
 #' aem(k, top, base, n, w, rf, uf)
-#' aem(k, top, base, n, list(w, rf, uf))
+#' aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf))
 #'
 aem <- function(k, top, base, n, ...) {
-  # TODO remove TR from list
   l <- list(...)
-  if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) l <- l[[1]]
   names(l) <- sapply(substitute(...()), deparse)
+  if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) {
+    l <- l[[1]]
+  }
   if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class {element}', call. = FALSE)
   if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class {element}')
   if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class {element}')
@@ -43,7 +45,7 @@ aem <- function(k, top, base, n, ...) {
   aem <- list(k = k, top = top, base = base, n = n, elements = l, solved = FALSE)
   class(aem) <- 'aem'
 
-  if(any(vapply(aem$elements, function(i) inherits(i, 'headequation'), TRUE))) {
+  if(any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
     aem <- solve(aem)
   }
 
@@ -58,11 +60,10 @@ aem <- function(k, top, base, n, ...) {
 #' @param b ignored
 #' @param ... ignored
 #'
-#' @details In order to be solved, `aem` should contain at least
-#'     1 `headequation` element.
-#'     [solve.aem()] sets up the system of equations, and calls [solve()] to
+#' @details [solve.aem()] sets up the system of equations, and calls [solve()] to
 #'     solve.
-#'     Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
+#'
+#' Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
 #'
 #' @return The solved `aem` object, i.e. after finding the solution
 #'     to the system of equations as constructed by the contained elements.
@@ -79,14 +80,13 @@ aem <- function(k, top, base, n, ...) {
 #'
 solve.aem <- function(a, b, ...) {
   aem <- a
-  if(!any(vapply(aem$elements, function(i) inherits(i, 'headequation'), TRUE))) {
+  if(!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
     aem$solved <- TRUE
     return(aem)
-    # stop('Model should contain at least 1 headequation element in order to be solved', call. = FALSE)
   }
 
   nun <- vapply(aem$elements, function(i) i$nunknowns, 1)
-  esolve <- aem$elements[which(nun == 1)]
+  esolve <- aem$elements[which(nun > 0)]
   nunknowns <- length(esolve)
   m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
   rhs <- rep(0, nunknowns)
@@ -97,7 +97,7 @@ solve.aem <- function(a, b, ...) {
   }
   solution <- solve(m, rhs)
   for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow]
-  aem$elements[which(nun == 1)] <- esolve
+  aem$elements[which(nun > 0)] <- esolve
   aem$solved <- TRUE
   return(aem)
 }
@@ -120,14 +120,13 @@ solve.aem <- function(a, b, ...) {
 #' @seealso [solve.aem()]
 #'
 equation <- function(element, aem, ...) {
-  # TODO return 0 if !inherits(element, 'headequation') ?? Regardless, equation is only called on headequation elements
-  if(!inherits(element, 'headequation')) stop('element should be of class headequation', call. = FALSE)
+  if(!(element$nunknowns > 0)) stop('element should have 1 or more unknowns', call. = FALSE)
   row <- vector(mode = 'numeric')
   rhs <- head_to_potential(aem, element$hc)
   xc <- element$xc
   yc <- element$yc
   for(i in aem$elements) {
-    if(i$nunknowns == 1) {
+    if(i$nunknowns > 0) {
       row[length(row)+1] <- potinf(i, xc, yc)
     } else {
       rhs <- rhs - potential(i, xc, yc)
@@ -184,6 +183,6 @@ add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
     if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
     names(aem$elements)[length(aem$elements)] <- name
   }
-  if(inherits(element, 'headequation') & solve) aem <- solve(aem)
+  if(solve) aem <- solve(aem)
   return(aem)
 }

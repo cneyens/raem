@@ -55,10 +55,10 @@ Find the head and discharge at two locations `x = 50, y = 200` and
 heads(m, x = c(50, 100), y = 200)
 #> [1] 8.368770 8.333135
 
-discharge(m, c(50, 100), 200) # [L^2 / T]
-#>              Qx         Qy
-#> [1,] 0.08017395 -0.3184762
-#> [2,] 0.06041242 -0.3347206
+discharge(m, c(50, 100), 200, z = top) # [L^2 / T]
+#>              Qx         Qy Qz
+#> [1,] 0.08017395 -0.3184762  0
+#> [2,] 0.06041242 -0.3347206  0
 ```
 
 Plot head contours and element locations. First, specify the contouring
@@ -82,7 +82,7 @@ Compute particle traces starting along `y = 200` at 20 intervals per
 year for 5 years and add to plot:
 
 ``` r
-paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, times = seq(0, 5*365, 365/20))
+paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
 plot(paths, add = TRUE, col = 'orange3')
 ```
 

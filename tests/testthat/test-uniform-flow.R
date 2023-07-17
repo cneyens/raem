@@ -19,5 +19,5 @@ test_that("uniform flow has correct absolute values and angles", {
 test_that('uniform flow handles singularity', {
   uf <- uniformflow(1, 0.001, 0)
   expect_equal(omega(uf, 0, 0), c(0 + 0i))
-  expect_equal(c(discharge(uf, 0, 0)), c(0.001, 0))
+  expect_equal(domega(uf, 0, 0), 0.001 + 0i)
 })

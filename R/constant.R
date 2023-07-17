@@ -20,7 +20,7 @@ constant <- function(xc, yc, hc, ...) {
   cn$xc <- xc
   cn$yc <- yc
   cn$hc <- hc
-  class(cn) <- c('constant', 'headequation', class(cn))
+  class(cn) <- c('constant', class(cn))
   return(cn)
 }
 

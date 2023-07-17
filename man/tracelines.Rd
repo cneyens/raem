@@ -103,7 +103,10 @@ uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 
 m <- aem(k, top, base, n = n, uf, rf)
-paths <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), z = top, times = seq(0, 25*365, 365 / 20))
+
+x0 <- -200; y0 <- seq(-200, 200, 50)
+times <- seq(0, 25 * 365, 365 / 20)
+paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 endp <- endpoints(paths)
 
 xg <- seq(-500, 500, length = 100)
@@ -114,8 +117,7 @@ plot(paths, add = TRUE, col = 'orange3')
 points(endp[, c('x', 'y')])
 
 # Backward tracking
-paths_back <- tracelines(m, x0 = -200, y0 = seq(-200, 200, 50), z = top, times = seq(0, 25*365, 365 / 20),
-                         R = R, forward = FALSE)
+paths_back <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R, forward = FALSE)
 plot(paths_back, add = TRUE, col = 'forestgreen')
 
 # Termination at wells and linesinks
@@ -127,7 +129,9 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 
-paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z = top, times = seq(0, 5*365, 365 / 20))
+x0 <- seq(-400, 400, 50); y0 <- 200
+times <- seq(0, 5 * 365, 365 / 20)
+paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 plot(paths, add = TRUE, col = 'orange3')
 
 # User-defined termination in rectangular zone
@@ -135,10 +139,11 @@ tzone <- cbind(x = c(-300, -200, -200, -300), y = c(150, 150, 100, 100))
 termf <- function(t, coords, parms) {
   x <- coords[1]
   y <- coords[2]
-  in_poly <- x <= max(tzone[,'x']) & x >= min(tzone[,'x']) & y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
+  in_poly <- x <= max(tzone[,'x']) & x >= min(tzone[,'x']) &
+             y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
   return(in_poly)
 }
-paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z = top, times = seq(0, 5*365, 365 / 20), tfunc = termf)
+paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tfunc = termf)
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 polygon(tzone)
@@ -149,7 +154,7 @@ as <- areasink(xc = 0, yc = 0, N = 0.001, R = 1500)
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 
 # starting z0 locations are above aquifer top and will be reset to top with warning
-paths <- tracelines(m, x0 =  seq(-400, 400, 50), y0 = 200, z0 = top + 0.5, times = seq(0, 5*365, 365 / 20))
+paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 
 contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)

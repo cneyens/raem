@@ -198,8 +198,8 @@ potinf.element <- function(element, x, y, ...) {
 #'
 heads <- function(aem, x, y, as.grid = FALSE, ...) {
   # TODO implement unconfined/confined flow
-  # TODO use [potential_to_head()]
-  hd <- potential(aem, x, y, as.grid = as.grid, ...) / (aem$k * (aem$top - aem$base))
+  phi <- potential(aem, x, y, as.grid = as.grid, ...)
+  hd <- potential_to_head(aem, phi)
   return(hd)
 }
 
