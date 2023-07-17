@@ -27,3 +27,6 @@ Analytic element of a well with constant discharge which is an object of class \
 well(xw = 50, yw = 0, Q = 200, rw = 0.3)
 
 }
+\seealso{
+\code{\link[=headwell]{headwell()}}
+}

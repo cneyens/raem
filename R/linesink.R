@@ -38,6 +38,10 @@ linesink <- function(x0, y0, x1, y1, sigma, ...) {
 #' @param hc numeric, specified hydraulic head of the line-sink
 #' @param ... ignored
 #'
+#' @details The discharge from the linesink is computed by solving the `aem` model given
+#'    the specified head `hc` for the linesink. This head is located at the so-called collocation point,
+#'    which is placed at the center of the linesink.
+#'
 #' @return Head-specified line-sink analytic element which is an object of class `headlinesink` and inherits from `linesink`.
 #' @export
 #' @seealso [linesink()]

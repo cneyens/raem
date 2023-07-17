@@ -26,6 +26,11 @@ Head-specified line-sink analytic element which is an object of class \code{head
 \code{\link[=headlinesink]{headlinesink()}} creates a line-sink analytic element with constant specified head. The discharge
 into the line-sink per unit length is computed by solving the corresponding \code{aem} model.
 }
+\details{
+The discharge from the linesink is computed by solving the \code{aem} model given
+the specified head \code{hc} for the linesink. This head is located at the so-called collocation point,
+which is placed at the center of the linesink.
+}
 \examples{
 headlinesink(-75, 50, 100, 50, hc = 10)
 

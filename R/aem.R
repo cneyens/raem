@@ -14,7 +14,7 @@
 #' @details When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
-#'
+#' @seealso [add_element()]
 #' @examples
 #' k <- 10
 #' top <- 10
@@ -50,299 +50,6 @@ aem <- function(k, top, base, n, ...) {
   return(aem)
 }
 
-#'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
-#'
-#' @export
-#' @rdname state-variables
-#' @name state-variables
-#' @include equation.R
-#' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
-#'
-#' omega(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
-#' omega(ml, xg, yg, as.grid = TRUE)
-#'
-omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y) # increasing x and y values
-    gx <- df$x
-    gy <- df$y
-  } else {
-    gx <- x
-    gy <- y
-  }
-  om <- lapply(aem$elements, omega, x = gx, y = gy)
-  om <- colSums(do.call(rbind, om))
-  # om <- 0 + 0i
-  # for(i in aem$elements) om <- om + omega(i, gx, gy)
-
-  if(as.grid) {
-    om <- matrix(om, nrow = length(x), ncol = length(y)) # as used by {image} or {contour}. NROW and NCOL are switched
-    om <- image_to_matrix(om)
-  }
-  return(om)
-}
-
-#'
-#' @export
-#' @rdname state-variables
-#' @name state-variables
-#' @include equation.R
-#' @examples
-#' potential(ml, c(50, 0), c(25, -25))
-#' potential(ml, xg, yg, as.grid = TRUE)
-#'
-potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  pt <- Re(omega(aem, x, y, as.grid = as.grid, ...))
-  return(pt)
-}
-
-#'
-#' @export
-#' @rdname state-variables
-#' @name state-variables
-#' @include equation.R
-#' @examples
-#' streamfunction(ml, c(50, 0), c(25, -25))
-#' streamfunction(ml, xg, yg, as.grid = TRUE)
-#'
-streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  sf <- Im(omega(aem, x, y, as.grid = as.grid, ...))
-  return(sf)
-}
-
-#'
-#' @description [heads()] computes the hydraulic head at the given x and y coordinates.
-#'
-#' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
-#' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
-#'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
-#' @export
-#' @rdname state-variables
-#' @name state-variables
-#' @examples
-#' heads(ml, c(50, 0), c(25, -25))
-#' heads(ml, xg, yg, as.grid = TRUE)
-#' # do not confuse heads() with utils::head, which will give error
-#' \dontrun{
-#' head(ml, c(50, 0), c(25, -25))
-#' }
-#'
-heads <- function(aem, x, y, as.grid = FALSE, ...) {
-  # TODO implement unconfined/confined flow
-  # TODO use [potential_to_head()]
-  hd <- potential(aem, x, y, as.grid = as.grid, ...) / (aem$k * (aem$top - aem$base))
-  return(hd)
-}
-
-#'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
-#' @param ... ignored or arguments passed from [velocity()] or [darcy()] to [discharge()].
-#'
-#' @export
-#' @rdname flow
-#' @name flow
-#' @include equation.R
-#' @examples
-#'
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)
-#'
-#' domega(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
-#' domega(ml, xg, yg, as.grid = TRUE)
-#'
-domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y)
-    gx <- df$x
-    gy <- df$y
-  } else {
-    gx <- x
-    gy <- y
-  }
-  w <- lapply(aem$elements, domega, x = gx, y = gy)
-  w <- colSums(do.call(rbind, w))
-  # w <- 0 + 0i
-  # for(i in aem$elements) w <- w + domega(i, gx, gy)
-
-  if(as.grid) {
-    w <- matrix(w, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
-    w <- image_to_matrix(w)
-  }
-  return(w)
-}
-
-
-#'
-#' @param z numeric z coordinates to evaluate at
-#' @param magnitude logical, should the magnitude of the flow vector be returned as well? Default to `FALSE`. See details.
-#' @param verbose logical, if `TRUE` (default), warnings with regards to setting `Qz` to NA are printed. See details.
-#'
-#' @details If the `z` coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
-#'    the aquifer top for confined conditions), or below the aquifer base, `Qz` values are set to NA with a warning (if `verbose = TRUE`).
-#'    The `Qx` and `Qy` values are not set to NA, for convenience in specifying the `z` coordinate when only lateral flow
-#'    is of interest.
-#' @export
-#' @rdname flow
-#' @name flow
-#' @include equation.R
-#' @examples
-#' discharge(ml, c(50, 0), c(25, -25), z = ml$top)
-#' discharge(ml, c(50, 0), c(25, -25), z = c(ml$top, 5), magnitude = TRUE)
-#' discharge(ml, xg, yg, z = ml$top, as.grid = TRUE)
-#' discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
-#'
-discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verbose = TRUE, ...) {
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y, z = z)
-    gx <- df$x
-    gy <- df$y
-    gz <- df$z
-  } else {
-    gx <- x
-    gy <- y
-    gz <- z
-  }
-
-  # Get Qx and Qy
-  W <- domega(aem, gx, gy, as.grid = FALSE, ...)
-  Qx <- Re(W)
-  Qy <- -Im(W)
-
-  # Get Qz: depends on area-sinks
-  # TODO leakage at bottom
-  # TODO unconfined flow
-  ntotal <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink'), i$parameter, 0), 0.0)
-  Qz <- -(gz - aem$base) * sum(ntotal) # TODO unconfined flow
-
-  # set Qz to NA if z coordinate above saturated part or below aquifer base
-  # TODO keep this behaviour? Shouldn't Qx and Qy also be set to NA?
-  outside_v <- outside_vertical(aem, gx, gy, gz)$outside
-  if(any(outside_v) && verbose) {
-    warning('Setting Qz values to NA for z above saturated aquifer level or below aquifer base', call. = FALSE)
-  }
-  Qz <- ifelse(outside_v, NA, Qz)
-  # Qx <- ifelse(outside_v, NA, Qx)
-  # Qy <- ifelse(outside_v, NA, Qy)
-
-  if(magnitude) {
-    qv <- cbind(Qx, Qy, Qz, sqrt(Qx^2 + Qy^2 + Qz^2))
-    ndim <- 4
-    nms <- c('Qx', 'Qy', 'Qz', 'Q')
-  } else {
-    qv <- cbind(Qx, Qy, Qz)
-    ndim <- 3
-    nms <- c('Qx', 'Qy', 'Qz')
-  }
-  if(as.grid) {
-    Q <- array(c(qv), dim = c(length(x), length(y), length(z), ndim), dimnames = list(NULL, NULL, NULL, nms)) # as used by {image} or {contour}. NROW and NCOL are switched
-    Q <- image_to_matrix(Q)
-  } else {
-    Q <- matrix(c(qv), ncol = ndim, dimnames = list(NULL, nms))
-  }
-  return(Q)
-}
-
-#'
-#' @export
-#' @rdname flow
-#' @name flow
-#' @examples
-#' darcy(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE)
-#' darcy(ml, xg, yg, 10, as.grid = TRUE)
-#'
-darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
-  Q <- discharge(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
-  b <- satthick(aem, x, y, as.grid = as.grid, ...)
-  q <- Q / array(b, dim = dim(Q))
-  return(q)
-}
-
-#' @param R numeric, retardation coefficient. Defaults to 1 (no retardation).
-#'
-#' @export
-#' @rdname flow
-#' @name flow
-#' @examples
-#' velocity(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE, R = 5)
-#' velocity(ml, xg, yg, 5, as.grid = TRUE, R = 5)
-#'
-velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
-  q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
-  v <- q / (aem$n * R)
-  return(v)
-}
-
-#' Compute the saturated thickness
-#'
-#' [satthick()] computes the saturated thickness of the aquifer of an `aem` object
-#'     at the given x and y coordinates.
-#'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
-#'
-#' @details If the aquifer is confined at `x` and `y`, the saturated thickness equals the aquifer thickness.
-#'    For flow with variable saturated thickness, if the aquifer is unconfined at `x` and `y`, the saturated thickness
-#'    it is calculated as the hydraulic head at `x` and `y` minus the aquifer base.
-#'
-#' @return [satthick()] returns a vector of `length(x)` (equal to `length(y)`) with the saturated thicknesses at `x` and `y`.
-#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
-#'     marginal vectors `x` and `y` containing the saturated thicknesses at the grid points.
-#' @export
-#' @seealso [flow()], [state-variables()]
-#' @examples
-#' uf <- uniformflow(100, 0.001, 0)
-#' rf <- constant(-1000, 0, 11)
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf)
-#'
-#' satthick(m, x = c(-200, 0, 200), y = 0) # confined
-#' satthick(m, x = seq(-500, 500, length = 100),
-#'          y = seq(-250, 250, length = 100), as.grid = TRUE)
-#' # TODO add unconfined example
-#'
-satthick <- function(aem, x, y, as.grid = FALSE, ...) {
-
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y) # increasing x and y values
-    gx <- df$x
-    gy <- df$y
-  } else {
-    gx <- x
-    gy <- y
-  }
-
-  # TODO adjust for unconfined flow
-  d <- aem$top - aem$base
-  mb <- cbind(x = gx, y = gy, b = d)[,'b'] # recycle x and y
-  if(as.grid) {
-    mb <- matrix(mb, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
-    mb <- image_to_matrix(mb)
-  }
-  return(mb)
-}
-
 #' Solve an `aem` model
 #'
 #' [solve.aem()] solves system of equations as constructed by the supplied  elements in the `aem` model
@@ -360,11 +67,11 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @return The solved `aem` object, i.e. after finding the solution
 #'     to the system of equations as constructed by the contained elements.
 #' @export
-#'
+#' @rdname aem
 #' @examples
 #'
 #' rf <- constant(-500, 0, 20)
-#' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hw = 8)
+#' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
 #' ml <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'            add_element(rf, name = 'rf') |>
 #'            add_element(hdw, name = 'headwell')
@@ -372,9 +79,10 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 #'
 solve.aem <- function(a, b, ...) {
   aem <- a
-  # TODO if no headequations, just return model instead of error
   if(!any(vapply(aem$elements, function(i) inherits(i, 'headequation'), TRUE))) {
-    stop('Model should contain at least 1 headequation element in order to be solved', call. = FALSE)
+    aem$solved <- TRUE
+    return(aem)
+    # stop('Model should contain at least 1 headequation element in order to be solved', call. = FALSE)
   }
 
   nun <- vapply(aem$elements, function(i) i$nunknowns, 1)
@@ -391,5 +99,91 @@ solve.aem <- function(a, b, ...) {
   for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow]
   aem$elements[which(nun == 1)] <- esolve
   aem$solved <- TRUE
+  return(aem)
+}
+
+#' Obtain parameters for linear system of equations
+#'
+#' [equation()] obtains the values of the stiffness matrix and the RHS vector
+#'     for a given element used to construct the linear system of equations.
+#'
+#' @param element analytic element for which the coefficients should be determined.
+#' @param aem `aem` object
+#' @param ... ignored
+#'
+#' @details [equation()] is used to set up the linear system of equations `Ax = b`
+#'     to be solved by [solve.aem()].
+#'
+#' @return a list containing the value of the stiffness matrix (A) and the RHS (b)
+#'     for a given element.
+#' @noRd
+#' @seealso [solve.aem()]
+#'
+equation <- function(element, aem, ...) {
+  # TODO return 0 if !inherits(element, 'headequation') ?? Regardless, equation is only called on headequation elements
+  if(!inherits(element, 'headequation')) stop('element should be of class headequation', call. = FALSE)
+  row <- vector(mode = 'numeric')
+  rhs <- head_to_potential(aem, element$hc)
+  xc <- element$xc
+  yc <- element$yc
+  for(i in aem$elements) {
+    if(i$nunknowns == 1) {
+      row[length(row)+1] <- potinf(i, xc, yc)
+    } else {
+      rhs <- rhs - potential(i, xc, yc)
+    }
+  }
+  return(list(row, rhs))
+
+}
+
+#' Create a base element
+#'
+#' [element()] creates a base element with a parameter and number of unknowns.
+#'
+#' @param p numeric parameter value
+#' @param un numeric number of unknowns
+#' @param ... ignored
+#'
+#' @return An object of class `element` which is a list with `p` and `un` elements.
+#'     This is used in constructing analytic elements by adding other variabels to this base class.
+#' @noRd
+#'
+element <- function(p, un = 0, ...) {
+  el <- list()
+  el$parameter <- p
+  el$nunknowns <- un
+  class(el) <- c('element')
+  return(el)
+}
+
+#' Add element to existing `aem` object
+#'
+#' @param aem `aem` object
+#' @param element analytic element of class `element`
+#' @param name optional name of the element as character. Duplicate names in `aem` are not allowed.
+#' @param solve logical, should the model be solved after adding the new element? Defaults to `FALSE`.
+#' @param ... ignored
+#'
+#' @return The `aem` model with the addition of `element`. If `solve = TRUE`, the model is solved using [solve.aem()].
+#' @export
+#' @seealso [aem()]
+#' @examples
+#' aem(k = 10, top = 10, base = 0, n = 0.2) |>
+#'     add_element(constant(xc = 0, yc = 1000, hc = 12),
+#'                 name = 'rf') |>
+#'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
+#'                 name = 'headwell', solve = TRUE)
+#'
+add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
+  if(!inherits(aem, 'aem')) stop('{aem} should be of class aem', call. = FALSE)
+  if(!inherits(element, 'element')) stop('{element} should be of class element', call. = FALSE)
+  if(is.null(aem$elements)) aem$elements <- list()
+  aem$elements[[length(aem$elements) + 1]] <- element
+  if(!is.null(name)) {
+    if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
+    names(aem$elements)[length(aem$elements)] <- name
+  }
+  if(inherits(element, 'headequation') & solve) aem <- solve(aem)
   return(aem)
 }

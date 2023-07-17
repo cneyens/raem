@@ -11,7 +11,7 @@
 #'
 #' @return Analytic element of a well with constant discharge which is an object of class `well` and inherits from `element`.
 #' @export
-#'
+#' @seealso [headwell()]
 #' @examples
 #' well(xw = 50, yw = 0, Q = 200, rw = 0.3)
 #'
@@ -41,11 +41,11 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #' @details The discharge from the well at location `xw yw` is computed by solving the `aem` model given
 #'    the specified head `hc`. This head can be specified at any point, called the collocation point (at `xc yc`).
 #'    This can be used to compute the discharge of the well by specifying the head at some other location.
-#'    By default, the location of the well and the collocation point are the same.
+#'    The head is specified at `xc + rc`, `yc`. By default, the location of the well and the collocation point are the same.
 #'
 #' @return Analytic element of a well with constant head which is an object of class `headwell` and inherits from `well`.
 #' @export
-#'
+#' @seealso [well()]
 #' @examples
 #' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
 #' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500)

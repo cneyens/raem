@@ -191,7 +191,6 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
   }
 }
 
-
 #'
 #' @param x object of class `tracelines`
 #' @param y ignored
@@ -239,7 +238,6 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
     for(i in seq_along(x[-1])) lines(x[[i]][,2], x[[i]][,3], type = type, ...)
   }
 }
-
 
 #'
 #' @description [plot.capzone()] plots a `capzone` object as a polygon.

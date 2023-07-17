@@ -2,12 +2,15 @@
 % Please edit documentation in R/aem.R, R/plot.R
 \name{aem}
 \alias{aem}
+\alias{solve.aem}
 \alias{contour.aem}
 \alias{plot.element}
 \alias{plot.aem}
 \title{Create a analytic element model}
 \usage{
 aem(k, top, base, n, ...)
+
+\method{solve}{aem}(a, b, ...)
 
 \method{contour}{aem}(aem, x, y, z = c("heads", "streamfunction", "potential"), asp = 1, ...)
 
@@ -24,7 +27,11 @@ aem(k, top, base, n, ...)
 
 \item{n}{numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
 
-\item{...}{objects of class \code{element}, or a single list with \code{element} objects}
+\item{...}{ignored}
+
+\item{a}{\code{aem} object}
+
+\item{b}{ignored}
 
 \item{aem}{\code{aem} object}
 
@@ -53,9 +60,14 @@ aem(k, top, base, n, ...)
 \value{
 \code{\link[=aem]{aem()}} returns an object of class \code{aem} which is a list consisting of \code{k}, \code{top}, \code{base}, \code{n},
 a list containing all elements, and a logical \code{solved} indicating if the model is solved.
+
+The solved \code{aem} object, i.e. after finding the solution
+to the system of equations as constructed by the contained elements.
 }
 \description{
 \code{\link[=aem]{aem()}} creates an analytic element model to which elements can be added
+
+\code{\link[=solve.aem]{solve.aem()}} solves system of equations as constructed by the supplied  elements in the \code{aem} model
 
 \code{\link[=contour.aem]{contour.aem()}} creates a contour plot of a computed variable, or adds the contour lines
 to and existing plot.
@@ -68,6 +80,12 @@ in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} o
 \details{
 When calling \code{\link[=aem]{aem()}}, if an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}
 object before it is returned.
+
+In order to be solved, \code{aem} should contain at least
+1 \code{headequation} element.
+\code{\link[=solve.aem]{solve.aem()}} sets up the system of equations, and calls \code{\link[=solve]{solve()}} to
+solve.
+Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automatically calls \code{\link[=solve.aem]{solve.aem()}}.
 }
 \examples{
 k <- 10
@@ -82,6 +100,14 @@ uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 
 aem(k, top, base, n, w, rf, uf)
 aem(k, top, base, n, list(w, rf, uf))
+
+
+rf <- constant(-500, 0, 20)
+hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
+ml <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
+           add_element(rf, name = 'rf') |>
+           add_element(hdw, name = 'headwell')
+ml <- solve(ml)
 
 
 w <- well(xw = 50, yw = 0, Q = 200)
@@ -117,4 +143,7 @@ yg <- seq(-75, 75, length = 100)
 contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
 plot(ml, add = TRUE)
 
+}
+\seealso{
+\code{\link[=add_element]{add_element()}}
 }
