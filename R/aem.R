@@ -36,18 +36,17 @@ aem <- function(k, top, base, n, ...) {
   if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) {
     l <- l[[1]]
   }
-  if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class {element}', call. = FALSE)
-  if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class {element}')
-  if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class {element}')
-  if(inherits(base, 'element') || !is.numeric(base)) stop('base should be numeric, not of class {element}')
-  if(inherits(n, 'element') || !is.numeric(n)) stop('n should be numeric, not of class {element}')
+  if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class \'element\'', call. = FALSE)
+  if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class \'element\'', call. = FALSE)
+  if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class \'element\'', call. = FALSE)
+  if(inherits(base, 'element') || !is.numeric(base)) stop('base should be numeric, not of class \'element\'', call. = FALSE)
+  if(inherits(n, 'element') || !is.numeric(n)) stop('n should be numeric, not of class \'element\'', call. = FALSE)
+  # if(length(l) == 0) warning('No elements supplied. Add them using \'add_element\'', call. = FALSE)
 
   aem <- list(k = k, top = top, base = base, n = n, elements = l, solved = FALSE)
   class(aem) <- 'aem'
 
-  if(any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
-    aem <- solve(aem)
-  }
+  aem <- solve(aem)
 
   return(aem)
 }
@@ -61,7 +60,8 @@ aem <- function(k, top, base, n, ...) {
 #' @param ... ignored
 #'
 #' @details [solve.aem()] sets up the system of equations, and calls [solve()] to
-#'     solve.
+#'     solve. If head-specified elements are supplied, an element of class `constant` as
+#'     created by [constant()] (also called the reference point), should be supplied as well.
 #'
 #' Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
 #'
@@ -73,16 +73,28 @@ aem <- function(k, top, base, n, ...) {
 #'
 #' rf <- constant(-500, 0, 20)
 #' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
-#'            add_element(rf, name = 'rf') |>
-#'            add_element(hdw, name = 'headwell')
+#' w <- well(0, 0, Q = 200)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, hdw, w)
 #' ml <- solve(ml)
+#'
+#' # no reference point results in error
+#' \dontrun{
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, hdw)
+#' }
 #'
 solve.aem <- function(a, b, ...) {
   aem <- a
+
+  # no unknowns
   if(!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
     aem$solved <- TRUE
     return(aem)
+  }
+  # check if reference point is provided
+  # this is actually only necessary when headlinesink elements are specified
+  if(!any(vapply(aem$element, function(i) inherits(i, 'constant'), TRUE))) {
+    stop('Please provide an element of class \'constant\' when solving with head-specified elements',
+         call. = FALSE)
   }
 
   nun <- vapply(aem$elements, function(i) i$nunknowns, 1)
@@ -168,15 +180,21 @@ element <- function(p, un = 0, ...) {
 #' @export
 #' @seealso [aem()]
 #' @examples
+#' m <- aem(k = 10, top = 10, base = 0, n = 0.2)
+#' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
+#'
+#' # add_element() is pipe-friendly
+#' if(R.version$major >= 4 & R.version$minor >= 1) {
 #' aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'     add_element(constant(xc = 0, yc = 1000, hc = 12),
 #'                 name = 'rf') |>
 #'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
 #'                 name = 'headwell', solve = TRUE)
+#' }
 #'
 add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
-  if(!inherits(aem, 'aem')) stop('{aem} should be of class aem', call. = FALSE)
-  if(!inherits(element, 'element')) stop('{element} should be of class element', call. = FALSE)
+  if(!inherits(aem, 'aem')) stop('\'aem\' object should be of class aem', call. = FALSE)
+  if(!inherits(element, 'element')) stop('\'element\' object should be of class element', call. = FALSE)
   if(is.null(aem$elements)) aem$elements <- list()
   aem$elements[[length(aem$elements) + 1]] <- element
   if(!is.null(name)) {

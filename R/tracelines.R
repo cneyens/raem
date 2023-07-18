@@ -305,7 +305,7 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
 #' @export
 #' @rdname tracelines
 endpoints <- function(tracelines, ...) {
-  stopifnot('Supplied object is not of class {tracelines}' = inherits(tracelines, 'tracelines'))
+  stopifnot('Supplied object is not of class \'tracelines\'' = inherits(tracelines, 'tracelines'))
   endp <- t(vapply(tracelines, function(i) i[nrow(i),], setNames(rep(0, 4), c('time', 'x', 'y', 'z'))))
   return(endp)
 }

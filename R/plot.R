@@ -63,8 +63,7 @@ image_to_matrix <- function(m) {
 #' @param x numeric x coordinates at which the values in `z` are computed These must be in ascending order.
 #' @param y numeric x coordinates at which the values in `z` are computed These must be in ascending order.
 #' @param z character indicating which variable to plot. Possible values are `heads` (default),
-#'    `streamfunction`, `potential`, `Q` (magnitude of discharge vector), `Qx`, `Qy`, `Qz`,
-#'    (x, y and z components of the discharge vector) and `velocity`.
+#'    `streamfunction` and `potential`.
 #' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
 #'
 #' @export

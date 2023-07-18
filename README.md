@@ -49,7 +49,8 @@ m = aem(k = k, top = top, base = base, n = n,
 ```
 
 Find the head and discharge at two locations `x = 50, y = 200` and
-`x = 100, y = 200`:
+`x = 100, y = 200`. Note that there are no vertical flow components in
+this model:
 
 ``` r
 heads(m, x = c(50, 100), y = 200)
