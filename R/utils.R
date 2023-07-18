@@ -42,7 +42,7 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 
   # TODO adjust for unconfined flow
   d <- aem$top - aem$base
-  mb <- cbind(x = gx, y = gy, b = d)[,'b'] # recycle x and y
+  mb <- c(cbind(x = gx, y = gy, b = d)[,'b'], use.names = FALSE) # recycle x and y
   if(as.grid) {
     mb <- matrix(mb, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
     mb <- image_to_matrix(mb)

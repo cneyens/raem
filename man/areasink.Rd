@@ -4,16 +4,18 @@
 \alias{areasink}
 \title{Create a circular area-sink analytic element with specified recharge}
 \usage{
-areasink(xc, yc, N, R, ...)
+areasink(xc, yc, N, R, location = c("top", "base"), ...)
 }
 \arguments{
 \item{xc}{numeric, x location of the center of the area-sink}
 
 \item{yc}{numeric, y location of the center of the area-sink}
 
-\item{N}{numeric, uniform constant recharge value (positive is into aquifer) in length per time.}
+\item{N}{numeric, uniform constant leakage value (positive is into aquifer) in length per time.}
 
 \item{R}{numeric, radius of the circular area-sink}
+
+\item{location}{character, either \code{top} (default) or \code{base} specifying the vertical position of the area-sink.}
 
 \item{...}{ignored}
 }
@@ -23,7 +25,16 @@ Circular area-sink analytic element which is an object of class \code{areasink} 
 \description{
 \code{\link[=areasink]{areasink()}} creates a circular area-sink analytic element with constant, uniform specified recharge.
 }
+\details{
+Area-sinks can be used to simulate areal recharge or seepage at the aquifer top, or leakage into
+or out of the aquifer at its base. The \code{location} argument is used when calculating the vertical flow
+component.
+}
 \examples{
 areasink(xc = -500, yc = 0, N = 0.001, R = 500)
+
+dh <- 3
+res <- 10 / 0.0001
+areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 
 }

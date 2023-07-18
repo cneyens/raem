@@ -19,6 +19,18 @@ test_that("discharge works", {
            as = areasink(0, 0, N = N, R = 1000))
   Q <- discharge(m, 50, 50, z)
   expect_equal(Q[,'Qz'], -N*(z - base))
+
+  N <- 0.0005
+  z <- seq(10, 0, -0.5)
+  leakage <- - 3 / (10/0.0001)
+  m <- aem(k = k, top = top, base = base, n = n,
+           uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0),
+           as = areasink(0, 0, N = N, R = 1000),
+           asb = areasink(0, 0, N = leakage, R = 1000, loc = 'base'))
+  Q <- discharge(m, 50, 50, z)
+  sat <- satthick(m, 50, 50)
+  expect_equal(Q[,'Qz'], (z - base)*(-N - leakage) + leakage*sat)
+
 })
 
 test_that('discharge sets Qz to NA when z outside aquifer', {
@@ -57,7 +69,7 @@ test_that('discharge returns array of correct dimensions', {
 
   y <- seq(-100, 100, length = 52)
   z <- seq(10, 0, length = 10)
-  expect_warning(expect_warning(expect_warning(discharge(m, x, y, z)))) # 3 warnings
+  expect_warning(expect_warning(expect_warning(expect_warning(discharge(m, x, y, z))))) # 4 warnings
   Q <- discharge(m, x, y, z, as.grid = TRUE)
   expect_equal(dim(Q), c(52, 100, 10, 3))
   Q <- discharge(m, x, y, z, as.grid = TRUE, magnitude = TRUE)

@@ -33,7 +33,7 @@ k = 10
 top = 10
 base = 0
 n = 0.2
-TR = k * (top - base) # transmissivity
+TR = k * (top - base) # transmissivity of background flow
 
 uf = uniformflow(TR, gradient = 0.001, angle = -45)
 rf = constant(xc = -1000, yc = 0, hc = 10)

@@ -5,9 +5,14 @@
 #'
 #' @param xc numeric, x location of the center of the area-sink
 #' @param yc numeric, y location of the center of the area-sink
-#' @param N numeric, uniform constant recharge value (positive is into aquifer) in length per time.
+#' @param N numeric, uniform constant leakage value (positive is into aquifer) in length per time.
 #' @param R numeric, radius of the circular area-sink
+#' @param location character, either `top` (default) or `base` specifying the vertical position of the area-sink.
 #' @param ... ignored
+#'
+#' @details Area-sinks can be used to simulate areal recharge or seepage at the aquifer top, or leakage into
+#'    or out of the aquifer at its base. The `location` argument is used when calculating the vertical flow
+#'    component.
 #'
 #' @return Circular area-sink analytic element which is an object of class `areasink` and inherits from `element`.
 #' @export
@@ -15,11 +20,17 @@
 #' @examples
 #' areasink(xc = -500, yc = 0, N = 0.001, R = 500)
 #'
-areasink <- function(xc, yc, N, R, ...) {
+#' dh <- 3
+#' res <- 10 / 0.0001
+#' areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
+#'
+areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
+  location <- match.arg(location)
   as <- element(N)
   as$xc <- xc
   as$yc <- yc
   as$R <- R
+  as$location <- location
   class(as) <- c('areasink', class(as))
   return(as)
 }

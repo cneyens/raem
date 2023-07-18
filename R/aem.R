@@ -42,6 +42,7 @@ aem <- function(k, top, base, n, ...) {
   if(inherits(base, 'element') || !is.numeric(base)) stop('base should be numeric, not of class \'element\'', call. = FALSE)
   if(inherits(n, 'element') || !is.numeric(n)) stop('n should be numeric, not of class \'element\'', call. = FALSE)
   # if(length(l) == 0) warning('No elements supplied. Add them using \'add_element\'', call. = FALSE)
+  if(any(duplicated(names(l)))) stop('Duplicate names in \'elements\' not allowed', call. = FALSE)
 
   aem <- list(k = k, top = top, base = base, n = n, elements = l, solved = FALSE)
   class(aem) <- 'aem'
