@@ -191,10 +191,11 @@ potinf.element <- function(element, x, y, ...) {
 #' @examples
 #' heads(ml, c(50, 0), c(25, -25))
 #' heads(ml, xg, yg, as.grid = TRUE)
-#' # do not confuse heads() with utils::head, which will give error
-#' \dontrun{
+#'
+#' # do not confuse heads() with utils::head, which will give an error
+#' try(
 #' head(ml, c(50, 0), c(25, -25))
-#' }
+#' )
 #'
 heads <- function(aem, x, y, as.grid = FALSE, ...) {
   # TODO implement unconfined/confined flow

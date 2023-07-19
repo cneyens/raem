@@ -112,9 +112,9 @@ ml <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, hdw, w)
 ml <- solve(ml)
 
 # no reference point results in error
-\dontrun{
+try(
 ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, hdw)
-}
+)
 
 
 w <- well(xw = 50, yw = 0, Q = 200)

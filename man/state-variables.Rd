@@ -103,10 +103,11 @@ streamfunction(w, c(50, 0), c(-25, 25))
 
 heads(ml, c(50, 0), c(25, -25))
 heads(ml, xg, yg, as.grid = TRUE)
-# do not confuse heads() with utils::head, which will give error
-\dontrun{
+
+# do not confuse heads() with utils::head, which will give an error
+try(
 head(ml, c(50, 0), c(25, -25))
-}
+)
 
 }
 \seealso{

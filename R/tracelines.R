@@ -27,9 +27,9 @@
 #'
 #' point_on_line(p1, p2, p3)
 #' point_on_line(p1, p2, c(40, 40, 0))
-#' \dontrun{ # currently returns error
+#' try( # currently returns error
 #' point_on_line(p1, p2, p3, width = 10)
-#' }
+#' )
 #'
 point_on_line <- function(l0, l1, p, width = 0, tol = 1e-6) {
   # line

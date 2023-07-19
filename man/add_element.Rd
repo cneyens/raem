@@ -26,16 +26,15 @@ Add element to existing \code{aem} object
 \examples{
 m <- aem(k = 10, top = 10, base = 0, n = 0.2)
 add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
-
+\dontshow{if (R.version$major >= 4 & R.version$minor >= 1) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # add_element() is pipe-friendly
-if(R.version$major >= 4 & R.version$minor >= 1) {
 aem(k = 10, top = 10, base = 0, n = 0.2) |>
     add_element(constant(xc = 0, yc = 1000, hc = 12),
                 name = 'rf') |>
     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
                 name = 'headwell', solve = TRUE)
-}
 
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=aem]{aem()}}
