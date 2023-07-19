@@ -13,6 +13,12 @@ test_that('aem keeps names of element list', {
   m <- aem(k, top, base, n, w, rf, uf)
   expect_equal(names(m$elements), c('w', 'rf', 'uf'))
 
+  m <- aem(k, top, base, n, well = w, constant = rf, flow = uf)
+  expect_equal(names(m$elements), c('well', 'constant', 'flow'))
+
+  m <- aem(k, top, base, n, w, constant = rf, flow = uf)
+  expect_equal(names(m$elements), c('w', 'constant', 'flow'))
+
   m <- aem(k, top, base, n, list(w, rf, uf))
   expect_equal(names(m$elements), NULL)
 

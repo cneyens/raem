@@ -389,7 +389,8 @@ capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$ba
 
   paths <- tracelines(aem, x0 = c0$x, y0 = c0$y, z0 = c0$z, times = seq(0, time, dt), forward = FALSE, ...)
   if(as.poly) {
-    pts <- do.call(rbind, paths)[,-1] # combine all particle locations in single matrix
+    # combine all particle locations in single matrix and subset x and y
+    pts <- do.call(rbind, paths)[,c('x', 'y')]
     pts <- pts[chull(pts),] # convex hull
     class(pts) <- 'capzone'
     return(pts)

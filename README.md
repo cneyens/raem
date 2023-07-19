@@ -21,8 +21,8 @@ devtools::install_github("cneyens/raem")
 
 ## Example
 
-Construct an analytic element model with uniform background flow, two
-extraction wells and a reference point.
+Construct an analytic element model of a confined aquifer with uniform
+background flow, two extraction wells and a reference point.
 
 Specify the aquifer parameters and create elements:
 
@@ -36,7 +36,7 @@ n = 0.2
 TR = k * (top - base) # transmissivity of background flow
 
 uf = uniformflow(TR, gradient = 0.001, angle = -45)
-rf = constant(xc = -1000, yc = 0, hc = 10)
+rf = constant(xc = -1000, yc = 0, hc = 15)
 w1 = well(xw = 200, yw = 0, Q = 250)
 w2 = well(xw = -200, yw = -150, Q = 400)
 ```
@@ -48,17 +48,17 @@ m = aem(k = k, top = top, base = base, n = n,
         uf, rf, w1, w2)
 ```
 
-Find the head and discharge at two locations `x = 50, y = 200` and
+Find the head and discharge at two locations `x = -200, y = 200` and
 `x = 100, y = 200`. Note that there are no vertical flow components in
 this model:
 
 ``` r
-heads(m, x = c(50, 100), y = 200)
-#> [1] 8.368770 8.333135
+heads(m, x = c(-200, 100), y = 200)
+#> [1] 13.64573 13.33314
 
-discharge(m, c(50, 100), 200, z = top) # [L^2 / T]
+discharge(m, c(-200, 100), 200, z = top) # [L^2 / T]
 #>              Qx         Qy Qz
-#> [1,] 0.08017395 -0.3184762  0
+#> [1,] 0.15028815 -0.2923908  0
 #> [2,] 0.06041242 -0.3347206  0
 ```
 

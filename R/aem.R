@@ -7,7 +7,7 @@
 #' @param top numeric, top elevation of aquifer
 #' @param base numeric, base elevation of aquifer
 #' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
-#' @param ... objects of class `element`, or a single (names) list with `element` objects
+#' @param ... objects of class `element`, or a single (named) list with `element` objects
 #'
 #' @return [aem()] returns an object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
 #'    a list containing all elements with the names of the objects specified in `...`, and a logical `solved`
@@ -32,10 +32,20 @@
 #'
 aem <- function(k, top, base, n, ...) {
   l <- list(...)
-  names(l) <- sapply(substitute(...()), deparse)
+
+  # setting names
+  nms <- sapply(substitute(...()), deparse) # object names
+  lnames <- names(l) # named arguments
+  if(length(lnames) == 0) lnames <- nms
+  noname <- which(nchar(lnames) == 0) # substitue lnames with nms
+  if(length(noname) > 0) lnames[noname] <- nms[noname]
+  names(l) <- lnames
+
   if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) {
     l <- l[[1]]
   }
+
+  # checks
   if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class \'element\'', call. = FALSE)
   if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class \'element\'', call. = FALSE)
   if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class \'element\'', call. = FALSE)
