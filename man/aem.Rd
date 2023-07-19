@@ -8,7 +8,7 @@
 \alias{plot.aem}
 \title{Create a analytic element model}
 \usage{
-aem(k, top, base, n, ...)
+aem(k, top, base, n, ..., type = c("variable", "confined"))
 
 \method{solve}{aem}(a, b, ...)
 
@@ -28,6 +28,8 @@ aem(k, top, base, n, ...)
 \item{n}{numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
 
 \item{...}{ignored}
+
+\item{type}{character specifying the type of flow in the aquifer, either \code{variable} (default) or \code{confined}. See details.}
 
 \item{a}{\code{aem} object}
 
@@ -78,6 +80,9 @@ to and existing plot.
 in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} on them, or adds them to an existing plot.
 }
 \details{
+The default \code{type = 'variable'} allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If \code{type = 'confined'},
+the saturated thickness is always constant and equal to the aquifer thickness.
+
 When calling \code{\link[=aem]{aem()}}, if an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}
 object before it is returned.
 
@@ -102,7 +107,7 @@ rf <- constant(xc = -500, yc = 0, h = 20)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 
 aem(k, top, base, n, w, rf, uf)
-aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf))
+aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf), type = 'confined')
 
 
 rf <- constant(-500, 0, 20)

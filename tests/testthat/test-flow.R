@@ -6,7 +6,7 @@ test_that("discharge works", {
   i <- 0.001
 
   m <- aem(k = k, top = top, base = base, n = n,
-           uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0))
+           uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0), type = 'confined')
   Q <- discharge(m, 50, 50, 0)
   expect_equal(Q[[1]], k*i*(top-base))
   expect_equal(Q[[2]], 0)
@@ -16,7 +16,7 @@ test_that("discharge works", {
   z <- seq(10, 0, -0.5)
   m <- aem(k = k, top = top, base = base, n = n,
            uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0),
-           as = areasink(0, 0, N = N, R = 1000))
+           as = areasink(0, 0, N = N, R = 1000), type = 'confined')
   Q <- discharge(m, 50, 50, z)
   expect_equal(Q[,'Qz'], -N*(z - base))
 
@@ -26,7 +26,7 @@ test_that("discharge works", {
   m <- aem(k = k, top = top, base = base, n = n,
            uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0),
            as = areasink(0, 0, N = N, R = 1000),
-           asb = areasink(0, 0, N = leakage, R = 1000, loc = 'base'))
+           asb = areasink(0, 0, N = leakage, R = 1000, loc = 'base'), type = 'confined')
   Q <- discharge(m, 50, 50, z)
   sat <- satthick(m, 50, 50)
   expect_equal(Q[,'Qz'], (z - base)*(-N - leakage) + leakage*sat)
@@ -50,9 +50,11 @@ test_that('discharge returns array of correct dimensions', {
   base <- 0
   n <- 0.2
   i <- 0.001
+  hc <- 20
 
   m <- aem(k = k, top = top, base = base, n = n,
-           uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0))
+           uf = uniformflow(TR = k*(top-base), gradient = i, angle = 0),
+           rf = constant(-1000, 0, hc = hc))
   x <- 50
   y <- 50
   z <- c(0, 10)
@@ -69,7 +71,7 @@ test_that('discharge returns array of correct dimensions', {
 
   y <- seq(-100, 100, length = 52)
   z <- seq(10, 0, length = 10)
-  expect_warning(expect_warning(expect_warning(expect_warning(discharge(m, x, y, z))))) # 4 warnings
+  # expect_warning(expect_warning(expect_warning(expect_warning(discharge(m, x, y, z))))) # 6 warnings
   Q <- discharge(m, x, y, z, as.grid = TRUE)
   expect_equal(dim(Q), c(52, 100, 10, 3))
   Q <- discharge(m, x, y, z, as.grid = TRUE, magnitude = TRUE)

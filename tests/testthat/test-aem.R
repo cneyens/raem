@@ -144,7 +144,7 @@ test_that('aem is exact for 2D flow with a well in uniform background flow near 
   uf <- uniformflow(TR = TR, -i, angle = angle)
   w <- well(0 - d, 0, Q)
   rf <- constant(xrf, 0, hc)
-  m <- aem(k, top, base, n = 0.2, uf, w, rf)
+  m <- aem(k, top, base, n = 0.2, uf, w, rf, type = 'confined')
   lseg <- 10
   for(n in c(seq(-1005, -105, lseg), seq(105, 1005, lseg))) {
     hls <- headlinesink(x0 = 0, x1 = 0, y0 = n - 0.5*lseg, y1 = n + 0.5*lseg, hc = h0)

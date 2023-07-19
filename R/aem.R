@@ -8,11 +8,15 @@
 #' @param base numeric, base elevation of aquifer
 #' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
 #' @param ... objects of class `element`, or a single (named) list with `element` objects
+#' @param type character specifying the type of flow in the aquifer, either `variable` (default) or `confined`. See details.
 #'
 #' @return [aem()] returns an object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
 #'    a list containing all elements with the names of the objects specified in `...`, and a logical `solved`
 #'    indicating if the model is solved.
-#' @details When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
+#' @details The default `type = 'variable'` allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If `type = 'confined'`,
+#'    the saturated thickness is always constant and equal to the aquifer thickness.
+#'
+#' When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
 #' @seealso [add_element()]
@@ -28,11 +32,13 @@
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 #'
 #' aem(k, top, base, n, w, rf, uf)
-#' aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf))
+#' aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf), type = 'confined')
 #'
-aem <- function(k, top, base, n, ...) {
-  l <- list(...)
+aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 
+  type <- match.arg(type)
+
+  l <- list(...)
   # setting names
   nms <- sapply(substitute(...()), deparse) # object names
   lnames <- names(l) # named arguments
@@ -54,7 +60,7 @@ aem <- function(k, top, base, n, ...) {
   # if(length(l) == 0) warning('No elements supplied. Add them using \'add_element\'', call. = FALSE)
   if(any(duplicated(names(l)))) stop('Duplicate names in \'elements\' not allowed', call. = FALSE)
 
-  aem <- list(k = k, top = top, base = base, n = n, elements = l, solved = FALSE)
+  aem <- list(k = k, top = top, base = base, n = n, elements = l, type = type, solved = FALSE)
   class(aem) <- 'aem'
 
   aem <- solve(aem)

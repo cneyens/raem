@@ -100,7 +100,7 @@ n <- 0.2
 R <- 5
 
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
-rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
+rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
 
 m <- aem(k, top, base, n = n, uf, rf)
 

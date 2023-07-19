@@ -71,7 +71,7 @@ top <- 10; base <- 0
 n <- 0.3
 
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
-rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
+rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
 w1 = well(200, 50, Q = 250)
 w2 = well(-200, -100, Q = 450)
 

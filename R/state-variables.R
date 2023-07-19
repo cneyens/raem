@@ -198,7 +198,6 @@ potinf.element <- function(element, x, y, ...) {
 #' )
 #'
 heads <- function(aem, x, y, as.grid = FALSE, ...) {
-  # TODO implement unconfined/confined flow
   phi <- potential(aem, x, y, as.grid = as.grid, ...)
   hd <- potential_to_head(aem, phi)
   return(hd)
@@ -232,8 +231,13 @@ heads <- function(aem, x, y, as.grid = FALSE, ...) {
 #' head_to_potential(m, h)
 #'
 head_to_potential <- function(aem, h, ...) {
-  # TODO unconfined flow
-  phi <- h * aem$k * (aem$top - aem$base)
+  b <- aem$top - aem$base
+  if(aem$type == 'confined') {
+    phi <- h * aem$k * b
+  } else if(aem$type == 'variable') {
+    cn <- 0.5 * aem$k * b^2 + aem$k * b * aem$base
+    phi <- ifelse(h >= aem$top, h * aem$k * b - cn, 0.5 * aem$k * (h - aem$base)^2)
+  }
   return(phi)
 }
 
@@ -250,7 +254,13 @@ head_to_potential <- function(aem, h, ...) {
 #' potential_to_head(m, phi)
 #'
 potential_to_head <- function(aem, phi, ...) {
-  # TODO unconfined flow
-  h <- phi / (aem$k * (aem$top - aem$base))
+  b <- aem$top - aem$base
+  if(aem$type == 'confined') {
+    h <- phi / (aem$k * b)
+  } else if(aem$type == 'variable') {
+    phit <- 0.5 * aem$k * b^2
+    cn <- phit + aem$k * b * aem$base
+    h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*phi/aem$k) + aem$base)
+  }
   return(h)
 }

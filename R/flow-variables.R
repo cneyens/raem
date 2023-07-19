@@ -155,12 +155,19 @@ discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verb
   Qy <- -Im(W)
 
   # Get Qz: depends on area-sinks
-  # TODO unconfined flow
   ntop <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'top', i$parameter, 0), 0.0)
   nbase <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'base', i$parameter, 0), 0.0)
   sat <- satthick(aem, gx, gy)
 
-  Qz <- (gz - aem$base) * (-sum(ntop) - sum(nbase)) + sum(nbase)*sat
+  if(aem$type == 'confined') {
+    term1 <- 0
+  } else if(aem$type == 'variable') {
+    b <- aem$top - aem$base
+    dsatx <- ifelse(sat == b, 0, Qx/(aem$k * sat))
+    dsaty <- ifelse(sat == b, 0, Qy/(aem$k * sat))
+    term1 <- (Qx/sat * dsatx) + (Qy/sat * dsaty)
+  }
+  Qz <- (gz - aem$base) * (term1 - sum(ntop) - sum(nbase)) + sum(nbase)*sat
 
   # set Qz to NA if z coordinate above saturated part or below aquifer base
   # TODO keep this behaviour? Shouldn't Qx and Qy also be set to NA?

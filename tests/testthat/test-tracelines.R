@@ -7,9 +7,11 @@ test_that("tracelines works for 2D flow", {
   i <- 0.001
   alpha <- -45
   TR <- k * (top - base)
-  uf <- uniformflow(TR = TR, gradient = i, angle = alpha)
+  hc <- 15
 
-  m <- aem(k, top, base, n = n, uf)
+  uf <- uniformflow(TR = TR, gradient = i, angle = alpha)
+  rf <- constant(-1000, 0, hc = hc)
+  m <- aem(k, top, base, n = n, uf, rf)
 
   x0 <- 0; y0 <- 0
   times <- seq(0, 10 * 365, 365 / 20)
@@ -89,10 +91,12 @@ test_that('termination in tracelines works', {
   top <- 10; base <- 0
   n <- 0.2
   xw <- 200; yw <- 0; rw <- 0.3
+
   w <- well(xw, yw, 400, rw = rw)
   uf <- uniformflow(TR = 100, gradient = 0.001, angle = 0)
+  rf <- constant(-1000, 0, 20)
 
-  m <- aem(k, top, base, n = n, uf, w)
+  m <- aem(k, top, base, n = n, uf, w, type = 'confined')
 
   x0 <- -200; y0 <- seq(-100, 100, length = 10)
   times <- seq(0, 10 * 365, 365 / 20)
@@ -107,7 +111,7 @@ test_that('termination in tracelines works', {
   lsy <- c(-500, 500)
   rf <- constant(-1000, 0, 15)
   ls <- headlinesink(lsx, lsy[1], lsx, lsy[2], hc = 12)
-  m <- aem(k, top, base, n = n, uf, ls, rf)
+  m <- aem(k, top, base, n = n, uf, ls, rf, type = 'confined')
 
   tol <- 1e-1
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tol = tol)
@@ -136,7 +140,7 @@ test_that('capzone works', {
   # aem
   w <- well(0, 0, Q, rw)
   uf <- uniformflow(k*H, gradient = -i, angle = 0)
-  m <- aem(k, top, base, n, uf, w)
+  m <- aem(k, top, base, n, uf, w, type = 'confined')
   t <- 365*5
   cp5 <- capzone(m, w, time = t, as.poly = FALSE)
   endp <- endpoints(cp5)[-1,] # not include first value
