@@ -55,36 +55,58 @@ image_to_matrix <- function(m) {
   }
 }
 
+#' Plot contours of a computed variable of the analytic element model
 #'
-#' @description [contour.aem()] creates a contour plot of a computed variable, or adds the contour lines
-#'     to and existing plot.
+#' @description [contours()] creates a contour plot of a variable computed by the analytic element
+#'    model `aem`, or adds the contour lines to an existing plot.
 #'
 #' @param aem `aem` object
-#' @param x numeric x coordinates at which the values in `z` are computed These must be in ascending order.
-#' @param y numeric x coordinates at which the values in `z` are computed These must be in ascending order.
-#' @param z character indicating which variable to plot. Possible values are `heads` (default),
+#' @param x numeric x coordinates at which the values in `z` are computed. These must be in ascending order.
+#' @param y numeric x coordinates at which the values in `z` are computed. These must be in ascending order.
+#' @param variable character indicating which variable to plot. Possible values are `heads` (default),
 #'    `streamfunction` and `potential`.
 #' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
+#' @param ... additional arguments passed to [contour()].
+#'
+#' @details [contours()] is a wrapper around [contour()]. It obtains the values of `variable` at
+#'    the supplied grid points and constructs the matrix supplied to [contour()] by reversing the rows and
+#'    transposing the matrix (see also the documentation of [image()]).
 #'
 #' @export
-#' @rdname aem
-#' @include aem.R
+#' @importFrom graphics contour
+#' @seealso [aem()] [contour()] [image()] [heads()]
 #' @examples
 #'
 #' w <- well(xw = 50, yw = 0, Q = 200)
-#' wi <- well(xw = 0, yw = 0, Q = -100)
+#' wi <- well(xw = -200, yw = 0, Q = -100)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf)
+#' rf <- constant(-1000, 0, hc = 10)
+#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, rf)
 #'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
+#' xg <- seq(-350, 200, length = 100)
+#' yg <- seq(-125, 125, length = 100)
 #'
+#' contours(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
+#' contours(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3',
+#'          drawlabels = FALSE, add = TRUE)
+#'
+#' # Not to be confused by contour()
+#' try(
 #' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
-#' contour(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3', drawlabels = FALSE, add = TRUE)
+#' )
 #'
-contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential'), asp = 1, ...) {
-  z <- match.arg(z)
-  m <- switch(z,
+#' # For image() or filled.contour()
+#' library(graphics)
+#' h <- heads(ml, xg, yg, as.grid = TRUE)
+#' h_im <- t(h[dim(h)[1]:1,])
+#' image(xg, yg, h_im, asp = 1)
+#' contour(xg, yg, h_im, asp = 1, add = TRUE) # contours() is a wrapper for this
+#' filled.contour(xg, yg, h_im, asp = 1)
+#'
+contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potential'), asp = 1, ...) {
+  variable <- match.arg(variable)
+  if(!inherits(aem, 'aem')) stop('contours() should be called with an \'aem\' object', call. = FALSE)
+  m <- switch(variable,
               heads = heads(aem, x, y, as.grid = TRUE),
               streamfunction = streamfunction(aem, x, y, as.grid = TRUE),
               potential = potential(aem, x, y, as.grid = TRUE)
@@ -107,13 +129,11 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
 #' A reference point (as created by [constant()]) is never plotted.
 #'
 #' @export
+#' @importFrom graphics points lines plot.new
 #' @rdname aem
 #' @include aem.R
 #' @examples
-#' ls <- linesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, sigma = 0.1)
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#'
+#' # Plotting ----
 #' plot(ls)
 #' plot(w, add = TRUE)
 #' plot(uf) # empty
@@ -158,22 +178,17 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' @param frame.plot logical, should a border be drawn around the plot. Defaults to `TRUE`.
 #'
 #' @export
+#' @importFrom graphics frame plot.window axis box
 #' @rdname aem
 #' @include aem.R
 #' @examples
-#' w <- well(xw = 50, yw = 0, Q = 200)
-#' wi <- well(xw = 0, yw = 0, Q = -100)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ls <- linesink(-75, 50, 100, 50, sigma = 1)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, ls)
+#' plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 #'
-#' plot(ml, xlim = c(-100, 100), ylim = c(-75, 75))
+#' xg <- seq(-500, 500, length = 200)
+#' yg <- seq(-250, 250, length = 100)
 #'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
-#'
-#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
-#' plot(ml, add = TRUE)
+#' contours(m, x = xg, y = yg, col = 'dodgerblue3', nlevels = 20)
+#' plot(m, add = TRUE)
 #'
 plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
   aem <- x
@@ -204,12 +219,13 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' @param ... additional arguments passed to [plot()] or [arrows()].
 #'
 #' @export
+#' @importFrom graphics arrows lines
 #' @rdname tracelines
 #' @include tracelines.R
 #' @examples
 #'
 #' # plot arrows
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
 #'
 plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, ...) {
@@ -253,6 +269,7 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 #' @param ... additional arguments passed to [tracelines()] for [capzone()] or additional arguments passed to [polygon()] when plotting.
 #'
 #' @export
+#' @importFrom graphics polygon frame plot.window axis box
 #' @rdname capzone
 #' @include tracelines.R
 #'

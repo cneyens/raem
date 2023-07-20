@@ -112,7 +112,7 @@ endp <- endpoints(paths)
 xg <- seq(-500, 500, length = 100)
 yg <- seq(-300, 300, length = 100)
 
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange3')
 points(endp[, c('x', 'y')])
 
@@ -126,7 +126,7 @@ w2 <- well(-200, -100, Q = 450)
 ls <- headlinesink(-100, 100, 400, -300, 7)
 
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 
 x0 <- seq(-400, 400, 50); y0 <- 200
@@ -144,7 +144,7 @@ termf <- function(t, coords, parms) {
   return(in_poly)
 }
 paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tfunc = termf)
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 polygon(tzone)
 plot(paths, add = TRUE, col = 'orange3')
@@ -156,7 +156,7 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 # starting z0 locations are above aquifer top and will be reset to top with warning
 paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 plot(paths, add = TRUE, col = 'orange3')
 
@@ -165,7 +165,7 @@ plot(paths[[4]][,c('y', 'z')], type = 'l')
 
 
 # plot arrows
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
 
 }

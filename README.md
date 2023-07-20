@@ -75,7 +75,7 @@ yg = seq(-250, 250, length = 100)
 Now plot:
 
 ``` r
-contour(m, xg, yg, z = 'heads', col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, 'heads', col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 ```
 

@@ -3,16 +3,13 @@
 \name{aem}
 \alias{aem}
 \alias{solve.aem}
-\alias{contour.aem}
 \alias{plot.element}
 \alias{plot.aem}
-\title{Create a analytic element model}
+\title{Create an analytic element model}
 \usage{
 aem(k, top, base, n, ..., type = c("variable", "confined"))
 
 \method{solve}{aem}(a, b, ...)
-
-\method{contour}{aem}(aem, x, y, z = c("heads", "streamfunction", "potential"), asp = 1, ...)
 
 \method{plot}{element}(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...)
 
@@ -35,16 +32,9 @@ aem(k, top, base, n, ..., type = c("variable", "confined"))
 
 \item{b}{ignored}
 
-\item{aem}{\code{aem} object}
-
 \item{x}{\code{aem} object, or analytic element of class \code{element} to plot. If not a point or line geometry, nothing is plotted.}
 
 \item{y}{ignored}
-
-\item{z}{character indicating which variable to plot. Possible values are \code{heads} (default),
-\code{streamfunction} and \code{potential}.}
-
-\item{asp}{the \code{y/x} aspect ratio, see \code{\link[=plot.window]{plot.window()}}. Defaults to 1 (equal unit lengths).}
 
 \item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 
@@ -70,9 +60,6 @@ to the system of equations as constructed by the contained elements.
 \code{\link[=aem]{aem()}} creates an analytic element model to which elements can be added
 
 \code{\link[=solve.aem]{solve.aem()}} solves system of equations as constructed by the supplied  elements in the \code{aem} model
-
-\code{\link[=contour.aem]{contour.aem()}} creates a contour plot of a computed variable, or adds the contour lines
-to and existing plot.
 
 \code{\link[=plot.element]{plot.element()}} plots the location of an analytic element with point or line geometry.
 
@@ -107,57 +94,39 @@ TR <- k * (top - base)
 w <- well(xw = 50, yw = 0, Q = 200)
 rf <- constant(xc = -500, yc = 0, h = 20)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
-
-aem(k, top, base, n, w, rf, uf)
-aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf), type = 'confined')
-
-
-rf <- constant(-500, 0, 20)
 hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
-w <- well(0, 0, Q = 200)
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, hdw, w)
-ml <- solve(ml)
+ls <- linesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, sigma = 1)
 
-# no reference point results in error
+# Creating aem ----
+m <- aem(k, top, base, n, w, rf, uf, hdw, ls)
+
+# or with elements in named list
+m <- aem(k, top, base, n,
+         list('well' = w, 'constant' = rf, 'flow' = uf, 'headwell' = hdw, 'river' = ls),
+         type = 'confined')
+
+# Solving ----
+m <- solve(m)
+
+# solving requires a reference point (constant) element if head-specified elements are supplied
 try(
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, hdw)
+  m <- aem(k = k, top = top, base = base, n = n, w, uf, hdw)
 )
 
-
-w <- well(xw = 50, yw = 0, Q = 200)
-wi <- well(xw = 0, yw = 0, Q = -100)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf)
-
-xg <- seq(-100, 100, length = 500)
-yg <- seq(-75, 75, length = 100)
-
-contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
-contour(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3', drawlabels = FALSE, add = TRUE)
-
-ls <- linesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, sigma = 0.1)
-w <- well(xw = 50, yw = 0, Q = 200)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-
+# Plotting ----
 plot(ls)
 plot(w, add = TRUE)
 plot(uf) # empty
 
-w <- well(xw = 50, yw = 0, Q = 200)
-wi <- well(xw = 0, yw = 0, Q = -100)
-uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-ls <- linesink(-75, 50, 100, 50, sigma = 1)
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, ls)
+plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 
-plot(ml, xlim = c(-100, 100), ylim = c(-75, 75))
+xg <- seq(-500, 500, length = 200)
+yg <- seq(-250, 250, length = 100)
 
-xg <- seq(-100, 100, length = 500)
-yg <- seq(-75, 75, length = 100)
-
-contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3')
-plot(ml, add = TRUE)
+contours(m, x = xg, y = yg, col = 'dodgerblue3', nlevels = 20)
+plot(m, add = TRUE)
 
 }
 \seealso{
-\code{\link[=add_element]{add_element()}}
+\code{\link[=add_element]{add_element()}} \code{\link[=contours]{contours()}}
 }

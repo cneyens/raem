@@ -83,7 +83,7 @@ cp10 <- capzone(m, w2, time = 10*365, as.poly = FALSE)
 xg <- seq(-800, 800, length = 100)
 yg <- seq(-500, 500, length = 100)
 
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
 plot(cp10, add = TRUE)
 
@@ -94,7 +94,7 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 # three different starting levels, returns convex hull of all particles
 cp5 <- capzone(m, w1, time = 5*365, zstart = c(0, 5, 8))
 
-contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
 
 # one starting level at z = 8, smaller zone

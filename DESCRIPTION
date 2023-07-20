@@ -25,7 +25,9 @@ Collate:
     'utils.R'
     'well.R'
 Imports: 
-    deSolve
+    deSolve,
+    graphics,
+    grDevices
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

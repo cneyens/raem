@@ -1,5 +1,5 @@
 
-#' Create a analytic element model
+#' Create an analytic element model
 #'
 #' [aem()] creates an analytic element model to which elements can be added
 #'
@@ -19,7 +19,7 @@
 #' When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
 #'     object before it is returned.
 #' @export
-#' @seealso [add_element()]
+#' @seealso [add_element()] [contours()]
 #' @examples
 #' k <- 10
 #' top <- 10
@@ -30,9 +30,16 @@
 #' w <- well(xw = 50, yw = 0, Q = 200)
 #' rf <- constant(xc = -500, yc = 0, h = 20)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
+#' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
+#' ls <- linesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, sigma = 1)
 #'
-#' aem(k, top, base, n, w, rf, uf)
-#' aem(k, top, base, n, list('well' = w, 'constant' = rf, 'flow' = uf), type = 'confined')
+#' # Creating aem ----
+#' m <- aem(k, top, base, n, w, rf, uf, hdw, ls)
+#'
+#' # or with elements in named list
+#' m <- aem(k, top, base, n,
+#'          list('well' = w, 'constant' = rf, 'flow' = uf, 'headwell' = hdw, 'river' = ls),
+#'          type = 'confined')
 #'
 aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 
@@ -87,16 +94,12 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #' @export
 #' @rdname aem
 #' @examples
+#' # Solving ----
+#' m <- solve(m)
 #'
-#' rf <- constant(-500, 0, 20)
-#' hdw <- headwell(xw = 0, yw = 100, rw = 0.3, hc = 8)
-#' w <- well(0, 0, Q = 200)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, hdw, w)
-#' ml <- solve(ml)
-#'
-#' # no reference point results in error
+#' # solving requires a reference point (constant) element if head-specified elements are supplied
 #' try(
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, hdw)
+#'   m <- aem(k = k, top = top, base = base, n = n, w, uf, hdw)
 #' )
 #'
 solve.aem <- function(a, b, ...) {

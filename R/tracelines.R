@@ -198,7 +198,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' xg <- seq(-500, 500, length = 100)
 #' yg <- seq(-300, 300, length = 100)
 #'
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange3')
 #' points(endp[, c('x', 'y')])
 #'
@@ -212,7 +212,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' ls <- headlinesink(-100, 100, 400, -300, 7)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(m, add = TRUE)
 #'
 #' x0 <- seq(-400, 400, 50); y0 <- 200
@@ -230,7 +230,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'   return(in_poly)
 #' }
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tfunc = termf)
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(m, add = TRUE)
 #' polygon(tzone)
 #' plot(paths, add = TRUE, col = 'orange3')
@@ -242,7 +242,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # starting z0 locations are above aquifer top and will be reset to top with warning
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 #'
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(m, add = TRUE)
 #' plot(paths, add = TRUE, col = 'orange3')
 #'
@@ -307,7 +307,7 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
 #' @rdname tracelines
 endpoints <- function(tracelines, ...) {
   stopifnot('Supplied object is not of class \'tracelines\'' = inherits(tracelines, 'tracelines'))
-  endp <- t(vapply(tracelines, function(i) i[nrow(i),], setNames(rep(0, 4), c('time', 'x', 'y', 'z'))))
+  endp <- t(vapply(tracelines, function(i) i[nrow(i),], structure(rep(0, 4), names = c('time', 'x', 'y', 'z'))))
   return(endp)
 }
 
@@ -340,6 +340,7 @@ endpoints <- function(tracelines, ...) {
 #'    If `as.poly = FALSE`, the output of [tracelines()] is returned directly.
 #' @rdname capzone
 #' @export
+#' @importFrom grDevices chull
 #' @seealso [tracelines()]
 #' @examples
 #'
@@ -360,7 +361,7 @@ endpoints <- function(tracelines, ...) {
 #' xg <- seq(-800, 800, length = 100)
 #' yg <- seq(-500, 500, length = 100)
 #'
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(cp5, add = TRUE)
 #' plot(cp10, add = TRUE)
 #'
@@ -371,7 +372,7 @@ endpoints <- function(tracelines, ...) {
 #' # three different starting levels, returns convex hull of all particles
 #' cp5 <- capzone(m, w1, time = 5*365, zstart = c(0, 5, 8))
 #'
-#' contour(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(cp5, add = TRUE)
 #'
 #' # one starting level at z = 8, smaller zone
