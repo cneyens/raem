@@ -199,3 +199,77 @@ test_that('aem works for 2D flow with areal recharge', {
   expect_equal(haem, hhalf)
 
 })
+
+test_that('unconfined flow works', {
+
+  k <- 10
+  top <- 10
+  base <- 0
+  hwell <- 6
+  xw <- 0
+
+  rf <- constant(xc = -1000, yc = 0, hc = 8)
+  hw <- headwell(xw, 0, hwell)
+  m <- aem(k, top, base, n = 0.2, rf, hw, type = 'variable')
+  Q_well <- m$elements$hw$parameter
+
+  xg <- seq(-500, -100, length = 100)
+
+  thiem_dupuit <- function(x) sqrt(Q_well*log(sqrt(x^2)/0.3)/(pi*k) + hwell^2)
+  hexact <- thiem_dupuit(xg)
+  h <- heads(m, xg, 0)
+
+  expect_equal(h, hexact)
+
+
+  # based on Bakker & Post (2022), chapter 7.1
+  # uniform flow in x-direction
+  xw <- 0
+  yw <- 0
+  Q <- 80
+  k <- 10
+  i <- -0.001
+  top <- 10; base <- 0
+  angle <- 0
+
+  # analytical
+  U <- -k * i * (top - base)
+
+  pot <- function(x, y) {
+    r <- sqrt((x - xw)^2 + (y - yw)^2)
+    phi <- Q/(2*pi) * log(r) - U*x
+    return(phi)
+  }
+  psi <- function(x, y) {
+    Q/(2*pi) * atan2(y, x) - U*y
+  }
+  QQ <- function(x, y) {
+    r <- sqrt((x - xw)^2 + (y - yw)^2)
+    Qx <- U - Q/(2*pi) * (x - xw)/(r^2)
+    Qy <- -Q/(2*pi) * (y - yw)/(r^2)
+    m <- cbind(Qx = Qx, Qy = Qy, Qz = 0)
+    return(m)
+  }
+  hds <- function(x, y) {
+    b <- top - base
+    phi <- pot(x, y)
+    phit <- 0.5*k*b^2
+    cn <- phit + k*b*base
+    hds <- ifelse(phi >= phit, (phi + cn)/(k * b), sqrt(2*phi/k) + base)
+    return(hds)
+  }
+
+  # aem
+  # gradient in uniformflow is i but positive in direction of flow
+  uf <- uniformflow(TR = k*(top-base), gradient = -i, angle = angle)
+  w <- well(xw, yw, Q)
+
+  m <- aem(k, top, base, n = 0.2, uf, w, type = 'variable')
+
+  df <- expand.grid(x = seq(-500, 500, length = 50), y = seq(-200, 200, length = 25))
+
+  expect_equal(heads(m, df$x, df$y), hds(df$x, df$y))
+
+
+
+})

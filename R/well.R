@@ -6,7 +6,7 @@
 #' @param xw numeric, x location of the well
 #' @param yw numeric, y location of the well
 #' @param Q numeric, volumetric discharge of the well (positive is out of aquifer)
-#' @param rw numeric, radius of well. Defaults to 0.3 (meter).
+#' @param rw numeric, radius of well. Defaults to 0.3.
 #' @param ... ignored
 #'
 #' @return Analytic element of a well with constant discharge which is an object of class `well` and inherits from `element`.

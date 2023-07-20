@@ -45,10 +45,12 @@ k = 10
 top = 10
 base = 0
 n = 0.2
-TR = k * (top - base) # transmissivity of background flow
+
+hr = 15 # head at reference point, above aquifer top
+TR = k * (top - base) # constant transmissivity of background flow
 
 uf = uniformflow(TR, gradient = 0.001, angle = -45)
-rf = constant(xc = -1000, yc = 0, hc = 15)
+rf = constant(xc = -1000, yc = 0, hc = hr)
 w1 = well(xw = 200, yw = 0, Q = 250)
 w2 = well(xw = -200, yw = -150, Q = 400)
 ```

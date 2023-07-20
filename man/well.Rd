@@ -13,7 +13,7 @@ well(xw, yw, Q, rw = 0.3, ...)
 
 \item{Q}{numeric, volumetric discharge of the well (positive is out of aquifer)}
 
-\item{rw}{numeric, radius of well. Defaults to 0.3 (meter).}
+\item{rw}{numeric, radius of well. Defaults to 0.3.}
 
 \item{...}{ignored}
 }

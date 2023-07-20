@@ -94,6 +94,8 @@ Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automat
 
 If the analytic element has a point geometry and has a collocation point
 (e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted.
+
+A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted.
 }
 \examples{
 k <- 10

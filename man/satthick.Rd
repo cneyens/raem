@@ -34,12 +34,14 @@ it is calculated as the hydraulic head at \code{x} and \code{y} minus the aquife
 \examples{
 uf <- uniformflow(100, 0.001, 0)
 rf <- constant(-1000, 0, 11)
-m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf)
+m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'confined')
 
 satthick(m, x = c(-200, 0, 200), y = 0) # confined
 satthick(m, x = seq(-500, 500, length = 100),
          y = seq(-250, 250, length = 100), as.grid = TRUE)
-# TODO add unconfined example
+
+mv <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'variable')
+satthick(mv, x = c(-200, 0, 200), y = 0) # variable
 
 }
 \seealso{

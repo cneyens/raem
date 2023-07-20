@@ -123,9 +123,10 @@ reached_well <- function(well, x, y, ...) {
 #' @examples
 #' uf <- uniformflow(100, 0.001, 0)
 #' rf <- constant(-1000, 0, 11)
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf)
+#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'confined')
 #' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -5, 10)) # confined
-#' # TODO add unconfined example
+#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'variable')
+#' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -5, 10)) # unconfined
 outside_vertical <- function(aem, x, y, z, ...) {
   sat_lvl <- satthick(aem, x, y, as.grid = FALSE) + aem$base
   out <- z > sat_lvl | z < aem$base

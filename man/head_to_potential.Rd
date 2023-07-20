@@ -24,6 +24,9 @@ structure as \code{h}.
 
 \code{\link[=potential_to_head]{potential_to_head()}} returns the hydraulic heads calculated from \code{phi}, in the same
 structure as \code{phi}.
+
+The conversion of potential to head or vice versa is different for confined (constant saturated thickness)
+and unconfined (variable saturated thickness) aquifers.
 }
 \description{
 \code{\link[=head_to_potential]{head_to_potential()}} calculates the discharge potential from the hydraulic head.
@@ -37,15 +40,19 @@ top <- 10; base <- 0
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 w1 <- well(200, 50, Q = 250)
-m <- aem(k, top, base, n = 0.2, uf, rf, w1)
-
+m <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'variable') # variable saturated thickness
+mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness#'
 xg <- seq(-500, 500, length = 100)
 yg <- seq(-250, 250, length = 100)
 
 h <- heads(m, x = xg, y = yg, as.grid = TRUE)
+hc <- heads(mc, x = xg, y = yg, as.grid = TRUE)
 head_to_potential(m, h)
+head_to_potential(mc, hc)
 
 phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
+phic <- potential(mc, x = xg, y = yg, as.grid = TRUE)
 potential_to_head(m, phi)
+potential_to_head(mc, phic)
 
 }

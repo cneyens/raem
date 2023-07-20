@@ -104,6 +104,8 @@ contour.aem <- function(aem, x, y, z = c('heads', 'streamfunction', 'potential')
 #' @details If the analytic element has a point geometry and has a collocation point
 #'    (e.g. [headwell()]), that point is also plotted.
 #'
+#' A reference point (as created by [constant()]) is never plotted.
+#'
 #' @export
 #' @rdname aem
 #' @include aem.R
