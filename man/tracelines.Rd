@@ -117,7 +117,7 @@ plot(paths, add = TRUE, col = 'orange3')
 points(endp[, c('x', 'y')])
 
 # Backward tracking
-paths_back <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R, forward = FALSE)
+paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
 plot(paths_back, add = TRUE, col = 'forestgreen')
 
 # Termination at wells and linesinks
@@ -131,7 +131,7 @@ plot(m, add = TRUE)
 
 x0 <- seq(-400, 400, 50); y0 <- 200
 times <- seq(0, 5 * 365, 365 / 20)
-paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
+paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times)
 plot(paths, add = TRUE, col = 'orange3')
 
 # User-defined termination in rectangular zone
@@ -143,7 +143,7 @@ termf <- function(t, coords, parms) {
              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
   return(in_poly)
 }
-paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tfunc = termf)
+paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 polygon(tzone)

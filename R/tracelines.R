@@ -117,21 +117,25 @@ reached_well <- function(well, x, y, ...) {
 #' @return A list with as first element a logical vector `outside` of length equal to `length(z)` indicating if the z-coordinate falls above
 #'    the saturated groundwater level (i.e. the water-table for unconfined conditions or the aquifer
 #'    top for confined conditions), or below the aquifer base. The second element `coords` is a vector with the z-coordinates reset to the saturated level
-#'    or aquifer base if they were outside, or the original z-coordinates if no reset was necessary.
+#'    or aquifer base if they were outside, or the original z-coordinates if no reset was necessary. The third element, `updown` is a logical matrix
+#'    with `length(z)` rows and two columns, `up` and `down` indicating if the z-coordinate falls above the saturated groundwater level or below the aquifer base.
 #' @noRd
 #'
 #' @examples
 #' uf <- uniformflow(100, 0.001, 0)
-#' rf <- constant(-1000, 0, 11)
+#' rf <- constant(-1000, 0, 10.6)
 #' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'confined')
 #' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # confined
 #' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'variable')
 #' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # unconfined
+#'
 outside_vertical <- function(aem, x, y, z, ...) {
   sat_lvl <- satthick(aem, x, y, as.grid = FALSE) + aem$base
-  out <- z > sat_lvl | z < aem$base
-  resetted <- ifelse(z > sat_lvl, sat_lvl, ifelse(z < aem$base, aem$base, z))
-  return(list(outside = out, coords = resetted))
+  up <- z > sat_lvl
+  down <- z < aem$base
+  out <- up | down
+  resetted <- ifelse(up, sat_lvl, ifelse(down, aem$base, z))
+  return(list(outside = out, coords = resetted, updown = cbind(up = up, down = down)))
 }
 
 #' Compute tracelines of particles
@@ -203,7 +207,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' points(endp[, c('x', 'y')])
 #'
 #' # Backward tracking
-#' paths_back <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R, forward = FALSE)
+#' paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
 #' plot(paths_back, add = TRUE, col = 'forestgreen')
 #'
 #' # Termination at wells and linesinks
@@ -217,7 +221,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'
 #' x0 <- seq(-400, 400, 50); y0 <- 200
 #' times <- seq(0, 5 * 365, 365 / 20)
-#' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
+#' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times)
 #' plot(paths, add = TRUE, col = 'orange3')
 #'
 #' # User-defined termination in rectangular zone
@@ -229,7 +233,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
 #'   return(in_poly)
 #' }
-#' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tfunc = termf)
+#' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(m, add = TRUE)
 #' polygon(tzone)
@@ -270,7 +274,16 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
   # function to check for termination of particles
   rootfun <- function(t, coords, parms) {
     m <- matrix(coords, ncol = 3, byrow = TRUE) # necessary ??
-    outside_v <- outside_vertical(parms$aem, m[,1], m[,2], m[,3])$outside
+
+    # check if point is outside vertical domain and got there by an outward directed flow
+    out <- outside_vertical(parms$aem, m[,1], m[,2], m[,3])
+    direction <- ifelse(forward, 1, -1)
+    vz <- direction * velocity(parms$aem, x=m[,1], y=m[,2], z=out$coords, R = parms$R, verbose = FALSE)[,'vz']
+    up <- vz > 0 & out$updown[,'up']
+    down <- vz < 0 & out$updown[,'down']
+    outside_v <- up | down
+
+    # check if termination event is reached at linesinks, wells or user-defined termination
     wls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, 'well'), reached_well(i, x = m[,1], y = m[,2]), FALSE), TRUE)
     lls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, 'linesink'), reached_line(i, x = m[,1], y = m[,2], tol = tol), FALSE), TRUE)
     if(is.null(tfunc)) {
