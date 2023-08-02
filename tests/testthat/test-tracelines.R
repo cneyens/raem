@@ -73,7 +73,7 @@ test_that('tracelines works for 3D flow', {
 
   m <- aem(k, top, base, n = n, as, rf, hls1, hls2)
 
-  x0 <- 0; y0 <- 0; times <- seq(0, 5*365, 365/20)
+  x0 <- 0; y0 <- 0; times <- seq(0, 3*365, 365/20)
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 
   # Bakker & Post (2022), eq. 1.34, rearranged

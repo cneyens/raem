@@ -80,7 +80,7 @@ tracelines.
 Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
 have crossed a line element or when they travel above the saturated aquifer level (i.e.
 the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
-Note that these last two conditions can only occur in models with vertical flow components, i.e. models with area-sinks.
+Note that these last two conditions can only occur in models with vertical flow components.
 The returned time value is the time of termination.
 
 The \code{tfunc} argument can be used to specify additional termination events. It is a function (or a list of functions) that

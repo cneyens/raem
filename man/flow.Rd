@@ -74,7 +74,8 @@ of the discharge vector at coordinates \code{x}, \code{y} and \code{z}. If \code
 containing the \verb{x, y} and \code{z} components of the discharge vector (\code{Qx}, \code{Qy} and \code{Qz}) as the fourth dimension.
 
 The \code{x} component of \code{\link[=discharge]{discharge()}} is the real value of \code{\link[=domega]{domega()}}, the \code{y} component
-the imaginary component and the \code{z} component is calculated based on area-sink strengths.
+the negative imaginary component and the \code{z} component is calculated based on area-sink strengths
+and/or the curvature of the phreatic surface.
 
 If \code{magnitude = TRUE}, the last dimension of the returned array is expanded to include
 the magnitude of the discharge/darcy/velocity vector, calculated as \code{sqrt(Qx^2 + Qy^2 + Qz^2)}
@@ -92,7 +93,7 @@ the \code{\link[=darcy]{darcy()}} values by the effective porosity (\code{aem$n}
 \code{\link[=domega]{domega()}} computes the complex discharge for an \code{aem} or \code{element} object
 at the given x and y coordinates.
 
-\code{\link[=discharge]{discharge()}} computes the \verb{x, y} and \code{z} components of the discharge vector for an \code{aem} or \code{element} object
+\code{\link[=discharge]{discharge()}} computes the \verb{x, y} and \code{z} components of the discharge vector for an \code{aem} object
 at the given x, y and z coordinates.
 
 \code{\link[=darcy]{darcy()}} computes the \verb{x, y} and \code{z} components of the Darcy flux vector (also called specific discharge vector)

@@ -16,7 +16,7 @@
 domega <- function(...) UseMethod('domega')
 
 #'
-#' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` or `element` object
+#' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` object
 #'     at the given x, y and z coordinates.
 #'
 #' @details There is no [discharge()], [darcy()] or [velocity()] method for an object of class `element` because an `aem` object is required
@@ -29,7 +29,8 @@ domega <- function(...) UseMethod('domega')
 #'    containing the `x, y` and `z` components of the discharge vector (`Qx`, `Qy` and `Qz`) as the fourth dimension.
 #'
 #' The `x` component of [discharge()] is the real value of [domega()], the `y` component
-#'    the imaginary component and the `z` component is calculated based on area-sink strengths.
+#'    the negative imaginary component and the `z` component is calculated based on area-sink strengths
+#'    and/or the curvature of the phreatic surface.
 #'
 #' If `magnitude = TRUE`, the last dimension of the returned array is expanded to include
 #'     the magnitude of the discharge/darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
@@ -154,8 +155,7 @@ discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verb
   Qx <- Re(W)
   Qy <- -Im(W)
 
-  # Get Qz: depends on area-sinks
-  # from Haitjema, 1995, eq. 5.49
+  # Get Qz: depends on area-sinks and curvature of phreatic surface
   ntop <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'top', i$parameter, 0), 0.0)
   nbase <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'base', i$parameter, 0), 0.0)
   sat <- satthick(aem, gx, gy)
@@ -164,9 +164,10 @@ discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verb
     curv <- 0
   } else if(aem$type == 'variable') {
     b <- aem$top - aem$base
-    dsat <- ifelse(sat == b, 0, 1/(aem$k * sat))
+    dsat <- ifelse(sat == b, 0, -1/(aem$k * sat))
     curv <- (Qx/sat * Qx*dsat) + (Qy/sat * Qy*dsat)
   }
+  # from Haitjema, 1995, eq. 5.49
   Qz <- (gz - aem$base) * (curv - sum(ntop) - sum(nbase)) + sum(nbase)*sat
 
   # set Qz to NA if z coordinate above saturated part or below aquifer base
@@ -208,6 +209,8 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
   Q <- discharge(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
   b <- satthick(aem, x, y, as.grid = as.grid, ...)
   q <- Q / array(b, dim = dim(Q))
+  ndim <- ifelse(as.grid, 4, 2)
+  dimnames(q)[[ndim]] <- c('qx', 'qy', 'qz', 'q')[1:ifelse(magnitude, 4, 3)]
   return(q)
 }
 
@@ -222,6 +225,8 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
 velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
   q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
   v <- q / (aem$n * R)
+  ndim <- ifelse(as.grid, 4, 2)
+  dimnames(v)[[ndim]] <- c('vx', 'vy', 'vz', 'v')[1:ifelse(magnitude, 4, 3)]
   return(v)
 }
 

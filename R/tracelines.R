@@ -123,10 +123,10 @@ reached_well <- function(well, x, y, ...) {
 #' @examples
 #' uf <- uniformflow(100, 0.001, 0)
 #' rf <- constant(-1000, 0, 11)
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'confined')
-#' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -5, 10)) # confined
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'variable')
-#' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -5, 10)) # unconfined
+#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'confined')
+#' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # confined
+#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'variable')
+#' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # unconfined
 outside_vertical <- function(aem, x, y, z, ...) {
   sat_lvl <- satthick(aem, x, y, as.grid = FALSE) + aem$base
   out <- z > sat_lvl | z < aem$base
@@ -156,7 +156,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
 #'    have crossed a line element or when they travel above the saturated aquifer level (i.e.
 #'    the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
-#'    Note that these last two conditions can only occur in models with vertical flow components, i.e. models with area-sinks.
+#'    Note that these last two conditions can only occur in models with vertical flow components.
 #'    The returned time value is the time of termination.
 #'
 #' The `tfunc` argument can be used to specify additional termination events. It is a function (or a list of functions) that

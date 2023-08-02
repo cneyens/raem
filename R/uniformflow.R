@@ -12,8 +12,8 @@
 #' @details `TR` and `gradient` are multiplied to obtain the discharge which remains
 #'     constant throughout the system, independent of the saturated thickness of the aquifer.
 #'
-#' Although flow is in the direction of the *negative* gradient, `gradient` is specified here
-#'     as positive in the direction of flow for convenience.
+#' Groundwater flow is in the direction of the *negative* hydraulic gradient. Note that `gradient` is
+#'     specified here as positive in the direction of flow for convenience.
 #'
 #' @return Analytic element of constant uniform flow which is an object of class `uf` and inherits from `element`.
 #' @export

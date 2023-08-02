@@ -57,8 +57,8 @@ omegainf.areasink <- function(areasink, x, y, ...) {
 domegainf.areasink <- function(areasink, x, y, ...) {
   Rs <- areasink$R
   r <- sqrt((x - areasink$xc)^2 + (y - areasink$yc)^2)
-  Qr <- ifelse(r <= Rs, r/2, Rs^2/(2*r)) # Haitjema 1995, eq. 5.30, for exfiltration
-  W <- Qr*x/r - 1i*(Qr*y/r) # polar to cartesian
+  Qr <- ifelse(r <= Rs, r/2, Rs^2/(2*r))
+  W <- Qr*(x - areasink$xc)/r - 1i*(Qr*(y - areasink$yc)/r) # polar to cartesian
   W[r < 1e-15] <- 0 + 0i # continuous across boundary
   return(W)
 }

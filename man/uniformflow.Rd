@@ -26,8 +26,8 @@ Analytic element of constant uniform flow which is an object of class \code{uf} 
 \code{TR} and \code{gradient} are multiplied to obtain the discharge which remains
 constant throughout the system, independent of the saturated thickness of the aquifer.
 
-Although flow is in the direction of the \emph{negative} gradient, \code{gradient} is specified here
-as positive in the direction of flow for convenience.
+Groundwater flow is in the direction of the \emph{negative} hydraulic gradient. Note that \code{gradient} is
+specified here as positive in the direction of flow for convenience.
 }
 \examples{
 uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
