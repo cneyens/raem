@@ -149,3 +149,32 @@ test_that('capzone works', {
   expect_equal(t_exact, rep(t, nrow(endp)), tolerance = 0.1) # numeric tolerance
 
 })
+
+test_that('initial particles are not stuck', {
+  k <- 10
+  top <- 10; base <- 0
+  n <- 0.2
+
+  uf <- uniformflow(TR = 100, gradient = 0.001, angle = 0)
+  rf <- constant(TR, xc = -1000, yc = 0, hc = 8)
+
+  m <- aem(k, top, base, n = n, uf, rf)
+
+  times <- seq(0, 5 * 365, 365 / 20)
+  start <- c(x = 0, y = 200)
+  expect_warning(paths <- tracelines(m, x0 = start[1], y0 = start[2], z = base-1, times = times))
+  expect_null(names(paths))
+
+  endp <- endpoints(paths)
+  expect_true(endp[1,2] != start[1])
+  expect_equal(endp[1,3], start[2])
+  expect_equal(unname(endp[1,4]), base)
+
+  # Backward tracking
+  expect_warning(paths_back <- tracelines(m, x0 = start[1], y0 = start[2], z0 = top, times = times, forward = FALSE))
+  endp <- endpoints(paths_back)
+  expect_true(endp[1,2] != start[1])
+  expect_equal(endp[1,3], start[2])
+  expect_equal(unname(endp[1,4]), unname(heads(m, endp[1,2], endp[1,3])))
+
+})

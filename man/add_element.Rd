@@ -26,7 +26,7 @@ Add element to existing \code{aem} object
 \examples{
 m <- aem(k = 10, top = 10, base = 0, n = 0.2)
 add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
-\dontshow{if (R.version$major >= 4 & R.version$minor >= 1) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (getRversion() >= '4.1.0') (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # add_element() is pipe-friendly
 aem(k = 10, top = 10, base = 0, n = 0.2) |>
     add_element(constant(xc = 0, yc = 1000, hc = 12),

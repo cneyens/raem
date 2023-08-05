@@ -202,7 +202,7 @@ element <- function(p, un = 0, ...) {
 #' @examples
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2)
 #' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
-#' @examplesIf R.version$major >= 4 & R.version$minor >= 1
+#' @examplesIf getRversion() >= '4.1.0'
 #' # add_element() is pipe-friendly
 #' aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'     add_element(constant(xc = 0, yc = 1000, hc = 12),

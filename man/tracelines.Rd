@@ -15,7 +15,7 @@ tracelines(
   forward = TRUE,
   R = 1,
   tfunc = NULL,
-  tol = 0.1,
+  tol = 0.001,
   ...
 )
 
@@ -40,7 +40,7 @@ endpoints(tracelines, ...)
 
 \item{tfunc}{function or list of functions with additional termination events for particles. See details. Defaults to \code{NULL}.}
 
-\item{tol}{numeric tolerance used to define when particles have crossed a line element. Defaults to 0.1 length units.}
+\item{tol}{numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.}
 
 \item{...}{additional arguments passed to \code{\link[=plot]{plot()}} or \code{\link[=arrows]{arrows()}}.}
 

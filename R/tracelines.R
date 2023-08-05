@@ -8,6 +8,7 @@
 #' @param l1 numeric vector of length 3 with `x, y` and `z` coordinates at end of line
 #' @param p numeric vector of length 3 with `x, y` and `z` coordinates of point to evaluate
 #' @param width numeric, additional width of line. Defaults to 0 (no width).
+#' @param tol numeric, tolerance for checking if point touches line. Defaults to 0.001 length units.
 #'
 #' @return logical determining if point `p` is on line `l0-l1`
 #' @noRd
@@ -17,42 +18,22 @@
 #' p1 <- c(10, 20, 0)
 #' p2 <- c(50, 40, 0)
 #' m <- matrix(c(p1, p2), ncol = 3, byrow = TRUE)
-#'
 #' p3 <- c(30, 31, 0)
+#' p4 <- c(30, 30, 0)
 #'
 #' plot(m, xlab = 'x', ylab = 'y')
 #' lines(m)
-#' points(matrix(p3, ncol = 3, byrow = TRUE), col = 'red')
-#'
+#' points(matrix(c(p3, p4), ncol = 3, byrow = TRUE), col = 'red')
 #'
 #' point_on_line(p1, p2, p3)
-#' point_on_line(p1, p2, c(40, 40, 0))
-#' try( # currently returns error
-#' point_on_line(p1, p2, p3, width = 10)
-#' )
+#' point_on_line(p1, p2, p4)
+#' point_on_line(p1, p2, p4 + 1e-3)
+#' point_on_line(p1, p2, p3, width = 2)
 #'
-point_on_line <- function(l0, l1, p, width = 0, tol = 1e-6) {
-  # line
-  if(width == 0) {
-    # https://stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment?rq=3
-    # crossproduct checks if new point is on the line as is extends to infinity
-    # if yes, if dotproduct is positive and less than the squared length of the line, point falls on line between l0 and l1
-    a <- l1 - l0
-    b <- p - l1
-    c <- p - l0
-    crossp <- sum(c(a[2] * b[3] - a[3] * b[2], a[3] * b[1] -
-                      a[1] * b[3], a[1] * b[2] - a[2] * b[1])) # pracma::cross
-    if(abs(crossp) > (width + tol)) return(FALSE)
-    dotproduct <- sum(a * c) # pracma::dot
-    if(dotproduct < 0) return(FALSE)
-    sqL <- sum(a^2)
-    if(dotproduct > sqL) return(FALSE)
-
-    return(TRUE)
-  } else {
-    # basically rectangular polygon
-    stop('width != 0 not yet supported', call. = FALSE)
-  }
+point_on_line <- function(l0, l1, p, width = 0, tol = 1e-3) {
+  r <- sqrt((l1[1]-l0[1])^2 + (l1[2]-l0[2])^2)
+  d <- abs((l1[1] - l0[1])*(l0[2] - p[2]) - (l0[1] - p[1])*(l1[2] - l0[2])) / r
+  return(d <= (0.5*width + tol))
 }
 
 #' Check if particle has reached a line element
@@ -152,7 +133,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @param forward logical, should be forward (`TRUE`; default) or backward (`FALSE`) tracking be performed.
 #' @param R numeric, retardation coefficient passed to [velocity()]. Defaults to 1 (no retardation).
 #' @param tfunc function or list of functions with additional termination events for particles. See details. Defaults to `NULL`.
-#' @param tol numeric tolerance used to define when particles have crossed a line element. Defaults to 0.1 length units.
+#' @param tol numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.
 #' @param ... ignored
 #'
 #' @details [deSolve::lsoda] is used to numerically integrate the velocity vector.
@@ -253,21 +234,24 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 #' plot(paths[[4]][,c('y', 'z')], type = 'l')
 #'
-tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-1, ...) {
+tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ...) {
 
   if(!is.null(tfunc) & !is.list(tfunc)) tfunc <- list(tfunc)
+  direction <- ifelse(forward, 1, -1)
 
-  # reset initial locations if outside vertical domain
+  # reset initial locations if outside vertical domain, add perturbation if particles will get stuck
   outside_v_init <- outside_vertical(aem, x0, y0, z0)
   if(any(outside_v_init$outside)) warning('Resetting z0 values above saturated aquifer level or below aquifer base', call. = FALSE)
-  z0 <- outside_v_init$coords
+  vz <- direction * velocity(aem, x=x0, y=y0, z=outside_v_init$coords, R = R, verbose = FALSE)[,'vz']
+  up <- vz > 0 & outside_v_init$updown[,'up']
+  down <- vz < 0 & outside_v_init$updown[,'down']
+  z0 <- outside_v_init$coords + ifelse(up, -1e-12, ifelse(down, 1e-12, 0))
 
   # wrapper to obtain velocity
   vxvy <- function(t, coords, parms, ...) {
     m <- matrix(coords, ncol = 3, byrow = TRUE) # necessary ??
     v <- velocity(parms$aem, x=m[,1], y=m[,2], z=m[,3], R = parms$R, verbose = FALSE)
     v <- ifelse(is.na(v), 0, v) # Qz = NA if particle is above saturated aquifer or below aquifer base
-    direction <- ifelse(forward, 1, -1)
     return(list(c(direction * v)))
   }
 
@@ -277,7 +261,6 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
 
     # check if point is outside vertical domain and got there by an outward directed flow
     out <- outside_vertical(parms$aem, m[,1], m[,2], m[,3])
-    direction <- ifelse(forward, 1, -1)
     vz <- direction * velocity(parms$aem, x=m[,1], y=m[,2], z=out$coords, R = parms$R, verbose = FALSE)[,'vz']
     up <- vz > 0 & out$updown[,'up']
     down <- vz < 0 & out$updown[,'down']
@@ -305,6 +288,7 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
   # get paths and clean
   paths <- get_paths(x0, y0, z0)
   paths.m <- lapply(paths, matrix, ncol = 4, dimnames = list(NULL, c('time', 'x', 'y', 'z')))
+  names(paths.m) <- NULL
   # if(length(paths) == 1) paths.m <- paths.m[[1]] # return matrix instead of list of matrices when only one particle is tracked
   class(paths.m) <- 'tracelines'
   return(paths.m)
