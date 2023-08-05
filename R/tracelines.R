@@ -23,17 +23,32 @@
 #'
 #' plot(m, xlab = 'x', ylab = 'y')
 #' lines(m)
-#' points(matrix(c(p3, p4), ncol = 3, byrow = TRUE), col = 'red')
+#' points(matrix(c(p3, p4), ncol = 3, byrow = TRUE), col = c('red', 'blue'))
 #'
 #' point_on_line(p1, p2, p3)
 #' point_on_line(p1, p2, p4)
-#' point_on_line(p1, p2, p4 + 1e-3)
+#' point_on_line(p1, p2, p4 + c(1e-3, 0, 0))
+#' point_on_line(p1, p2, p4 + c(1e-2, 0, 0))
 #' point_on_line(p1, p2, p3, width = 2)
 #'
 point_on_line <- function(l0, l1, p, width = 0, tol = 1e-3) {
+
+  # check if point is within distance of line, accounting for linewidth and tolerance
   r <- sqrt((l1[1]-l0[1])^2 + (l1[2]-l0[2])^2)
   d <- abs((l1[1] - l0[1])*(l0[2] - p[2]) - (l0[1] - p[1])*(l1[2] - l0[2])) / r
-  return(d <= (0.5*width + tol))
+  if(d > (0.5*width + tol)) return(FALSE)
+
+  # if point within distance,
+  # and if dotproduct is positive and less than the squared length of the line,
+  # point falls on line between l0 and l1
+  a <- l1 - l0
+  b <- p - l1
+  c <- p - l0
+  dotproduct <- sum(a * c) # pracma::dot
+  if(dotproduct < 0) return(FALSE)
+  sqL <- sum(a^2)
+  if(dotproduct > sqL) return(FALSE)
+  return(TRUE)
 }
 
 #' Check if particle has reached a line element
@@ -191,7 +206,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
 #' plot(paths_back, add = TRUE, col = 'forestgreen')
 #'
-#' # Termination at wells and linesinks
+#' # Termination at wells and line-sinks
 #' w1 <- well(200, 50, Q = 250)
 #' w2 <- well(-200, -100, Q = 450)
 #' ls <- headlinesink(-100, 100, 400, -300, 7)

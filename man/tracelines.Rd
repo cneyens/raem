@@ -120,7 +120,7 @@ points(endp[, c('x', 'y')])
 paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
 plot(paths_back, add = TRUE, col = 'forestgreen')
 
-# Termination at wells and linesinks
+# Termination at wells and line-sinks
 w1 <- well(200, 50, Q = 250)
 w2 <- well(-200, -100, Q = 450)
 ls <- headlinesink(-100, 100, 400, -300, 7)
