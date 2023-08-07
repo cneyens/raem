@@ -191,7 +191,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' m <- aem(k, top, base, n = n, uf, rf)
 #'
 #' x0 <- -200; y0 <- seq(-200, 200, 50)
-#' times <- seq(0, 25 * 365, 365 / 20)
+#' times <- seq(0, 25 * 365, 365 / 4)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 #' endp <- endpoints(paths)
 #'
@@ -202,9 +202,9 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' plot(paths, add = TRUE, col = 'orange3')
 #' points(endp[, c('x', 'y')])
 #'
-#' # Backward tracking
+#' # Backward tracking with retardation; plot point marker every 5 years
 #' paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
-#' plot(paths_back, add = TRUE, col = 'forestgreen')
+#' plot(paths_back, add = TRUE, col = 'forestgreen', marker = 5*365, cex = 0.5)
 #'
 #' # Termination at wells and line-sinks
 #' w1 <- well(200, 50, Q = 250)
@@ -340,7 +340,8 @@ endpoints <- function(tracelines, ...) {
 #'
 #' @details Backward particle tracking is performed using [tracelines()] and setting the `forward = FALSE`.
 #'    Initial particle locations are computed by equally spacing `npar` locations at the well radius and repeating this
-#'    for all `zstart` elevations. The total number of particles equals `npar * length(zstart)`.
+#'    for all `zstart` elevations. The total number of particles equals `npar * length(zstart)`. To obtain a sharper delineation
+#'    of the capture zone, try using more particles.
 #'
 #' Note that different `zstart` values only have an effect in models with vertical flow components, i.e. models with area-sinks.
 #'

@@ -216,10 +216,11 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param type character indicating what type of plot to draw. See [plot()]. Defaults to `'l'` (lines).
 #' @param arrows logical indicating if arrows should be drawn using [arrows()]. Defaults to `FALSE`.
+#' @param marker numeric, time interval at which to plot point markers. Defaults to `NULL` (no markers).
 #' @param ... additional arguments passed to [plot()] or [arrows()].
 #'
 #' @export
-#' @importFrom graphics arrows lines
+#' @importFrom graphics arrows lines points
 #' @rdname tracelines
 #' @include tracelines.R
 #' @examples
@@ -228,7 +229,11 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
 #'
-plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, ...) {
+#' # plot point markers every 2.5 years
+#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+#'
+plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, marker = NULL, ...) {
   if(!is.list(x)) {
     x <- list(x)
   }
@@ -243,20 +248,31 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
       for(i in seq_along(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
     }
   } else {
-    plot(x[[1]][,2], x[[1]][,3], type = type, ...)
-    if(length(x) > 1) {
-      if(arrows) {
-        for(i in seq_along(x[-1])) {
-          arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
-                 x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
-                 ...)
-        }
-      } else {
-        for(i in seq_along(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
+    if(arrows) {
+      plot(x[[1]][,2], x[[1]][,3], type = 'l', ...)
+      for(i in seq_along(x)) {
+        arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
+               x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
+               ...)
       }
+    } else {
+      plot(x[[1]][,2], x[[1]][,3], type = type, ...)
+      if(length(x) > 1) for(i in 2:length(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
     }
-    for(i in seq_along(x[-1])) lines(x[[i]][,2], x[[i]][,3], type = type, ...)
   }
+
+  # point markers
+  if(!is.null(marker)) {
+    if(is.numeric(marker)) {
+      for(i in seq_along(x)) {
+        ids <- which((x[[i]][, 'time'] %% marker) == 0)
+        if(length(ids) > 0) points(x[[i]][ids, 'x'], x[[i]][ids, 'y'], ...)
+      }
+    } else {
+      stop('marker should be numeric or NULL', call. = FALSE)
+    }
+  }
+
 }
 
 #'

@@ -21,7 +21,7 @@ tracelines(
 
 endpoints(tracelines, ...)
 
-\method{plot}{tracelines}(x, y = NULL, add = FALSE, type = "l", arrows = FALSE, ...)
+\method{plot}{tracelines}(x, y = NULL, add = FALSE, type = "l", arrows = FALSE, marker = NULL, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -55,6 +55,8 @@ endpoints(tracelines, ...)
 \item{type}{character indicating what type of plot to draw. See \code{\link[=plot]{plot()}}. Defaults to \code{'l'} (lines).}
 
 \item{arrows}{logical indicating if arrows should be drawn using \code{\link[=arrows]{arrows()}}. Defaults to \code{FALSE}.}
+
+\item{marker}{numeric, time interval at which to plot point markers. Defaults to \code{NULL} (no markers).}
 }
 \value{
 \code{\link[=tracelines]{tracelines()}} returns an object of class \code{tracelines} which is a list with length equal to the number of particles where each list element contains
@@ -105,7 +107,7 @@ rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
 m <- aem(k, top, base, n = n, uf, rf)
 
 x0 <- -200; y0 <- seq(-200, 200, 50)
-times <- seq(0, 25 * 365, 365 / 20)
+times <- seq(0, 25 * 365, 365 / 4)
 paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 endp <- endpoints(paths)
 
@@ -116,9 +118,9 @@ contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange3')
 points(endp[, c('x', 'y')])
 
-# Backward tracking
+# Backward tracking with retardation; plot point marker every 5 years
 paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
-plot(paths_back, add = TRUE, col = 'forestgreen')
+plot(paths_back, add = TRUE, col = 'forestgreen', marker = 5*365, cex = 0.5)
 
 # Termination at wells and line-sinks
 w1 <- well(200, 50, Q = 250)
@@ -167,6 +169,10 @@ plot(paths[[4]][,c('y', 'z')], type = 'l')
 # plot arrows
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
+
+# plot point markers every 2.5 years
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
 
 }
 \seealso{

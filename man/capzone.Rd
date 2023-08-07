@@ -57,7 +57,8 @@ particle tracking until the requested time is reached.
 \details{
 Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}} and setting the \code{forward = FALSE}.
 Initial particle locations are computed by equally spacing \code{npar} locations at the well radius and repeating this
-for all \code{zstart} elevations. The total number of particles equals \code{npar * length(zstart)}.
+for all \code{zstart} elevations. The total number of particles equals \code{npar * length(zstart)}. To obtain a sharper delineation
+of the capture zone, try using more particles.
 
 Note that different \code{zstart} values only have an effect in models with vertical flow components, i.e. models with area-sinks.
 

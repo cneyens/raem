@@ -7,7 +7,7 @@
 #' @param y0 numeric, starting y location of line-sink
 #' @param x1 numeric, ending x location of line-sink
 #' @param y1 numeric, ending y location of line-sink
-#' @param sigma numeric, specified strength of line-sink, i.e. discharge per length of line-sink.
+#' @param sigma numeric, specific strength of the line-sink, i.e. discharge per length of line-sink.
 #'     Positive is out of aquifer.
 #' @param ... ignored
 #'

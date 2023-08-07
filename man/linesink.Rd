@@ -15,7 +15,7 @@ linesink(x0, y0, x1, y1, sigma, ...)
 
 \item{y1}{numeric, ending y location of line-sink}
 
-\item{sigma}{numeric, specified strength of line-sink, i.e. discharge per length of line-sink.
+\item{sigma}{numeric, specific strength of the line-sink, i.e. discharge per length of line-sink.
 Positive is out of aquifer.}
 
 \item{...}{ignored}
