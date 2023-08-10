@@ -73,12 +73,12 @@ domegainf.linedoublet <- function(linedoublet, x, y, ...) {
   return(wi)
 }
 
-#' Title
+#' Get the resistance factor of an analytic element
 #'
-#' @param ld
-#' @param aem
+#' @param ld linedoublet
+#' @param aem `aem` object
 #'
-#' @return
+#' @return Single numeric with the resistance factor
 #' @noRd
 #'
 resfac <- function(ld, aem) {
