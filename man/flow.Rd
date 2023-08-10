@@ -140,5 +140,5 @@ domega(w, c(50, 0), c(-25, 25))
 
 }
 \seealso{
-\code{\link[=state-variables]{state-variables()}}, \code{\link[=satthick]{satthick()}}, \code{\link[=head_to_potential]{head_to_potential()}}
+\code{\link[=state-variables]{state-variables()}}, \code{\link[=satthick]{satthick()}}, \code{\link[=dirflow]{dirflow()}}, \code{\link[=flow_through_line]{flow_through_line()}}
 }

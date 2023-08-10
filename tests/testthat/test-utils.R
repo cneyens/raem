@@ -13,3 +13,26 @@ test_that("saturated thickness is correct", {
   expect_equal(sat[xg < 0], rep(top - base, sum(xg < 0)))
   expect_equal(sat[xg > 0], h[xg > 0])
 })
+
+test_that('directed flow works', {
+  TR <- 100
+  gradient <- 0.001
+  angle <- -45
+  k = 10; top = 10; base = 0; n = 0.2
+  R <- 5
+  rf <- constant(-1000, 0, hc = 10)
+  uf <- uniformflow(TR = TR, gradient = gradient, angle = angle)
+  m <- aem(k, top, base, n, rf, uf, type = 'confined')
+
+  expect_equal(TR*gradient, dirflow(m, x = 40, y = -25, angle = angle))
+  expect_equal(0, dirflow(m, x = 40, y = -25, angle = -angle))
+
+  expect_equal(TR*gradient/(n*R*(top-base)), dirflow(m, x = 40, y = -25, angle = angle, flow = 'velocity', R = R))
+
+  x <- 40:43
+  y <- -(23:25)
+  q <- dirflow(m, x = x, y = y, angle = angle, as.grid = TRUE, flow = 'darcy')
+  expect_equal(dim(q), c(length(y), length(x)))
+
+
+})

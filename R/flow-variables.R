@@ -11,7 +11,7 @@
 #' @rdname flow
 #' @name flow
 #' @export
-#' @seealso [state-variables()], [satthick()], [head_to_potential()]
+#' @seealso [state-variables()], [satthick()], [dirflow()], [flow_through_line()]
 #'
 domega <- function(...) UseMethod('domega')
 
