@@ -152,7 +152,7 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
     } else {
       return(plot(x, y, pch = pch, cex = cex, ...))
     }
-  } else if(inherits(element, 'linesink')) {
+  } else if(inherits(element, 'linesink') || inherits(element, 'linedoublet')) {
     x <- c(Re(element$z0), Re(element$z1))
     y <- c(Im(element$z0), Im(element$z1))
     if(add) {

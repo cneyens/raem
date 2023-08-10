@@ -86,7 +86,6 @@ domegainf.linesink <- function(linesink, x, y, ...) {
   tol <- 1e-12
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
-  m <- linesink$z1 - linesink$z0
-  wi <- -(linesink$L / (4*pi)) * (2*(log(zp1) - log(zm1))/m)
+  wi <- -(linesink$L / (2*pi)) * ((log(zp1) - log(zm1)) / (linesink$z1 - linesink$z0))
   return(wi)
 }

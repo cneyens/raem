@@ -117,18 +117,20 @@ solve.aem <- function(a, b, ...) {
          call. = FALSE)
   }
 
+  # TODO allow for iteration and multiple unknowns per element (have to change the loops and contours)
   nun <- vapply(aem$elements, function(i) i$nunknowns, 1)
-  esolve <- aem$elements[which(nun > 0)]
-  nunknowns <- length(esolve)
+  esolve_id <- which(nun > 0)
+  esolve <- aem$elements[esolve_id]
+  nunknowns <- sum(nun)
   m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
   rhs <- rep(0, nunknowns)
   for(irow in 1:nunknowns) {
-    eq <- equation(esolve[[irow]], aem)
+    eq <- equation(esolve[[irow]], aem, esolve_id[irow])
     m[irow,] <- eq[[1]]
     rhs[irow] <- eq[[2]]
   }
   solution <- solve(m, rhs)
-  for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow]
+  for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow] # allow for multiple unknowns per element
   aem$elements[which(nun > 0)] <- esolve
   aem$solved <- TRUE
   return(aem)
@@ -141,6 +143,7 @@ solve.aem <- function(a, b, ...) {
 #'
 #' @param element analytic element for which the coefficients should be determined.
 #' @param aem `aem` object
+#' @param id integer indicating which place `element` is in `aem$elements`
 #' @param ... ignored
 #'
 #' @details [equation()] is used to set up the linear system of equations `Ax = b`
@@ -151,21 +154,48 @@ solve.aem <- function(a, b, ...) {
 #' @noRd
 #' @seealso [solve.aem()]
 #'
-equation <- function(element, aem, ...) {
+equation <- function(element, aem, id, ...) {
   if(!(element$nunknowns > 0)) stop('element should have 1 or more unknowns', call. = FALSE)
-  row <- vector(mode = 'numeric')
-  rhs <- head_to_potential(aem, element$hc)
-  xc <- element$xc
-  yc <- element$yc
-  for(i in aem$elements) {
-    if(i$nunknowns > 0) {
-      row[length(row)+1] <- potinf(i, xc, yc)
-    } else {
-      rhs <- rhs - potential(i, xc, yc)
+  if(inherits(element, 'linedoublet')) {
+    row <- vector(mode = 'numeric')
+    rhs <- 0
+    xc <- element$xc
+    yc <- element$yc
+    p <- resfac(element, aem)
+    tol <- 1e-12
+
+    # TODO flow normal to linedoublet
+    # check if resfac is calculated correctly for unconfined flow
+    for(i in aem$elements) {
+      if(i$nunknowns > 0) {
+        qinf <- domegainf(i, xc, yc)
+        dh <- potential_to_head(aem, potinf(i, xc + tol, yc + 0*tol) - potinf(i, xc - tol, yc - 0*tol))
+        row[length(row)+1] <- sum(Re(qinf) + Im(qinf) - p*dh)
+      } else {
+        q <- domega(i, xc, yc)
+        dh <- potential_to_head(aem, potential(i, xc + tol, yc + 0*tol) - potential(i, xc - tol, yc - 0*tol))
+        rhs <- rhs - sum(Re(q) + Im(q) + p*dh)
+      }
+    }
+
+  } else {
+    row <- vector(mode = 'numeric')
+    rhs <- head_to_potential(aem, element$hc)
+    xc <- element$xc
+    yc <- element$yc
+
+    for(i in aem$elements) {
+      if(i$nunknowns > 0) {
+        row[length(row)+1] <- sum(potinf(i, xc, yc))
+      } else {
+        rhs <- rhs - sum(potential(i, xc, yc))
+      }
     }
   }
-  return(list(row, rhs))
 
+
+
+  return(list(row, rhs))
 }
 
 #' Create a base element
