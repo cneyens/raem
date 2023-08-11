@@ -81,6 +81,7 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #'
 #' @param a `aem` object
 #' @param b ignored
+#' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10.
 #' @param ... ignored
 #'
 #' @details [solve.aem()] sets up the system of equations, and calls [solve()] to
@@ -88,6 +89,12 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #'     created by [constant()] (also called the reference point), should be supplied as well.
 #'
 #' Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
+#'
+#' If the system of equations is non-linear, for example when the flow system is unconfined (variable
+#'    saturated thickness) and elements with hydraulic resistance are specified, a Picard iteration is entered.
+#'    During each Picard iteration step (outer iteration), the previously solved model parameters are used to set up and
+#'    solve a linear system of equations. The model parameters are then updated and the next outer iteration step is
+#'    entered, until `maxiter` iterations are reached. For an linear model, `maxiter` is ignored.
 #'
 #' @return The solved `aem` object, i.e. after finding the solution
 #'     to the system of equations as constructed by the contained elements.
@@ -102,7 +109,7 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #'   m <- aem(k = k, top = top, base = base, n = n, w, uf, hdw)
 #' )
 #'
-solve.aem <- function(a, b, ...) {
+solve.aem <- function(a, b, maxiter = 10, ...) {
   aem <- a
 
   # no unknowns
@@ -110,6 +117,7 @@ solve.aem <- function(a, b, ...) {
     aem$solved <- TRUE
     return(aem)
   }
+
   # check if reference point is provided
   # this is actually only necessary when headlinesink elements are specified
   if(!any(vapply(aem$element, function(i) inherits(i, 'constant'), TRUE))) {
@@ -122,17 +130,33 @@ solve.aem <- function(a, b, ...) {
   esolve_id <- which(nun > 0)
   esolve <- aem$elements[esolve_id]
   nunknowns <- sum(nun)
-  m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
-  rhs <- rep(0, nunknowns)
-  for(irow in 1:nunknowns) {
-    eq <- equation(esolve[[irow]], aem, esolve_id[irow])
-    m[irow,] <- eq[[1]]
-    rhs[irow] <- eq[[2]]
+  is_nonlinear <- any(vapply(esolve, function(i) ifelse(is.null(i$resistance), 0, i$resistance), 0) != 0) && aem$type == 'variable'
+  if(!is_nonlinear) maxiter <- 1
+
+  # TODO closer criterion to exit Picard loop when criterion is satisfied
+  # e.g. if max absolute head difference at control points at iter i and iter i-1 < hclose, exit Picard loop
+
+  # Picard iteration
+  for(iter in seq_len(maxiter)) {
+
+    # set up system of equations
+    m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
+    rhs <- rep(0, nunknowns)
+    for(irow in 1:nunknowns) {
+      eq <- equation(esolve[[irow]], aem, esolve_id[irow])
+      m[irow,] <- eq[[1]]
+      rhs[irow] <- eq[[2]]
+    }
+
+    # solve and set model parameters
+    solution <- solve(m, rhs)
+    for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow] # allow for multiple unknowns per element
+    aem$elements[which(nun > 0)] <- esolve
+
   }
-  solution <- solve(m, rhs)
-  for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow] # allow for multiple unknowns per element
-  aem$elements[which(nun > 0)] <- esolve
+
   aem$solved <- TRUE
+  # aem$linear <- !is_nonlinear
   return(aem)
 }
 
@@ -156,44 +180,46 @@ solve.aem <- function(a, b, ...) {
 #'
 equation <- function(element, aem, id, ...) {
   if(!(element$nunknowns > 0)) stop('element should have 1 or more unknowns', call. = FALSE)
-  if(inherits(element, 'linedoublet')) {
-    row <- vector(mode = 'numeric')
-    rhs <- 0
-    xc <- element$xc
-    yc <- element$yc
-    p <- resfac(element, aem)
-    tol <- 1e-12
+  row <- vector(mode = 'numeric')
+  xc <- element$xc
+  yc <- element$yc
+  resf <- resfac(element, aem)
 
-    # TODO flow normal to linedoublet
-    # check if resfac is calculated correctly for unconfined flow
+  if(inherits(element, 'linedoublet')) {
+    rhs <- 0
+    tol <- 1e-12
+    theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+    xci <- xc - tol * cos(theta_norm)
+    yci <- yc - tol * sin(theta_norm)
+    xco <- xc + tol * cos(theta_norm)
+    yco <- yc + tol * sin(theta_norm)
+
+    # TODO iteration for non-linear resfac, iterate in solve.aem()
     for(i in aem$elements) {
       if(i$nunknowns > 0) {
-        qinf <- domegainf(i, xc, yc)
-        dh <- potential_to_head(aem, potinf(i, xc + tol, yc + 0*tol) - potinf(i, xc - tol, yc - 0*tol))
-        row[length(row)+1] <- sum(Re(qinf) + Im(qinf) - p*dh)
+        Qinf <- domegainf(i, xc, yc)
+        dh <- potential_to_head(aem, potinf(i, xci, yci) - potinf(i, xco, yco))
+        row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dh)
       } else {
-        q <- domega(i, xc, yc)
-        dh <- potential_to_head(aem, potential(i, xc + tol, yc + 0*tol) - potential(i, xc - tol, yc - 0*tol))
-        rhs <- rhs - sum(Re(q) + Im(q) + p*dh)
+        Q <- domega(i, xc, yc)
+        dh <- potential_to_head(aem, potential(i, xci, yci) - potential(i, xco, yco))
+        rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dh)
       }
     }
 
   } else {
-    row <- vector(mode = 'numeric')
     rhs <- head_to_potential(aem, element$hc)
-    xc <- element$xc
-    yc <- element$yc
 
-    for(i in aem$elements) {
+    for(e in seq_along(aem$elements)) {
+      i <- aem$element[[e]]
       if(i$nunknowns > 0) {
         row[length(row)+1] <- sum(potinf(i, xc, yc))
+        if(e == id) row[length(row)] <- row[length(row)] - resf
       } else {
         rhs <- rhs - sum(potential(i, xc, yc))
       }
     }
   }
-
-
 
   return(list(row, rhs))
 }
@@ -216,6 +242,41 @@ element <- function(p, un = 0, ...) {
   el$nunknowns <- un
   class(el) <- c('element')
   return(el)
+}
+
+#' Get the resistance factor of an analytic element
+#'
+#' @param element analytic element with unknowns
+#' @param aem `aem` object
+#'
+#' @return Numeric vector with the resistance factor at every collocation point of the element
+#' @noRd
+#'
+resfac <- function(element, aem) {
+  # TODO iteration for satthick
+  # this only works for confined flow right now
+  if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
+  if(inherits(element, 'inhomogeneity')) {
+    resfac <- aem$k / (element$k - aem$k)
+
+  } else if(inherits(element, 'linedoublet')) {
+    if(element$resistance == 0) element$resistance <- 1e-12
+    b <- satthick(aem, element$xc, element$yc)
+    resfac <- aem$k * b / element$resistance
+
+  } else if(inherits(element, 'headwell')) {
+    b <- satthick(aem, element$xw, element$yw)
+    resfac <- element$resistance / (2 * pi * element$rw * b)
+
+  } else if(inherits(element, 'headlinesink')) { # TODO verify
+    b <- satthick(aem, element$xc, element$yc)
+    width <- ifelse(is.null(element$width), 1, element$width)
+    resfac <- element$resistance * aem$k * b / width
+
+  } else {
+    resfac <- rep(0, length(element$xc))
+  }
+  return(resfac)
 }
 
 #' Add element to existing `aem` object
@@ -250,6 +311,10 @@ add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
     if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
     names(aem$elements)[length(aem$elements)] <- name
   }
-  if(solve) aem <- solve(aem)
+  if(solve) {
+    aem <- solve(aem)
+  } else if(aem$solved) {
+    aem$solved <- FALSE
+  }
   return(aem)
 }

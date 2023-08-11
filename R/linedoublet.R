@@ -73,22 +73,3 @@ domegainf.linedoublet <- function(linedoublet, x, y, ...) {
   return(wi)
 }
 
-#' Get the resistance factor of an analytic element
-#'
-#' @param ld linedoublet
-#' @param aem `aem` object
-#'
-#' @return Single numeric with the resistance factor
-#' @noRd
-#'
-resfac <- function(ld, aem) {
-  stopifnot(inherits(ld, 'linedoublet'))
-  if(inherits(ld, 'inhomogeneity')) {
-    resfac <- aem$k / (ld$k - aem$k)
-  } else {
-    # b <- satthick(aem, ld$xc, ld$yc)
-    b <- aem$top - aem$base # TODO iteration for satthick
-    resfac <- 1 / ld$resistance
-  }
-  return(resfac)
-}

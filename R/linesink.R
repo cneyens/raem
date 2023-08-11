@@ -36,24 +36,32 @@ linesink <- function(x0, y0, x1, y1, sigma, ...) {
 #' @param x1 numeric, ending x location of line-sink
 #' @param y1 numeric, ending y location of line-sink
 #' @param hc numeric, specified hydraulic head of the line-sink
+#' @param resistance numeric, hydraulic resistance of the line-sink at its connection with the aquifer. Defaults to 0 (no resistance).
 #' @param ... ignored
 #'
-#' @details The discharge from the linesink is computed by solving the `aem` model given
-#'    the specified head `hc` for the linesink. This head is located at the so-called collocation point,
-#'    which is placed at the center of the linesink.
+#' @details The discharge from the line-sink is computed by solving the `aem` model given
+#'    the specified head `hc` for the line-sink. This head is located at the so-called collocation point,
+#'    which is placed at the center of the line-sink.
+#'
+#' The resistance can be increased for a line-sink in poor connection with the aquifer. The effect of a larger
+#'    or smaller wetted perimeter can be mimicked by adjusting the resistance accordingly. If the aquifer is
+#'    unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
+#'    with respect to the hydraulic head and iteration is required to solve the model.
 #'
 #' @return Head-specified line-sink analytic element which is an object of class `headlinesink` and inherits from `linesink`.
 #' @export
 #' @seealso [linesink()]
 #' @examples
 #' headlinesink(-75, 50, 100, 50, hc = 10)
+#' headlinesink(-75, 50, 100, 50, hc = 10, res = 10)
 #'
-headlinesink <- function(x0, y0, x1, y1, hc, ...) {
+headlinesink <- function(x0, y0, x1, y1, hc, resistance = 0, ...) {
   hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0)
   hls$xc <- 0.5*(x0 + x1)
   hls$yc <- 0.5*(y0 + y1)
   hls$hc <- hc
   hls$nunknowns <- 1
+  hls$resistance <- resistance
   class(hls) <- c('headlinesink', class(hls))
   return(hls)
 }
