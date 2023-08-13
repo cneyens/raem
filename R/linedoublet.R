@@ -20,7 +20,7 @@
 #' linedoublet(-75, 50, 100, 50, res = 500)
 #'
 linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
-  # TODO resistance at control point, order, multiple control points
+  # TODO order, multiple control points
   order <- 0
   ld <- element(0, order + 1)
   ld$z0 <- x0 + y0 * 1i

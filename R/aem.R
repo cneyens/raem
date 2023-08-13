@@ -9,6 +9,8 @@
 #' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
 #' @param ... objects of class `element`, or a single (named) list with `element` objects
 #' @param type character specifying the type of flow in the aquifer, either `variable` (default) or `confined`. See details.
+#' @param verbose logical indicating if information during the solving process should be printed. Defaults to `FALSE`.
+#' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See [solve.aem()].
 #'
 #' @return [aem()] returns an object of class `aem` which is a list consisting of `k`, `top`, `base`, `n`,
 #'    a list containing all elements with the names of the objects specified in `...`, and a logical `solved`
@@ -16,8 +18,8 @@
 #' @details The default `type = 'variable'` allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If `type = 'confined'`,
 #'    the saturated thickness is always constant and equal to the aquifer thickness.
 #'
-#' When calling [aem()], if an element of class `headequation` is supplied, [solve.aem()] is called on the `aem`
-#'     object before it is returned.
+#' [solve.aem()] is called on the `aem` object before it is returned, which solves the system of equations.
+#'
 #' @export
 #' @seealso [add_element()] [contours()]
 #' @examples
@@ -41,7 +43,7 @@
 #'          list('well' = w, 'constant' = rf, 'flow' = uf, 'headwell' = hdw, 'river' = ls),
 #'          type = 'confined')
 #'
-aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
+aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose = FALSE, maxiter = 10) {
 
   type <- match.arg(type)
 
@@ -70,7 +72,7 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
   aem <- list(k = k, top = top, base = base, n = n, elements = l, type = type, solved = FALSE)
   class(aem) <- 'aem'
 
-  aem <- solve(aem)
+  aem <- solve(aem, maxiter = maxiter, verbose = verbose)
 
   return(aem)
 }
@@ -81,7 +83,8 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #'
 #' @param a `aem` object
 #' @param b ignored
-#' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10.
+#' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See details.
+#' @param verbose logical indicating if information during the solving process should be printed. Defaults to `FALSE`.
 #' @param ... ignored
 #'
 #' @details [solve.aem()] sets up the system of equations, and calls [solve()] to
@@ -109,11 +112,13 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined')) {
 #'   m <- aem(k = k, top = top, base = base, n = n, w, uf, hdw)
 #' )
 #'
-solve.aem <- function(a, b, maxiter = 10, ...) {
+solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   aem <- a
+  if(verbose) cat('Solving analytic element model ...', '\n')
 
   # no unknowns
   if(!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
+    if(verbose) cat(' Linear model with', length(aem$elements), 'elements and 0 unknowns', '\n', 'Model solved', '\n')
     aem$solved <- TRUE
     return(aem)
   }
@@ -125,36 +130,52 @@ solve.aem <- function(a, b, maxiter = 10, ...) {
          call. = FALSE)
   }
 
-  # TODO allow for iteration and multiple unknowns per element (have to change the loops and contours)
+  # TODO allow for multiple unknowns per element (have to change the loops and omega())
   nun <- vapply(aem$elements, function(i) i$nunknowns, 1)
   esolve_id <- which(nun > 0)
   esolve <- aem$elements[esolve_id]
   nunknowns <- sum(nun)
   is_nonlinear <- any(vapply(esolve, function(i) ifelse(is.null(i$resistance), 0, i$resistance), 0) != 0) && aem$type == 'variable'
   if(!is_nonlinear) maxiter <- 1
+  if(verbose) {
+    cat(ifelse(is_nonlinear, ' Non-linear', ' Linear'), 'model with', length(aem$elements), 'elements and',
+        nunknowns, 'unknowns', '\n')
+  }
 
   # TODO closer criterion to exit Picard loop when criterion is satisfied
   # e.g. if max absolute head difference at control points at iter i and iter i-1 < hclose, exit Picard loop
 
   # Picard iteration
+  if(verbose & is_nonlinear) cat(' Entering outer iteration loop ...', '\n')
   for(iter in seq_len(maxiter)) {
+    if(verbose & is_nonlinear) cat('  Iteration', iter, '\n')
 
     # set up system of equations
     m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
     rhs <- rep(0, nunknowns)
-    for(irow in 1:nunknowns) {
-      eq <- equation(esolve[[irow]], aem, esolve_id[irow])
+    irow <- 0
+    for(i in seq_along(esolve)) {
+      el <- esolve[[i]]
+      nunel <- el$nunknowns
+      irow <- seq(1, nunel) + irow
+      eq <- equation(el, aem, esolve_id[i])
       m[irow,] <- eq[[1]]
       rhs[irow] <- eq[[2]]
     }
 
     # solve and set model parameters
     solution <- solve(m, rhs)
-    for(irow in 1:nunknowns) esolve[[irow]]$parameter <- solution[irow] # allow for multiple unknowns per element
-    aem$elements[which(nun > 0)] <- esolve
+    irow <- 0
+    for(i in seq_along(esolve)) {
+      nunel <- esolve[[i]]$nunknowns
+      irow <- seq(1, nunel) + irow
+      esolve[[i]]$parameter <- solution[irow]
+    }
+    aem$elements[esolve_id] <- esolve
 
   }
 
+  if(verbose) cat('Model solved', '\n')
   aem$solved <- TRUE
   # aem$linear <- !is_nonlinear
   return(aem)
@@ -194,7 +215,6 @@ equation <- function(element, aem, id, ...) {
     xco <- xc + tol * cos(theta_norm)
     yco <- yc + tol * sin(theta_norm)
 
-    # TODO iteration for non-linear resfac, iterate in solve.aem()
     for(i in aem$elements) {
       if(i$nunknowns > 0) {
         Qinf <- domegainf(i, xc, yc)
@@ -208,7 +228,11 @@ equation <- function(element, aem, id, ...) {
     }
 
   } else {
-    rhs <- head_to_potential(aem, element$hc)
+    if(inherits(element, 'inhomogeneity')) {
+      rhs <- 0
+    } else {
+      rhs <- head_to_potential(aem, element$hc)
+    }
 
     for(e in seq_along(aem$elements)) {
       i <- aem$element[[e]]
@@ -253,29 +277,28 @@ element <- function(p, un = 0, ...) {
 #' @noRd
 #'
 resfac <- function(element, aem) {
-  # TODO iteration for satthick
-  # this only works for confined flow right now
+
   if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
+  b <- satthick(aem, element$xc, element$yc)
+
   if(inherits(element, 'inhomogeneity')) {
     resfac <- aem$k / (element$k - aem$k)
 
   } else if(inherits(element, 'linedoublet')) {
     if(element$resistance == 0) element$resistance <- 1e-12
-    b <- satthick(aem, element$xc, element$yc)
     resfac <- aem$k * b / element$resistance
 
   } else if(inherits(element, 'headwell')) {
-    b <- satthick(aem, element$xw, element$yw)
     resfac <- element$resistance / (2 * pi * element$rw * b)
 
   } else if(inherits(element, 'headlinesink')) { # TODO verify
-    b <- satthick(aem, element$xc, element$yc)
     width <- ifelse(is.null(element$width), 1, element$width)
     resfac <- element$resistance * aem$k * b / width
 
   } else {
     resfac <- rep(0, length(element$xc))
   }
+  resfac <- ifelse(is.na(resfac), 0, resfac) # if b = 0 in headwell
   return(resfac)
 }
 

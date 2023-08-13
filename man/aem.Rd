@@ -7,9 +7,18 @@
 \alias{plot.aem}
 \title{Create an analytic element model}
 \usage{
-aem(k, top, base, n, ..., type = c("variable", "confined"))
+aem(
+  k,
+  top,
+  base,
+  n,
+  ...,
+  type = c("variable", "confined"),
+  verbose = FALSE,
+  maxiter = 10
+)
 
-\method{solve}{aem}(a, b, ...)
+\method{solve}{aem}(a, b, maxiter = 10, verbose = FALSE, ...)
 
 \method{plot}{element}(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...)
 
@@ -27,6 +36,10 @@ aem(k, top, base, n, ..., type = c("variable", "confined"))
 \item{...}{ignored}
 
 \item{type}{character specifying the type of flow in the aquifer, either \code{variable} (default) or \code{confined}. See details.}
+
+\item{verbose}{logical indicating if information during the solving process should be printed. Defaults to \code{FALSE}.}
+
+\item{maxiter}{integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See details.}
 
 \item{a}{\code{aem} object}
 
@@ -70,14 +83,19 @@ in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} o
 The default \code{type = 'variable'} allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If \code{type = 'confined'},
 the saturated thickness is always constant and equal to the aquifer thickness.
 
-When calling \code{\link[=aem]{aem()}}, if an element of class \code{headequation} is supplied, \code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem}
-object before it is returned.
+\code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem} object before it is returned, which solves the system of equations.
 
 \code{\link[=solve.aem]{solve.aem()}} sets up the system of equations, and calls \code{\link[=solve]{solve()}} to
 solve. If head-specified elements are supplied, an element of class \code{constant} as
 created by \code{\link[=constant]{constant()}} (also called the reference point), should be supplied as well.
 
 Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automatically calls \code{\link[=solve.aem]{solve.aem()}}.
+
+If the system of equations is non-linear, for example when the flow system is unconfined (variable
+saturated thickness) and elements with hydraulic resistance are specified, a Picard iteration is entered.
+During each Picard iteration step (outer iteration), the previously solved model parameters are used to set up and
+solve a linear system of equations. The model parameters are then updated and the next outer iteration step is
+entered, until \code{maxiter} iterations are reached. For an linear model, \code{maxiter} is ignored.
 
 If the analytic element has a point geometry and has a collocation point
 (e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted.

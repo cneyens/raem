@@ -151,7 +151,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @param tol numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.
 #' @param ... ignored
 #'
-#' @details [deSolve::lsoda] is used to numerically integrate the velocity vector.
+#' @details [deSolve::lsoda()] is used to numerically integrate the velocity vector.
 #'
 #' Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
 #'    have crossed a line element or when they travel above the saturated aquifer level (i.e.

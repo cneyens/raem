@@ -43,7 +43,7 @@ test_that("headwell works correctly", {
   hw <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3)
   m <- aem(k, top, base, n, rf, hw)
 
-  expect_equal(heads(m, 200 + 0.3, 100), 8)
+  expect_equal(heads(m, hw$xc, hw$yc), 8)
 
   hw2 <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3, xc = 100, yc = 100, rc = 0)
   m <- aem(k, top, base, n, rf, hw2)

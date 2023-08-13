@@ -169,7 +169,7 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
   # TODO allow matrix for multiple lines (vectorize integral and sum total flow)
   flow <- match.arg(flow) # no velocity allowed
   theta_line <- atan2(y1 - y0, x1 - x0)
-  angle_norm <- (theta_line * 180/pi) + 90 # + 90 (-90 * -flux) means positive flux is to the left when looking in direction of line
+  angle_norm <- (theta_line * 180/pi) + 90 # + 90: (= -90 * -flux) means positive flux is to the left when looking in direction of line
   len <- sqrt((y1 - y0)^2 + (x1 - x0)^2)
   nflow_int <- function(l, dropneg) {
     xi <- l * cos(theta_line) + x0

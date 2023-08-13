@@ -36,3 +36,20 @@ test_that('directed flow works', {
 
 
 })
+
+test_that('flow through line works', {
+  TR <- 100; i <- 1e-3
+  rf <- constant(-1000, 0, hc = 10)
+  uf <- uniformflow(TR = TR, gradient = i, angle = -45)
+  m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
+
+  x0 <- -100
+  y0 <- -100
+  x1 <- 100
+  y1 <- 100
+  l <- sqrt((x1-x0)^2 + (y1-y0)^2)
+
+  expect_equal(-TR*i*l, flow_through_line(m, x0, y0, x1, y1)) # negative Q is to the SE in this case
+  expect_equal(flow_through_line(m, x0, y0, x1, y1), -flow_through_line(m, x1, y1, x0, y0))
+
+})

@@ -4,7 +4,7 @@
 \alias{headwell}
 \title{Create a analytic element of a well with a constant head}
 \usage{
-headwell(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...)
+headwell(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, resistance = 0, ...)
 }
 \arguments{
 \item{xw}{numeric, x location of the well}
@@ -21,6 +21,8 @@ headwell(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, ...)
 
 \item{rc}{numeric, radius of the collocation point. See details. Defaults to \code{rw}.}
 
+\item{resistance}{numeric, hydraulic resistance of the well screen at the collocation point. Defaults to 0 (no resistance).}
+
 \item{...}{ignored}
 }
 \value{
@@ -36,9 +38,14 @@ The discharge from the well at location \verb{xw yw} is computed by solving the 
 the specified head \code{hc}. This head can be specified at any point, called the collocation point.
 This can be used to compute the discharge of the well by specifying the head at some other location.
 The head is specified at \code{xc + rc}, \code{yc}. By default, the location of the well and the collocation point are the same.
+
+The resistance at the well screen of the collocation point can be increased for a well in poor connection with the aquifer.
+If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
+with respect to the hydraulic head and iteration is required to solve the model.
 }
 \examples{
 headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
+headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, resistance = 10)
 headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500, rc = 0)
 
 }

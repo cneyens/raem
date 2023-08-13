@@ -77,7 +77,7 @@ tracelines.
 \code{\link[=endpoints]{endpoints()}} obtains the final time and locations of tracked particles
 }
 \details{
-\link[deSolve:lsoda]{deSolve::lsoda} is used to numerically integrate the velocity vector.
+\code{\link[deSolve:lsoda]{deSolve::lsoda()}} is used to numerically integrate the velocity vector.
 
 Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
 have crossed a line element or when they travel above the saturated aquifer level (i.e.

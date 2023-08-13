@@ -270,6 +270,54 @@ test_that('unconfined flow works', {
 
   expect_equal(heads(m, df$x, df$y), hds(df$x, df$y))
 
+})
+
+test_that('resistances work', {
+
+  k <- 10
+  top <- 10
+  base <- 0
+  n <- 0.2
+
+  uf <- uniformflow(100, 0.001, angle = 0)
+  rf <- constant(-1000, 0, 10)
+
+  hls <- headlinesink(x0 = -100, y0 = 100, x1 = 100, y1 = -100, hc = 8, res = 10)
+  m <- aem(k, top, base, n, uf, rf, hls, type='confined')
+  ls <- linesink(x0 = -100, y0 = 100, x1 = 100, y1 = -100, sigma = m$elements$hls$parameter)
+  m2 <- aem(k, top, base, n, uf, rf, ls, type='confined')
+
+  expect_equal(heads(m, c(0, 10), c(0, 10)), heads(m2, c(0, 10), c(0, 10)))
+
+  hw <- headwell(50, 40, hc = 8, res = 10) # Q = 51.91267
+  m <- aem(k, top, base, n, uf, rf, hw, type='confined')
+  w <- well(50, 40, Q = m$elements$hw$parameter)
+  m2 <- aem(k, top, base, n, uf, rf, w, type='confined')
+
+  expect_equal(heads(m, c(50, 10), c(40, 10)), heads(m2, c(50, 10), c(40, 10)))
+
+  # TODO compare to analytical solution
+})
+
+test_that('iteration works', {
+
+  # iteration only needed for unconfined flow when resistances are specified
+
+  k <- 10
+  top <- 10
+  base <- 0
+  n <- 0.2
+  hr <- 50
+
+  rf <- constant(-1000, 0, hr)
+  hls <- headlinesink(x0 = -100, y0 = 100, x1 = 100, y1 = -100, hc = hr - 2, res = 10)
+  m <- aem(k, top, base, n, rf, hls, type='variable', maxiter = 2)
+  m2 <- aem(k, top, base, n, rf, hls, type='confined')
+
+  expect_equal(m$elements$hls$parameter, m2$elements$hls$parameter)
+  expect_output(solve(m, verbose = TRUE), 'Iteration', ignore.case = TRUE) # test printing
+
+  # TODO analytical solution for unconfined flow
 
 
 })
