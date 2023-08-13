@@ -28,8 +28,8 @@ test_that('aem keeps names of element list', {
   if(!(R.version$major >= 4 & R.version$minor >= 1)) {
     skip('Skipping test because R version < 4.1.0 and does not have native pipe')
   }
-  # expect_warning(m <- aem(k, top, base, n)) # empty aem model
-  # m <- m |>
+
+  expect_warning(m <- aem(k, top, base, n, verbose = TRUE)) # empty aem model
   m <- aem(k, top, base, n) |>
     add_element(rf, name = 'constant') |>
     add_element(w, name = 'well') |>
@@ -296,7 +296,33 @@ test_that('resistances work', {
 
   expect_equal(heads(m, c(50, 10), c(40, 10)), heads(m2, c(50, 10), c(40, 10)))
 
-  # TODO compare to analytical solution
+  # compare to analytical solution, Bakker & Post (2022), chapter 7.4
+  omega_res_wel_left <- function(x, y) {
+    zeta <- x + y*1i
+    A <- TR/C * (UL - UR) + phi0
+    return(-UL*zeta + A)
+  }
+  TR <- k * (top - base)
+  i <- 0.001
+  UL <- TR*i
+  UR <- UL
+  h0 <- 10
+  phi0 <- h0 * TR
+  res <- 10
+  width <- 1  # TODO allow for width in linesink
+  C <- width / res
+
+  xg <- seq(-500, 0, length = 100)
+  h <- Re(omega_res_wel_left(xg, 0)) / TR
+
+  rf <- constant(-1000, 0, h0 + i*1000)
+  uf <- uniformflow(TR, i, 0)
+  hls <- headlinesink(0, -1000, 0, 1000, hc = h0, res = res)
+  m <- aem(k, top, base, n, rf, uf, hls, type = 'confined')
+  h2 <- heads(m, xg, 0)
+
+  expect_equal(h, h2)
+
 })
 
 test_that('iteration works', {
@@ -311,13 +337,12 @@ test_that('iteration works', {
 
   rf <- constant(-1000, 0, hr)
   hls <- headlinesink(x0 = -100, y0 = 100, x1 = 100, y1 = -100, hc = hr - 2, res = 10)
-  m <- aem(k, top, base, n, rf, hls, type='variable', maxiter = 2)
+  m <- aem(k, top, base, n, rf, hls, type='variable', maxiter = 2) # needs two iterations
   m2 <- aem(k, top, base, n, rf, hls, type='confined')
 
   expect_equal(m$elements$hls$parameter, m2$elements$hls$parameter)
   expect_output(solve(m, verbose = TRUE), 'Iteration', ignore.case = TRUE) # test printing
 
-  # TODO analytical solution for unconfined flow
-
+  # TODO analytical solution for unconfined flow with resistance factor
 
 })

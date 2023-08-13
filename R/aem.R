@@ -114,6 +114,10 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose 
 #'
 solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   aem <- a
+  if(length(aem$elements) == 0) {
+    if(verbose) warning('No elements in model. Can not solve.', call. = FALSE)
+    return(aem)
+  }
   if(verbose) cat('Solving analytic element model ...', '\n')
 
   # no unknowns
@@ -157,7 +161,7 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
     for(i in seq_along(esolve)) {
       el <- esolve[[i]]
       nunel <- el$nunknowns
-      irow <- seq(1, nunel) + irow
+      irow <- seq(1, nunel) + irow[length(irow)]
       eq <- equation(el, aem, esolve_id[i])
       m[irow,] <- eq[[1]]
       rhs[irow] <- eq[[2]]
@@ -168,7 +172,7 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
     irow <- 0
     for(i in seq_along(esolve)) {
       nunel <- esolve[[i]]$nunknowns
-      irow <- seq(1, nunel) + irow
+      irow <- seq(1, nunel) + irow[length(irow)]
       esolve[[i]]$parameter <- solution[irow]
     }
     aem$elements[esolve_id] <- esolve
