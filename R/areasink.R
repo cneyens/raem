@@ -20,6 +20,7 @@
 #' @examples
 #' areasink(xc = -500, yc = 0, N = 0.001, R = 500)
 #'
+#' # flux assuming a constant head difference over a confining unit
 #' dh <- 3
 #' res <- 10 / 0.0001
 #' areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
@@ -33,6 +34,44 @@ areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
   as$location <- location
   class(as) <- c('areasink', class(as))
   return(as)
+}
+
+#' Create a head-specified area-sink analytic element
+#'
+#' [headareasink()] creates a area-sink analytic element with constant specified head. The leakage flux
+#'    into or out of the aquifer from the area-sink is computed by solving the corresponding `aem` model.
+#'
+#' @param xc numeric, x location of the center of the area-sink
+#' @param yc numeric, y location of the center of the area-sink
+#' @param hc numeric, specified hydraulic head of the area-sink
+#' @param R numeric, radius of the circular area-sink
+#' @param resistance numeric, hydraulic resistance of the area-sink at its connection with the aquifer. Defaults to 0 (no resistance).
+#' @param location character, either `top` (default) or `base` specifying the vertical position of the area-sink.
+#' @param ... ignored
+#'
+#' @details The leakage flux from the area-sink is computed by solving the `aem` model given
+#'    the specified head `hc` for the area-sink. This head is located at the so-called collocation point,
+#'    which is placed at the center of the line-sink. A positive flux is into the aquifer.
+#'
+#' The resistance can be increased for a area-sink in poor connection with the aquifer, e.g. because of
+#'    a confining unit of low hydraulic conductivity between the aquifer and the area-sink. If the aquifer is unconfined
+#'    (i.e. has a variable saturated thickness), the system of equations becomes non-linear with respect to the hydraulic head
+#'    and iteration is required to solve the model.
+#'
+#' @return Circular head-specified area-sink analytic element which is an object of class `headareasink` and inherits from `areasink`.
+#' @export
+#' @seealso [areasink()]
+#' @examples
+#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
+#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
+#'
+headareasink <- function(xc, yc, hc, R, resistance = 0, location = c('top', 'base'), ...) {
+  has <- areasink(xc = xc, yc = yc, N = 0, R = R, location = location)
+  has$hc <- hc
+  has$nunknowns <- 1
+  has$resistance <- resistance
+  class(has) <- c('headareasink', class(has))
+  return(has)
 }
 
 #'

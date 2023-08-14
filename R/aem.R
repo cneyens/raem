@@ -130,7 +130,7 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   # check if reference point is provided
   # this is actually only necessary when headlinesink elements are specified
   if(!any(vapply(aem$element, function(i) inherits(i, 'constant'), TRUE))) {
-    stop('Please provide an element of class \'constant\' when solving with head-specified elements',
+    stop('Please provide an element of class \'constant\' when solving for unknown parameters in elements',
          call. = FALSE)
   }
 
@@ -281,23 +281,44 @@ element <- function(p, un = 0, ...) {
 #' @noRd
 #'
 resfac <- function(element, aem) {
+  # TODO verify these for unconfined flow
 
   if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
-  b <- satthick(aem, element$xc, element$yc)
+  # b <- satthick(aem, element$xc, element$yc)
 
   if(inherits(element, 'inhomogeneity')) {
     resfac <- aem$k / (element$k - aem$k)
 
   } else if(inherits(element, 'linedoublet')) {
     if(element$resistance == 0) element$resistance <- 1e-12
+    b <- satthick(aem, element$xc, element$yc)
     resfac <- aem$k * b / element$resistance
 
   } else if(inherits(element, 'headwell')) {
+    b <- satthick(aem, element$xc, element$yc)
     resfac <- element$resistance / (2 * pi * element$rw * b)
 
-  } else if(inherits(element, 'headlinesink')) { # TODO verify
+  } else if(inherits(element, 'headlinesink')) {
     width <- ifelse(is.null(element$width), 1, element$width)
+
+    # Haitjema, 1995, eq. 5.64 & 5.66
+    if(aem$type == 'confined') {
+      b <- satthick(aem, element$xc, element$yc)
+    } else {
+      h <- heads(aem, element$xc, element$yc)
+      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+    }
     resfac <- element$resistance * aem$k * b / width
+
+  } else if(inherits(element, 'headareasink')) {
+    # Haitjema, 1995, eq. 5.64 & 5.66
+    if(aem$type == 'confined') {
+      b <- satthick(aem, element$xc, element$yc)
+    } else {
+      h <- heads(aem, element$xc, element$yc)
+      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+    }
+    resfac <- -element$resistance * aem$k * b
 
   } else {
     resfac <- rep(0, length(element$xc))

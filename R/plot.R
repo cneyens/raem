@@ -126,7 +126,9 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' @details If the analytic element has a point geometry and has a collocation point
 #'    (e.g. [headwell()]), that point is also plotted.
 #'
-#' A reference point (as created by [constant()]) is never plotted.
+#' A reference point (as created by [constant()]) is never plotted as it is not a hydraulic feature.
+#' Area-sinks (as created by [areasink()] or [headareasink()]) are also never plotted as they would
+#'    clutter the plot.
 #'
 #' @export
 #' @importFrom graphics points lines plot.new
@@ -181,6 +183,7 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' @importFrom graphics frame plot.window axis box
 #' @rdname aem
 #' @include aem.R
+#' @seealso [plot.element()]
 #' @examples
 #' plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 #'

@@ -100,7 +100,9 @@ entered, until \code{maxiter} iterations are reached. For an linear model, \code
 If the analytic element has a point geometry and has a collocation point
 (e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted.
 
-A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted.
+A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted as it is not a hydraulic feature.
+Area-sinks (as created by \code{\link[=areasink]{areasink()}} or \code{\link[=headareasink]{headareasink()}}) are also never plotted as they would
+clutter the plot.
 }
 \examples{
 k <- 10
@@ -147,4 +149,6 @@ plot(m, add = TRUE)
 }
 \seealso{
 \code{\link[=add_element]{add_element()}} \code{\link[=contours]{contours()}}
+
+\code{\link[=plot.element]{plot.element()}}
 }
