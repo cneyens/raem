@@ -53,3 +53,29 @@ test_that('flow through line works', {
   expect_equal(flow_through_line(m, x0, y0, x1, y1), -flow_through_line(m, x1, y1, x0, y0))
 
 })
+
+test_that('element_discharge works', {
+  k <- 10
+  top <- 10
+  base <- 0
+  n <- 0.2
+  TR <- k * (top - base)
+
+  rf <- constant(xc = -500, yc = 0, h = 20)
+  uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
+  w1 <- well(xw = 50, yw = 0, Q = 200)
+  w2 <- well(xw = 0, yw = 100, Q = 400)
+  hw <- headwell(xw = -100, yw = 0, hc = 7.5)
+  hls <- headlinesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, hc = 8)
+  as <- areasink(xc = 0, yc = 0, N = 0.0005, R = 500)
+  m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
+
+  expect_equal(element_discharge(m, type = 'well'), c('well' = w1$parameter + w2$parameter))
+  expect_error(element_discharge(m)) # either name or type
+  expect_error(element_discharge(m, name = 'hls', type = 'headlinesink')) # either name or type, not both
+  expect_error(element_discharge(m, name = 'test')) # name not found
+  expect_error(element_discharge(m, type = c('areasink', 'well'))) # only 1 type allowed
+  expect_error(element_discharge(m, type = 'uniformflow')) # type should be allowed
+  expect_equal(element_discharge(m, name = 'uf'), c('uf' = 0))
+  expect_equal(element_discharge(m, type = 'areasink'), c('areasink' = -0.0005*pi*500^2))
+})

@@ -188,3 +188,85 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
   }
   return(fint)
 }
+
+#' Get the discharge in or out of the aquifer from an element
+#'
+#' [element_discharge()] obtains the computed discharge into or out of the aquifer
+#'    for a individual analytic elements or all elements of a given type.
+#'
+#' @param aem `aem` object
+#' @param name character vector with the name of the element(s) as available in `aem$elements`.
+#' @param type character with the type (class) of element to obtain the summed discharge from. See details.
+#' @param ... ignored
+#'
+#' @details Either `name` or `type` should be specified. If `type` is specified, only one type is allowed.
+#'    Possible values are `'headwell', 'well', 'linesink', 'headlinesink', 'areasink'` or `headareasink'`.
+#'
+#' Only elements that add or remove water from the aquifer will return a non-zero discharge value.
+#'
+#' @return A numeric named vector of length `length(name)` with the discharge into (negative) or out of (positive)
+#'    the aquifer. If `type` is specified, a single named numeric value with the total discharge into (negative) or
+#'    out of (positive) the aquifer which is the sum of all individual elements of class `type`.
+#' @export
+#'
+#' @examples
+#' k <- 10
+#' top <- 10
+#' base <- 0
+#' n <- 0.2
+#' TR <- k * (top - base)
+#'
+#' rf <- constant(xc = -500, yc = 0, h = 20)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
+#' w1 <- well(xw = 50, yw = 0, Q = 200)
+#' w2 <- well(xw = 0, yw = 100, Q = 400)
+#' hw <- headwell(xw = -100, yw = 0, hc = 7.5)
+#' hls <- headlinesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, hc = 8)
+#' as <- areasink(xc = 0, yc = 0, N = 0.0005, R = 500)
+#' m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
+#'
+#' element_discharge(m, name = c('hls', 'as'))
+#' element_discharge(m, type = 'well')
+#'
+element_discharge <- function(aem, name = NULL, type = NULL, ...) {
+  if((is.null(name) && is.null(type)) || (!is.null(name) && !is.null(type))) stop('Either "name" or "type" should be specified', call. = FALSE)
+  if(!is.null(name)) {
+    elnames <- names(aem$elements)
+    id <- which(elnames %in% name)
+    if(any(length(id) == 0)) stop('element with name "', name[which(length(id) == 0)], '" not found', call. = FALSE)
+    get_Q_name <- function(el) {
+      if(inherits(el, 'well')) {
+        return(el$parameter)
+      } else if(inherits(el, 'linesink')) {
+        return(el$parameter * el$L)
+      } else if(inherits(el, 'areasink')) {
+        return(-el$parameter * pi * el$R^2)
+      } else {
+        return(0) # uniformflow, constant, linedoublet
+      }
+    }
+    Q <- unlist(lapply(aem$elements[id], get_Q_name))
+    names(Q) <- name
+  } else {
+    types <- c('headwell', 'well', 'linesink', 'headlinesink', 'areasink', 'headareasink')
+    if(length(type) > 1) stop('Only one type should be specified', call. = FALSE)
+    if(!(type %in% types)) stop('"type" should be one of ', paste(types, collapse = ', '), call. = FALSE)
+
+    get_Q_type <- function(el) {
+      if(inherits(el, type, which = TRUE) == 1) { # makes sure el inherits from type but not if it is a parent class
+        if(grepl('well', type)) {
+          return(el$parameter)
+        } else if(grepl('linesink', type)) {
+          return(el$parameter * el$L)
+        } else if(grepl('areasink', type)) {
+          return(-el$parameter * pi * el$R^2)
+        }
+      } else {
+        return(0)
+      }
+    }
+    Q <- sum(unlist(lapply(aem$elements, get_Q_type)))
+    names(Q) <- type
+  }
+  return(Q)
+}

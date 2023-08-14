@@ -17,7 +17,7 @@ in degrees counterclockwise from the x-axis.}
 \item{...}{ignored}
 }
 \value{
-Analytic element of constant uniform flow which is an object of class \code{uf} and inherits from \code{element}.
+Analytic element of constant uniform flow which is an object of class \code{uniformflow} and inherits from \code{element}.
 }
 \description{
 \code{\link[=uniformflow]{uniformflow()}} creates a analytic element of constant uniform background flow.

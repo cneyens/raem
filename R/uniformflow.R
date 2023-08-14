@@ -15,7 +15,7 @@
 #' Groundwater flow is in the direction of the *negative* hydraulic gradient. Note that `gradient` is
 #'     specified here as positive in the direction of flow for convenience.
 #'
-#' @return Analytic element of constant uniform flow which is an object of class `uf` and inherits from `element`.
+#' @return Analytic element of constant uniform flow which is an object of class `uniformflow` and inherits from `element`.
 #' @export
 #'
 #' @examples
@@ -23,7 +23,7 @@
 uniformflow <- function(TR, gradient, angle, ...) {
   uf <- element(gradient * TR)
   uf$udir <- exp(-1i * (angle*pi/180))
-  class(uf) <- c('uf', class(uf))
+  class(uf) <- c('uniformflow', class(uf))
   return(uf)
 }
 
@@ -33,7 +33,7 @@ uniformflow <- function(TR, gradient, angle, ...) {
 #' @return complex potential influence of `uf` evaluated at points `x y`.
 #' @noRd
 #'
-omegainf.uf <- function(uf, x, y, ...) {
+omegainf.uniformflow <- function(uf, x, y, ...) {
   omi <- -uf$udir * (x + y * 1i)
   return(omi)
 }
@@ -44,7 +44,7 @@ omegainf.uf <- function(uf, x, y, ...) {
 #' @return complex discharge influence of `uf` evaluated at points `x y`.
 #' @noRd
 #'
-domegainf.uf <- function(uf, x, y, ...) {
+domegainf.uniformflow <- function(uf, x, y, ...) {
   # handle NA when x = y = 0
   xx <- ifelse(x == 0 & y == 0, 1e-12, x)
   yy <- ifelse(x == 0 & y == 0, 1e-12, y)
