@@ -37,7 +37,7 @@ the well or at any other location.
 The discharge from the well at location \verb{xw yw} is computed by solving the \code{aem} model given
 the specified head \code{hc}. This head can be specified at any point, called the collocation point.
 This can be used to compute the discharge of the well by specifying the head at some other location.
-The head is specified at \code{xc + rc}, \code{yc}. By default, the location of the well and the collocation point are the same.
+The collocation point is located at \code{xc + rc}, \code{yc}. By default, the location of the well and the collocation point are the same.
 
 The resistance at the well screen of the collocation point can be increased for a well in poor connection with the aquifer.
 If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear

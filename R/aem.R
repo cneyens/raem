@@ -211,6 +211,8 @@ equation <- function(element, aem, id, ...) {
   resf <- resfac(element, aem)
 
   if(inherits(element, 'linedoublet')) {
+    # TODO remove this warning
+    if(aem$type == 'variable') warning('linedoublets do not yet work properly for unconfined flow', call. = FALSE)
     rhs <- 0
     tol <- 1e-12
     theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
@@ -222,11 +224,32 @@ equation <- function(element, aem, id, ...) {
     for(i in aem$elements) {
       if(i$nunknowns > 0) {
         Qinf <- domegainf(i, xc, yc)
-        dh <- potential_to_head(aem, potinf(i, xci, yci) - potinf(i, xco, yco))
+
+        # TODO REVIEW THIS + resfac for linedoublet
+        # writen in terms of potential instead of heads
+
+        # dphi <- potinf(i, xci, yci) - potinf(i, xco, yco)
+        # b <- satthick(aem, xc, yc)
+        # b <- ifelse(b == 0, 1e-12, b)
+        # row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
+
+        # potential to head not intended to work with potinf
+        dh <- potential_to_head(aem, potinf(i, xci, yci), na.below = FALSE) -
+          potential_to_head(aem, potinf(i, xco, yco), na.below = FALSE)
         row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dh)
+
       } else {
         Q <- domega(i, xc, yc)
-        dh <- potential_to_head(aem, potential(i, xci, yci) - potential(i, xco, yco))
+
+        # TODO REVIEW THIS  + resfac for linedoublet
+        # writen in terms of potential instead of heads
+        # dphi <- potential(i, xci, yci) - potential(i, xco, yco)
+        # b <- satthick(aem, xc, yc)
+        # b <- ifelse(b == 0, 1e-12, b)
+        # rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi)
+
+        dh <- potential_to_head(aem, potential(i, xci, yci), na.below = FALSE) -
+          potential_to_head(aem, potential(i, xco, yco), na.below = FALSE)
         rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dh)
       }
     }
@@ -290,13 +313,24 @@ resfac <- function(element, aem) {
     resfac <- aem$k / (element$k - aem$k)
 
   } else if(inherits(element, 'linedoublet')) {
-    if(element$resistance == 0) element$resistance <- 1e-12
     b <- satthick(aem, element$xc, element$yc)
-    resfac <- aem$k * b / element$resistance
+    if(element$resistance == 0) element$resistance <- 1e-12
+
+    # TODO REVIEW THIS !!!!!!
+    resfac <- aem$k * b / element$resistance # ??? dimensions do not seem to match
+    # resfac <- b / element$resistance
+    # resfac <- 1/(aem$k * head_to_potential(aem, b) * element$resistance)
 
   } else if(inherits(element, 'headwell')) {
-    b <- satthick(aem, element$xc, element$yc)
-    resfac <- element$resistance / (2 * pi * element$rw * b)
+    if(aem$type == 'confined') {
+      b <- satthick(aem, element$xc, element$yc)
+      bsat <- b
+    } else {
+      h <- heads(aem, element$xc, element$yc)
+      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+      bsat <- satthick(aem, element$xc, element$yc)
+    }
+    resfac <- element$resistance * aem$k * b / (2 * pi * element$rw * bsat)
 
   } else if(inherits(element, 'headlinesink')) {
     width <- ifelse(is.null(element$width), 1, element$width)
@@ -323,7 +357,7 @@ resfac <- function(element, aem) {
   } else {
     resfac <- rep(0, length(element$xc))
   }
-  resfac <- ifelse(is.na(resfac), 0, resfac) # if b = 0 in headwell
+  resfac <- ifelse(is.na(resfac), 0, resfac) # if bsat = 0 in headwell in first iteration
   return(resfac)
 }
 

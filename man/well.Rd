@@ -23,6 +23,11 @@ Analytic element of a well with constant discharge which is an object of class \
 \description{
 \code{\link[=well]{well()}} creates an analytic element of a well with constant discharge.
 }
+\details{
+The inner annulus of a well element constitutes a singularity in the equations as the hydraulic head is undefined at
+a distance smaller than \code{rw} from the well center. If a state- or flow-variable is calculated within this annulus, its
+location is reset to its nearest location on the well screen.
+}
 \examples{
 well(xw = 50, yw = 0, Q = 200, rw = 0.3)
 

@@ -8,7 +8,7 @@
 #' @param x numeric x coordinates to evaluate at
 #' @param y numeric y coordinates to evaluate at
 #' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
-#' @param ... ignored
+#' @param ... additional arguments passed to [heads()] when `aem$type = 'variable'`.
 #'
 #' @details If the aquifer is confined at `x` and `y`, the saturated thickness equals the aquifer thickness.
 #'    For flow with variable saturated thickness, if the aquifer is unconfined at `x` and `y`, the saturated thickness
@@ -45,7 +45,7 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
   if(aem$type == 'confined') {
     d <- aem$top - aem$base
   } else if(aem$type == 'variable') {
-    h <- heads(aem, x = gx, y = gy)
+    h <- heads(aem, x = gx, y = gy, as.grid = FALSE, ...)
     d <- ifelse(h >= aem$top, aem$top - aem$base, h - aem$base)
   }
   mb <- c(cbind(x = gx, y = gy, b = d)[,'b'], use.names = FALSE) # recycle x and y

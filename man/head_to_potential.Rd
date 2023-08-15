@@ -7,7 +7,7 @@
 \usage{
 head_to_potential(aem, h, ...)
 
-potential_to_head(aem, phi, ...)
+potential_to_head(aem, phi, na.below = TRUE, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -17,6 +17,8 @@ potential_to_head(aem, phi, ...)
 \item{...}{ignored}
 
 \item{phi}{numeric discharge potential values as vector or matrix.}
+
+\item{na.below}{logical indicating if calculated head values below the aquifer base should be set to \code{NA}. Defaults to \code{TRUE}. See details.}
 }
 \value{
 \code{\link[=head_to_potential]{head_to_potential()}} returns the discharge potentials calculated from \code{h}, in the same
@@ -27,6 +29,14 @@ structure as \code{phi}.
 
 The conversion of potential to head or vice versa is different for confined (constant saturated thickness)
 and unconfined (variable saturated thickness) aquifers.
+
+If \code{na.below = FALSE}, negative potentials can be converted to hydraulic heads if flow is unconfined (\code{aem$type = 'variable'}).
+The resulting heads are below the aquifer base. This may be useful for some use cases, e.g. in preliminary model construction
+or for internal functions. In most cases however, these values should be set to \code{NA} (the default behavior) since other analytic
+elements will continue to extract or inject water even though the saturated thickness of the aquifer is negative,
+which is not realistic. In those cases, setting \code{aem$type = 'confined'} might prove useful. Also note that these heads below the
+aquifer base will not be correctly re-converted to potentials using \code{\link[=head_to_potential]{head_to_potential()}}. As such, caution should be taken when
+setting \code{na.below = FALSE}.
 }
 \description{
 \code{\link[=head_to_potential]{head_to_potential()}} calculates the discharge potential from the hydraulic head.
@@ -41,7 +51,7 @@ uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 w1 <- well(200, 50, Q = 250)
 m <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'variable') # variable saturated thickness
-mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness#'
+mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness
 xg <- seq(-500, 500, length = 100)
 yg <- seq(-250, 250, length = 100)
 
@@ -54,5 +64,13 @@ phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
 phic <- potential(mc, x = xg, y = yg, as.grid = TRUE)
 potential_to_head(m, phi)
 potential_to_head(mc, phic)
+
+# Converting negative potentials results in NA's with warning
+try(
+potential_to_head(m, -300)
+)
+
+# unless na.below = FALSE
+potential_to_head(m, -300, na.below = FALSE)
 
 }

@@ -15,7 +15,7 @@ satthick(aem, x, y, as.grid = FALSE, ...)
 
 \item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
 
-\item{...}{ignored}
+\item{...}{additional arguments passed to \code{\link[=heads]{heads()}} when \code{aem$type = 'variable'}.}
 }
 \value{
 \code{\link[=satthick]{satthick()}} returns a vector of \code{length(x)} (equal to \code{length(y)}) with the saturated thicknesses at \code{x} and \code{y}.

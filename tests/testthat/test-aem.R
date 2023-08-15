@@ -11,21 +11,21 @@ test_that('aem keeps names of element list', {
   uf <- uniformflow(gradient = 0.002, angle = -45, TR = TR)
 
   m <- aem(k, top, base, n, w, rf, uf)
-  expect_equal(names(m$elements), c('w', 'rf', 'uf'))
+  expect_named(m$elements, c('w', 'rf', 'uf'))
 
   m <- aem(k, top, base, n, well = w, constant = rf, flow = uf)
-  expect_equal(names(m$elements), c('well', 'constant', 'flow'))
+  expect_named(m$elements, c('well', 'constant', 'flow'))
 
   m <- aem(k, top, base, n, w, constant = rf, flow = uf)
-  expect_equal(names(m$elements), c('w', 'constant', 'flow'))
+  expect_named(m$elements, c('w', 'constant', 'flow'))
 
   m <- aem(k, top, base, n, list(w, rf, uf))
-  expect_equal(names(m$elements), NULL)
+  expect_named(m$elements, NULL)
 
   m <- aem(k, top, base, n, list(well = w, constant = rf, flow = uf))
-  expect_equal(names(m$elements), c('well', 'constant', 'flow'))
+  expect_named(m$elements, c('well', 'constant', 'flow'))
 
-  if(!(R.version$major >= 4 & R.version$minor >= 1)) {
+  if(!(getRversion() >= '4.1.0')) {
     skip('Skipping test because R version < 4.1.0 and does not have native pipe')
   }
 
@@ -34,7 +34,7 @@ test_that('aem keeps names of element list', {
     add_element(rf, name = 'constant') |>
     add_element(w, name = 'well') |>
     add_element(uf, name = 'flow', solve = TRUE)
-  expect_equal(names(m$elements), c('constant', 'well', 'flow'))
+  expect_named(m$elements, c('constant', 'well', 'flow'))
   expect_error(add_element(m, rf, name = 'constant'))
 })
 

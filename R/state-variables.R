@@ -183,6 +183,7 @@ potinf.element <- function(element, x, y, ...) {
 #'
 #' @description [heads()] computes the hydraulic head at the given x and y coordinates.
 #'
+#' @param na.below logical indicating if calculated head values below the aquifer base should be set to `NA`. Defaults to `TRUE`. See [potential_to_head()].
 #' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
 #' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
 #'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
@@ -197,9 +198,9 @@ potinf.element <- function(element, x, y, ...) {
 #' head(ml, c(50, 0), c(25, -25))
 #' )
 #'
-heads <- function(aem, x, y, as.grid = FALSE, ...) {
+heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
   phi <- potential(aem, x, y, as.grid = as.grid, ...)
-  hd <- potential_to_head(aem, phi)
+  hd <- potential_to_head(aem, phi, na.below = na.below)
   return(hd)
 }
 
@@ -223,7 +224,7 @@ heads <- function(aem, x, y, as.grid = FALSE, ...) {
 #' rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 #' w1 <- well(200, 50, Q = 250)
 #' m <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'variable') # variable saturated thickness
-#' mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness#'
+#' mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness
 #' xg <- seq(-500, 500, length = 100)
 #' yg <- seq(-250, 250, length = 100)
 #'
@@ -246,13 +247,21 @@ head_to_potential <- function(aem, h, ...) {
 #' @description [potential_to_head()] calculates the hydraulic head from the discharge potential.
 #'
 #' @param phi numeric discharge potential values as vector or matrix.
-#'
+#' @param na.below logical indicating if calculated head values below the aquifer base should be set to `NA`. Defaults to `TRUE`. See details.
 #' @export
 #' @return [potential_to_head()] returns the hydraulic heads calculated from `phi`, in the same
 #'    structure as `phi`.
 #'
 #' The conversion of potential to head or vice versa is different for confined (constant saturated thickness)
 #'    and unconfined (variable saturated thickness) aquifers.
+#'
+#' If `na.below = FALSE`, negative potentials can be converted to hydraulic heads if flow is unconfined (`aem$type = 'variable'`).
+#'    The resulting heads are below the aquifer base. This may be useful for some use cases, e.g. in preliminary model construction
+#'    or for internal functions. In most cases however, these values should be set to `NA` (the default behavior) since other analytic
+#'    elements will continue to extract or inject water even though the saturated thickness of the aquifer is negative,
+#'    which is not realistic. In those cases, setting `aem$type = 'confined'` might prove useful. Also note that these heads below the
+#'    aquifer base will not be correctly re-converted to potentials using [head_to_potential()]. As such, caution should be taken when
+#'    setting `na.below = FALSE`.
 #'
 #' @rdname head_to_potential
 #' @examples
@@ -261,14 +270,27 @@ head_to_potential <- function(aem, h, ...) {
 #' potential_to_head(m, phi)
 #' potential_to_head(mc, phic)
 #'
-potential_to_head <- function(aem, phi, ...) {
+#' # Converting negative potentials results in NA's with warning
+#' try(
+#' potential_to_head(m, -300)
+#' )
+#'
+#' # unless na.below = FALSE
+#' potential_to_head(m, -300, na.below = FALSE)
+#'
+potential_to_head <- function(aem, phi, na.below = TRUE, ...) {
   b <- aem$top - aem$base
   if(aem$type == 'confined') {
     h <- phi / (aem$k * b)
   } else if(aem$type == 'variable') {
     phit <- 0.5 * aem$k * b^2
     cn <- phit + aem$k * b * aem$base
-    h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*phi/aem$k) + aem$base)
+    if(na.below) {
+      h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*phi/aem$k) + aem$base)
+    } else {
+      h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*abs(phi)/aem$k) * ifelse(phi < 0, 1i, 1))
+      h <- ifelse(phi >= phit, h, ifelse(phi < 0, Im(Conj(h)), Re(h))  + aem$base)
+    }
   }
   return(h)
 }

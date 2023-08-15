@@ -50,4 +50,15 @@ test_that("headwell works correctly", {
 
   expect_equal(heads(m, 100, 100), 8)
 
+  # resistance
+  hc <- 8; res <- 20
+  hw <- headwell(xw = 200, yw = 100, hc = hc, rw = 0.3, res = res)
+  m <- aem(k, top, base, n, rf, hw, type = 'confined')
+  Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
+  expect_equal(Q, -m$elements$hw$parameter)
+
+  # unconfined
+  m <- aem(k, top, base, n, rf, hw, type = 'variable')
+  Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
+  expect_equal(Q, -m$elements$hw$parameter)
 })

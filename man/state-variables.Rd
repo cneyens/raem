@@ -32,7 +32,7 @@ streamfunction(...)
 
 \method{streamfunction}{element}(element, x, y, ...)
 
-heads(aem, x, y, as.grid = FALSE, ...)
+heads(aem, x, y, as.grid = FALSE, na.below = TRUE, ...)
 }
 \arguments{
 \item{...}{ignored}
@@ -46,6 +46,8 @@ heads(aem, x, y, as.grid = FALSE, ...)
 \item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
 
 \item{element}{analytic element of class \code{element}}
+
+\item{na.below}{logical indicating if calculated head values below the aquifer base should be set to \code{NA}. Defaults to \code{TRUE}. See \code{\link[=potential_to_head]{potential_to_head()}}.}
 }
 \value{
 For \code{\link[=omega]{omega()}}, a vector of \code{length(x)} (equal to \code{length(y)}) with the complex potential values at \code{x} and \code{y}.
