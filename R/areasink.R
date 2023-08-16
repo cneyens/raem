@@ -38,20 +38,23 @@ areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
 
 #' Create a head-specified area-sink analytic element
 #'
-#' [headareasink()] creates a area-sink analytic element with constant specified head. The leakage flux
+#' [headareasink()] creates a area-sink analytic element with constant specified head. The constant leakage flux
 #'    into or out of the aquifer from the area-sink is computed by solving the corresponding `aem` model.
 #'
 #' @param xc numeric, x location of the center of the area-sink
 #' @param yc numeric, y location of the center of the area-sink
-#' @param hc numeric, specified hydraulic head of the area-sink
+#' @param hc numeric, specified hydraulic head at the center of the area-sink
 #' @param R numeric, radius of the circular area-sink
 #' @param resistance numeric, hydraulic resistance of the area-sink at its connection with the aquifer. Defaults to 0 (no resistance).
 #' @param location character, either `top` (default) or `base` specifying the vertical position of the area-sink.
 #' @param ... ignored
 #'
-#' @details The leakage flux from the area-sink is computed by solving the `aem` model given
+#' @details The constant leakage flux from the area-sink is computed by solving the `aem` model given
 #'    the specified head `hc` for the area-sink. This head is located at the so-called collocation point,
-#'    which is placed at the center of the line-sink. A positive flux is into the aquifer.
+#'    which is placed at the center of the area-sink. A positive flux is into the aquifer. Note that this head-dependent
+#'    flux is constant over the domain and computed only at the collocation point. The flux is therefore determined
+#'    by the difference in aquifer head and specified head at that location only, and does not vary across the domain with
+#'    varying aquifer head.
 #'
 #' The resistance can be increased for a area-sink in poor connection with the aquifer, e.g. because of
 #'    a confining unit of low hydraulic conductivity between the aquifer and the area-sink. If the aquifer is unconfined
@@ -62,10 +65,18 @@ areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
 #' @export
 #' @seealso [areasink()]
 #' @examples
+#'
+#' # using headareasink, the head difference depends on the computed instead of given aquifer head
 #' headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
 #' headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
 #'
-headareasink <- function(xc, yc, hc, R, resistance = 0, location = c('top', 'base'), ...) {
+headareasink <- function(xc,
+                         yc,
+                         hc,
+                         R,
+                         resistance = 0,
+                         location = c('top', 'base'),
+                         ...) {
   has <- areasink(xc = xc, yc = yc, N = 0, R = R, location = location)
   has$hc <- hc
   has$nunknowns <- 1

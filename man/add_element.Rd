@@ -18,7 +18,9 @@ add_element(aem, element, name = NULL, solve = FALSE, ...)
 \item{...}{ignored}
 }
 \value{
-The \code{aem} model with the addition of \code{element}. If \code{solve = TRUE}, the model is solved using \code{\link[=solve.aem]{solve.aem()}}.
+The \code{aem} model with the addition of \code{element}. If \code{solve = TRUE}, the model is solved using
+\code{\link[=solve.aem]{solve.aem()}}. The name of the element is taken from the \code{name} argument, the object name or set
+to \code{element_1} with \code{1} being the index of the new element in the element list. See examples.
 }
 \description{
 Add element to existing \code{aem} object
@@ -26,14 +28,19 @@ Add element to existing \code{aem} object
 \examples{
 m <- aem(k = 10, top = 10, base = 0, n = 0.2)
 add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
+
+# if name not supplied, tries to obtain it from object name
+rf <- constant(xc = 0, yc = 1000, hc = 12)
+add_element(m, rf)
+
+# or else sets it sequentially from number of elements
+add_element(m, constant(xc = 0, yc = 1000, hc = 12))
 \dontshow{if (getRversion() >= '4.1.0') (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # add_element() is pipe-friendly
 aem(k = 10, top = 10, base = 0, n = 0.2) |>
-    add_element(constant(xc = 0, yc = 1000, hc = 12),
-                name = 'rf') |>
+    add_element(rf, name = 'rf') |>
     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
                 name = 'headwell', solve = TRUE)
-
 \dontshow{\}) # examplesIf}
 }
 \seealso{

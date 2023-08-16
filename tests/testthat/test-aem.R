@@ -35,7 +35,13 @@ test_that('aem keeps names of element list', {
     add_element(w, name = 'well') |>
     add_element(uf, name = 'flow', solve = TRUE)
   expect_named(m$elements, c('constant', 'well', 'flow'))
-  expect_error(add_element(m, rf, name = 'constant'))
+  expect_error(add_element(m, rf, name = 'constant')) # duplicated name
+
+  m <- aem(k, top, base, n) |>
+    add_element(rf) |>
+    add_element(w, name = 'well') |>
+    add_element(uniformflow(gradient = 0.002, angle = -45, TR = TR), solve = TRUE)
+  expect_named(m$elements, c('rf', 'well', paste('element', length(m$elements), sep = '_')))
 })
 
 test_that('when solving aem, matrix is not singular', {
@@ -147,13 +153,13 @@ test_that('aem is exact for 2D flow with a well in uniform background flow near 
   m <- aem(k, top, base, n = 0.2, uf, w, rf, type = 'confined')
   lseg <- 10
   for(n in c(seq(-1005, -105, lseg), seq(105, 1005, lseg))) {
-    hls <- headlinesink(x0 = 0, x1 = 0, y0 = n - 0.5*lseg, y1 = n + 0.5*lseg, hc = h0)
-    m <- add_element(m, hls, solve = FALSE)
+    m <- add_element(m, headlinesink(x0 = 0, x1 = 0, y0 = n - 0.5*lseg, y1 = n + 0.5*lseg, hc = h0),
+                     solve = FALSE)
   }
   lseg <- 1
   for(n in seq(-100, 100, lseg)) {
-    hls <- headlinesink(x0 = 0, x1 = 0, y0 = n - 0.5*lseg, y1 = n + 0.5*lseg, hc = h0)
-    m <- add_element(m, hls, solve = FALSE)
+    m <- add_element(m, headlinesink(x0 = 0, x1 = 0, y0 = n - 0.5*lseg, y1 = n + 0.5*lseg, hc = h0),
+                     solve = FALSE)
   }
   m <- solve(m)
 
@@ -162,11 +168,6 @@ test_that('aem is exact for 2D flow with a well in uniform background flow near 
 
   # with tolerance this passes
   expect_equal(Re(om(xg, 0))/TR, heads(m, xg, 0), tolerance = 1e-1)
-
-  # compare visually,
-  # TODO remove this from final test
-  # plot(xg, Re(om(xg, 0))/TR)
-  # lines(xg, heads(m, xg, 0))
 
 })
 

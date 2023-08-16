@@ -39,19 +39,20 @@ test_that("well singularities are handled", {
 test_that("headwell works correctly", {
 
   k <- 10; top <- 10; base <- 0; n <- 0.2
-  rf <- constant(-1000, 0, 10)
+  rf <- constant(-1000, 0, 7)
   hw <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3)
   m <- aem(k, top, base, n, rf, hw)
 
   expect_equal(heads(m, hw$xc, hw$yc), 8)
 
-  hw2 <- headwell(xw = 200, yw = 100, hc = 8, rw = 0.3, xc = 100, yc = 100, rc = 0)
+  # injection
+  hw2 <- headwell(xw = 200, yw = 100, hc = 10, rw = 0.3, xc = 100, yc = 100, rc = 0)
   m <- aem(k, top, base, n, rf, hw2)
 
-  expect_equal(heads(m, 100, 100), 8)
+  expect_equal(heads(m, 100, 100), hw2$hc)
 
   # resistance
-  hc <- 8; res <- 20
+  hc <- 5; res <- 20
   hw <- headwell(xw = 200, yw = 100, hc = hc, rw = 0.3, res = res)
   m <- aem(k, top, base, n, rf, hw, type = 'confined')
   Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
@@ -62,3 +63,4 @@ test_that("headwell works correctly", {
   Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
   expect_equal(Q, -m$elements$hw$parameter)
 })
+

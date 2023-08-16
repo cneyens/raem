@@ -211,8 +211,6 @@ equation <- function(element, aem, id, ...) {
   resf <- resfac(element, aem)
 
   if(inherits(element, 'linedoublet')) {
-    # TODO remove this warning
-    if(aem$type == 'variable') warning('linedoublets do not yet work properly for unconfined flow', call. = FALSE)
     rhs <- 0
     tol <- 1e-12
     theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
@@ -224,33 +222,13 @@ equation <- function(element, aem, id, ...) {
     for(i in aem$elements) {
       if(i$nunknowns > 0) {
         Qinf <- domegainf(i, xc, yc)
-
-        # TODO REVIEW THIS + resfac for linedoublet
-        # writen in terms of potential instead of heads
-
-        # dphi <- potinf(i, xci, yci) - potinf(i, xco, yco)
-        # b <- satthick(aem, xc, yc)
-        # b <- ifelse(b == 0, 1e-12, b)
-        # row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
-
-        # potential to head not intended to work with potinf
-        dh <- potential_to_head(aem, potinf(i, xci, yci), na.below = FALSE) -
-          potential_to_head(aem, potinf(i, xco, yco), na.below = FALSE)
-        row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dh)
+        dphi <- potinf(i, xci, yci) - potinf(i, xco, yco)
+        row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
 
       } else {
         Q <- domega(i, xc, yc)
-
-        # TODO REVIEW THIS  + resfac for linedoublet
-        # writen in terms of potential instead of heads
-        # dphi <- potential(i, xci, yci) - potential(i, xco, yco)
-        # b <- satthick(aem, xc, yc)
-        # b <- ifelse(b == 0, 1e-12, b)
-        # rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi)
-
-        dh <- potential_to_head(aem, potential(i, xci, yci), na.below = FALSE) -
-          potential_to_head(aem, potential(i, xco, yco), na.below = FALSE)
-        rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dh)
+        dphi <- potential(i, xci, yci) - potential(i, xco, yco)
+        rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi)
       }
     }
 
@@ -304,31 +282,40 @@ element <- function(p, un = 0, ...) {
 #' @noRd
 #'
 resfac <- function(element, aem) {
-  # TODO verify these for unconfined flow
 
   if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
-  # b <- satthick(aem, element$xc, element$yc)
 
   if(inherits(element, 'inhomogeneity')) {
     resfac <- aem$k / (element$k - aem$k)
 
   } else if(inherits(element, 'linedoublet')) {
-    b <- satthick(aem, element$xc, element$yc)
-    if(element$resistance == 0) element$resistance <- 1e-12
+    if(aem$type == 'confined') {
+      b <- satthick(aem, element$xc, element$yc)
+      bsat <- b
+    } else {
+      tol <- 1e-12
+      theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+      xci <- element$xc - tol * cos(theta_norm)
+      yci <- element$yc - tol * sin(theta_norm)
+      xco <- element$xc + tol * cos(theta_norm)
+      yco <- element$yc + tol * sin(theta_norm)
 
-    # TODO REVIEW THIS !!!!!!
-    resfac <- aem$k * b / element$resistance # ??? dimensions do not seem to match
-    # resfac <- b / element$resistance
-    # resfac <- 1/(aem$k * head_to_potential(aem, b) * element$resistance)
+      hi <- heads(aem, c(xci), c(yci), na.below = FALSE)
+      ho <- heads(aem, c(xco), c(yco), na.below = FALSE)
+      b <- ifelse(hi >= aem$top, aem$top - aem$base, 0.5*(hi + ho))
+      bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
+    }
+    if(element$resistance == 0) element$resistance <- 1e-12
+    resfac <- bsat / (element$resistance * b)
 
   } else if(inherits(element, 'headwell')) {
     if(aem$type == 'confined') {
       b <- satthick(aem, element$xc, element$yc)
       bsat <- b
     } else {
-      h <- heads(aem, element$xc, element$yc)
+      h <- heads(aem, element$xc, element$yc, na.below = FALSE)
       b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
-      bsat <- satthick(aem, element$xc, element$yc)
+      bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
     }
     resfac <- element$resistance * aem$k * b / (2 * pi * element$rw * bsat)
 
@@ -339,7 +326,7 @@ resfac <- function(element, aem) {
     if(aem$type == 'confined') {
       b <- satthick(aem, element$xc, element$yc)
     } else {
-      h <- heads(aem, element$xc, element$yc)
+      h <- heads(aem, element$xc, element$yc, na.below = FALSE)
       b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
     }
     resfac <- element$resistance * aem$k * b / width
@@ -349,7 +336,7 @@ resfac <- function(element, aem) {
     if(aem$type == 'confined') {
       b <- satthick(aem, element$xc, element$yc)
     } else {
-      h <- heads(aem, element$xc, element$yc)
+      h <- heads(aem, element$xc, element$yc, na.below = FALSE)
       b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
     }
     resfac <- -element$resistance * aem$k * b
@@ -357,7 +344,8 @@ resfac <- function(element, aem) {
   } else {
     resfac <- rep(0, length(element$xc))
   }
-  resfac <- ifelse(is.na(resfac), 0, resfac) # if bsat = 0 in headwell in first iteration
+
+  resfac <- ifelse(is.na(resfac), 0, resfac) # if bsat or b in denominator = 0 in first iteration
   return(resfac)
 }
 
@@ -369,29 +357,42 @@ resfac <- function(element, aem) {
 #' @param solve logical, should the model be solved after adding the new element? Defaults to `FALSE`.
 #' @param ... ignored
 #'
-#' @return The `aem` model with the addition of `element`. If `solve = TRUE`, the model is solved using [solve.aem()].
+#' @return The `aem` model with the addition of `element`. If `solve = TRUE`, the model is solved using
+#'    [solve.aem()]. The name of the element is taken from the `name` argument, the object name or set
+#'    to `element_1` with `1` being the index of the new element in the element list. See examples.
 #' @export
 #' @seealso [aem()]
 #' @examples
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2)
 #' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
+#'
+#' # if name not supplied, tries to obtain it from object name
+#' rf <- constant(xc = 0, yc = 1000, hc = 12)
+#' add_element(m, rf)
+#'
+#' # or else sets it sequentially from number of elements
+#' add_element(m, constant(xc = 0, yc = 1000, hc = 12))
 #' @examplesIf getRversion() >= '4.1.0'
 #' # add_element() is pipe-friendly
 #' aem(k = 10, top = 10, base = 0, n = 0.2) |>
-#'     add_element(constant(xc = 0, yc = 1000, hc = 12),
-#'                 name = 'rf') |>
+#'     add_element(rf, name = 'rf') |>
 #'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
 #'                 name = 'headwell', solve = TRUE)
-#'
 #'
 add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
   if(!inherits(aem, 'aem')) stop('\'aem\' object should be of class aem', call. = FALSE)
   if(!inherits(element, 'element')) stop('\'element\' object should be of class element', call. = FALSE)
   if(is.null(aem$elements)) aem$elements <- list()
   aem$elements[[length(aem$elements) + 1]] <- element
+  if(is.null(name)) {
+    name <- sapply(substitute(element), deparse) # object name
+    if(length(name) > 1) name <- NULL # weak test ...
+  }
   if(!is.null(name)) {
     if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
     names(aem$elements)[length(aem$elements)] <- name
+  } else {
+    names(aem$elements)[length(aem$element)] <- paste('element', length(aem$elements), sep = '_')
   }
   if(solve) {
     aem <- solve(aem)
