@@ -4,7 +4,7 @@
 \alias{headlinesink}
 \title{Create a head-specified line-sink analytic element}
 \usage{
-headlinesink(x0, y0, x1, y1, hc, resistance = 0, ...)
+headlinesink(x0, y0, x1, y1, hc, resistance = 0, width = 0, ...)
 }
 \arguments{
 \item{x0}{numeric, starting x location of line-sink}
@@ -19,6 +19,9 @@ headlinesink(x0, y0, x1, y1, hc, resistance = 0, ...)
 
 \item{resistance}{numeric, hydraulic resistance of the line-sink at its connection with the aquifer. Defaults to 0 (no resistance).}
 
+\item{width}{numeric, width of the line-sink. Used with \code{resistance} to calculate the line-sink strength, and by \code{\link[=tracelines]{tracelines()}} to
+determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).}
+
 \item{...}{ignored}
 }
 \value{
@@ -29,18 +32,19 @@ Head-specified line-sink analytic element which is an object of class \code{head
 into the line-sink per unit length is computed by solving the corresponding \code{aem} model.
 }
 \details{
-The discharge from the line-sink is computed by solving the \code{aem} model given
-the specified head \code{hc} for the line-sink. This head is located at the so-called collocation point,
-which is placed at the center of the line-sink.
+The strength of the line-sink (discharge per unit length of line-sink) is computed by solving
+the \code{aem} model given the specified head \code{hc} for the line-sink. This head is located at the so-called
+collocation point, which is placed at the center of the line-sink.
 
 The resistance can be increased for a line-sink in poor connection with the aquifer. The effect of a larger
-or smaller wetted perimeter can be mimicked by adjusting the resistance accordingly. If the aquifer is
-unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
-with respect to the hydraulic head and iteration is required to solve the model.
+or smaller wetted perimeter can be mimicked by adjusting the \code{resistance} and/or \code{width} accordingly. If
+\code{width = 0} (the default) it is removed from the conductance calculation. If the aquifer is unconfined
+(i.e. has a variable saturated thickness), the system of equations becomes non-linear with respect to the
+hydraulic head and iteration is required to solve the model.
 }
 \examples{
 headlinesink(-75, 50, 100, 50, hc = 10)
-headlinesink(-75, 50, 100, 50, hc = 10, res = 10)
+headlinesink(-75, 50, 100, 50, hc = 10, res = 10, width = 4)
 
 }
 \seealso{

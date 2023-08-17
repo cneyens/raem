@@ -72,7 +72,7 @@ reached_line <- function(line, x, y, ...) {
   l0 <- c(Re(line$z0), Im(line$z0), 0)
   l1 <- c(Re(line$z1), Im(line$z1), 0)
   p <- c(x, y, 0)
-  width <- ifelse(is.null(line$width), 0, line$width) # TODO implement width in linesinks elements
+  width <- line$width
   pol <- point_on_line(l0, l1, p, width = width, ...)
   return(pol)
 }
@@ -154,8 +154,8 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @details [deSolve::lsoda()] is used to numerically integrate the velocity vector.
 #'
 #' Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
-#'    have crossed a line element or when they travel above the saturated aquifer level (i.e.
-#'    the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
+#'    have crossed a line element (or enter half its non-zero width on either side) or when they travel above the saturated aquifer
+#'    level (i.e. the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
 #'    Note that these last two conditions can only occur in models with vertical flow components.
 #'    The returned time value is the time of termination.
 #'
@@ -209,7 +209,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # Termination at wells and line-sinks
 #' w1 <- well(200, 50, Q = 250)
 #' w2 <- well(-200, -100, Q = 450)
-#' ls <- headlinesink(-100, 100, 400, -300, 7)
+#' ls <- headlinesink(x0 = -100, y0 = 100, x1 = 400, y1 = -300, hc = 7)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)

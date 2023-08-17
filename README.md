@@ -21,7 +21,7 @@ devtools::install_github("cneyens/raem")
 
 ## Example
 
-Construct an analytic element model of a confined aquifer with uniform
+Construct an analytic element model of an aquifer with uniform
 background flow, two extraction wells and a reference point.
 
 Specify the aquifer parameters and create elements:

@@ -325,7 +325,8 @@ resfac <- function(element, aem) {
     resfac <- element$resistance * aem$k * b / (2 * pi * element$rw * bsat)
 
   } else if(inherits(element, 'headlinesink')) {
-    width <- ifelse(is.null(element$width), 1, element$width)
+    # remove width if width = 0
+    width <- ifelse(element$width == 0, 1, element$width)
 
     # Haitjema, 1995, eq. 5.64 & 5.66
     if(aem$type == 'confined') {

@@ -92,6 +92,7 @@ test_that('termination in tracelines works', {
   n <- 0.2
   xw <- 200; yw <- 0; rw <- 0.3
 
+  # well
   w <- well(xw, yw, 400, rw = rw)
   uf <- uniformflow(TR = 100, gradient = 0.001, angle = 0)
   rf <- constant(-1000, 0, 20)
@@ -99,7 +100,7 @@ test_that('termination in tracelines works', {
   m <- aem(k, top, base, n = n, uf, w, type = 'confined')
 
   x0 <- -200; y0 <- seq(-100, 100, length = 10)
-  times <- seq(0, 10 * 365, 365 / 20)
+  times <- seq(0, 10 * 365, 365 / 40)
 
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
   endp <- endpoints(paths)
@@ -107,17 +108,30 @@ test_that('termination in tracelines works', {
   expect_true(all(abs(endp[,'x'] - xw) < 0.3))
   expect_true(all(abs(endp[,'y'] - yw) < 0.3))
 
+  # line-sinks
   lsx <- xw
   lsy <- c(-500, 500)
   rf <- constant(-1000, 0, 15)
   ls <- headlinesink(lsx, lsy[1], lsx, lsy[2], hc = 12)
   m <- aem(k, top, base, n = n, uf, ls, rf, type = 'confined')
 
-  tol <- 1e-1
+  tol <- 1e-3
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tol = tol)
   endp <- endpoints(paths)
 
   expect_equal(endp[,'x'], rep(lsx, nrow(endp)), tolerance = tol)
+
+  # line-sinks with width
+  width <- 50
+  ls <- headlinesink(lsx, lsy[1], lsx, lsy[2], hc = 12, width = width)
+  m <- aem(k, top, base, n = n, uf, ls, rf, type = 'confined')
+
+  tol <- 1e-2
+  times <- seq(0, 10 * 365, 365 / 100) # increased time resolution
+  paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tol = tol)
+  endp <- endpoints(paths)
+
+  expect_equal(endp[,'x'], rep(lsx - width/2, nrow(endp)), tolerance = tol)
 
 })
 

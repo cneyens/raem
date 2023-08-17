@@ -4,7 +4,7 @@
 \alias{linesink}
 \title{Create a strength-specified line-sink analytic element}
 \usage{
-linesink(x0, y0, x1, y1, sigma, ...)
+linesink(x0, y0, x1, y1, sigma, width = 0, ...)
 }
 \arguments{
 \item{x0}{numeric, starting x location of line-sink}
@@ -15,8 +15,9 @@ linesink(x0, y0, x1, y1, sigma, ...)
 
 \item{y1}{numeric, ending y location of line-sink}
 
-\item{sigma}{numeric, specific strength of the line-sink, i.e. discharge per length of line-sink.
-Positive is out of aquifer.}
+\item{sigma}{numeric, specific strength of the line-sink, i.e. discharge per length of line-sink. Positive is out of aquifer.}
+
+\item{width}{numeric, width of the line-sink. Only used in \code{\link[=tracelines]{tracelines()}} to determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).}
 
 \item{...}{ignored}
 }

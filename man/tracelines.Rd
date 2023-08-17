@@ -80,8 +80,8 @@ tracelines.
 \code{\link[deSolve:lsoda]{deSolve::lsoda()}} is used to numerically integrate the velocity vector.
 
 Particles are terminated prematurely when they have reached the inner annulus of well elements, when they
-have crossed a line element or when they travel above the saturated aquifer level (i.e.
-the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
+have crossed a line element (or enter half its non-zero width on either side) or when they travel above the saturated aquifer
+level (i.e. the water-table for unconfined conditions or the aquifer top for confined conditions), or below the aquifer base.
 Note that these last two conditions can only occur in models with vertical flow components.
 The returned time value is the time of termination.
 
@@ -125,7 +125,7 @@ plot(paths_back, add = TRUE, col = 'forestgreen', marker = 5*365, cex = 0.5)
 # Termination at wells and line-sinks
 w1 <- well(200, 50, Q = 250)
 w2 <- well(-200, -100, Q = 450)
-ls <- headlinesink(-100, 100, 400, -300, 7)
+ls <- headlinesink(x0 = -100, y0 = 100, x1 = 400, y1 = -300, hc = 7)
 
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
