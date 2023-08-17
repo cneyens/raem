@@ -2,7 +2,7 @@
 % Please edit documentation in R/linedoublet.R
 \name{linedoublet}
 \alias{linedoublet}
-\title{Create a strength-specified line-doublet analytic element}
+\title{Create a line-doublet analytic element with a specified resistance}
 \usage{
 linedoublet(x0, y0, x1, y1, resistance, ...)
 }
@@ -20,17 +20,22 @@ linedoublet(x0, y0, x1, y1, resistance, ...)
 \item{...}{ignored}
 }
 \value{
-Strength-specified line-doublet analytic element which is an object of class \code{linedoublet} and inherits from \code{element}.
+Resistance-specified line-doublet analytic element which is an object of class \code{linedoublet} and inherits from \code{element}.
 }
 \description{
-\code{\link[=linedoublet]{linedoublet()}} creates a line-doublet analytic element with constant specified strength.
+\code{\link[=linedoublet]{linedoublet()}} creates a line-doublet analytic element with a constant specified resistance
 }
 \details{
-The resistance is used to calculate the strength of the line-doublet. If the aquifer is
+The resistance is used to calculate the constant strength of the line-doublet. If the aquifer is
 unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
 with respect to the hydraulic head and iteration is required to solve the model.
+
+For the special case that \code{resistance = Inf}, the line-doublet models an impermeable wall.
 }
 \examples{
 linedoublet(-75, 50, 100, 50, res = 500)
+
+# Impermeable wall
+linedoublet(-75, 50, 100, 50, resistance = Inf)
 
 }

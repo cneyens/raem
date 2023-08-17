@@ -224,7 +224,34 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
 #'
 velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
   q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
-  v <- q / (aem$n * R)
+
+  # reset porosity if inhomogeneities exist
+  inh <- which(vapply(aem$elements, function(i) inherits(i, 'inhomogeneity'), TRUE))
+  if(length(inh) > 0) {
+    if(as.grid) {
+      df <- expand.grid(x = x, y = y)
+      gx <- df$x
+      gy <- df$y
+    } else {
+      gx <- x
+      gy <- y
+    }
+    pts <- cbind(x = gx, y = gy)
+    poro <- rep(aem$n, nrow(pts))
+
+    for(i in inh) {
+      el <- aem$elements[[i]]
+      poly <- el$vertices
+      pip <- apply(pts, 1, point_in_polygon, polygon = poly)
+      poro[pip] <- el$n
+    }
+    poro <- array(poro, dim = dim(q))
+    if(as.grid) poro <- image_to_matrix(poro) # TODO check this
+  } else {
+    poro <- aem$n
+  }
+
+  v <- q / (poro * R)
   ndim <- ifelse(as.grid, 4, 2)
   dimnames(v)[[ndim]] <- c('vx', 'vy', 'vz', 'v')[1:ifelse(magnitude, 4, 3)]
   return(v)

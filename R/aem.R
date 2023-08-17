@@ -289,24 +289,29 @@ resfac <- function(element, aem) {
     resfac <- aem$k / (element$k - aem$k)
 
   } else if(inherits(element, 'linedoublet')) {
-    if(aem$type == 'confined') {
-      b <- satthick(aem, element$xc, element$yc)
-      bsat <- b
+    if(element$resistance == Inf) { # Impermeable wall
+      resfac <- rep(0, length(element$xc))
     } else {
-      tol <- 1e-12
-      theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
-      xci <- element$xc - tol * cos(theta_norm)
-      yci <- element$yc - tol * sin(theta_norm)
-      xco <- element$xc + tol * cos(theta_norm)
-      yco <- element$yc + tol * sin(theta_norm)
+      if(aem$type == 'confined') {
+        b <- satthick(aem, element$xc, element$yc)
+        bsat <- b
+      } else {
+        tol <- 1e-12
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+        xci <- element$xc - tol * cos(theta_norm)
+        yci <- element$yc - tol * sin(theta_norm)
+        xco <- element$xc + tol * cos(theta_norm)
+        yco <- element$yc + tol * sin(theta_norm)
 
-      hi <- heads(aem, c(xci), c(yci), na.below = FALSE)
-      ho <- heads(aem, c(xco), c(yco), na.below = FALSE)
-      b <- ifelse(hi >= aem$top, aem$top - aem$base, 0.5*(hi + ho))
-      bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
+        hi <- heads(aem, c(xci), c(yci), na.below = FALSE)
+        ho <- heads(aem, c(xco), c(yco), na.below = FALSE)
+        b <- ifelse(hi >= aem$top, aem$top - aem$base, 0.5*(hi + ho))
+        bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
+      }
+      if(element$resistance == 0) element$resistance <- 1e-12
+      resfac <- bsat / (element$resistance * b)
     }
-    if(element$resistance == 0) element$resistance <- 1e-12
-    resfac <- bsat / (element$resistance * b)
+
 
   } else if(inherits(element, 'headwell')) {
     if(aem$type == 'confined') {

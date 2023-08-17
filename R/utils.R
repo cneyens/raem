@@ -270,3 +270,51 @@ element_discharge <- function(aem, name = NULL, type = NULL, ...) {
   }
   return(Q)
 }
+
+
+#' Determine if point is inside polygon
+#'
+#' [point_in_polygon()] determines if a point is inside a polygon. Points on the line are treated
+#'    as outside. This is an implementation of a ray-casting algorithm.
+#'
+#' @param point numeric vector of length 2 with x and y coordinates of point
+#' @param polygon matrix with columns x and y containing the vertices of the polygon. It should not be closed.
+#'
+#' @return A logical indicating if the point lies inside the polygon.
+#' @noRd
+#'
+#' @examples
+#' poly <- rbind(c(-0.25, 0.25), c(0.32, 0.64), c(-0.25, 1.5), c(1, 1), c(0.76, 0.3),
+#'               c(0.25, -0.25), c(-0.25, -0.5))
+#'
+#' pinside <- c(0.5,0.5) # point inside the poly
+#' poutside <- c(1.5,1) # point outside the poly
+#'
+#' point_in_polygon(pinside, poly)
+#' point_in_polygon(poutside, poly)
+#'
+#' n <- 1000
+#' rpts <- cbind(x = runif(n, -0.5, 1.5), y = runif(n, -1, 2))
+#' io <- apply(rpts, 1, point_in_polygon, polygon = poly)
+#' df <- cbind(as.data.frame(rpts), col = ifelse(io, 'blue', 'red'))
+#'
+#' plot(df$x, df$y, col = df$col, xlim = c(-0.6, 1.6), ylim = c(-1.1, 2.1))
+#' polygon(poly)
+#'
+point_in_polygon <- function(point, polygon) {
+  x <- point[1]
+  y <- point[2]
+  poly_x <- polygon[,1]
+  poly_y <- polygon[,2]
+  nvert <- length(poly_x)
+  inside <- FALSE
+  j <- nvert
+  for (i in 1:nvert) {
+    if (((poly_y[i] > y) != (poly_y[j] > y)) &&
+        (x < (poly_x[j] - poly_x[i]) * (y - poly_y[i]) / (poly_y[j] - poly_y[i]) + poly_x[i])) {
+      inside <- !inside
+    }
+    j <- i
+  }
+  return(inside)
+}
