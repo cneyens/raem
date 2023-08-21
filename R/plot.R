@@ -122,6 +122,9 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param pch numeric point symbol value, defaults to `16`.
 #' @param cex numeric symbol size value, defaults to `0.75`.
+#' @param use.widths logical, if line elements with non-zero width are plotted, should they be plotted as polygons including
+#'    the width (`TRUE`; default) or as infinitesimally thin lines (`FALSE`)?
+#' @param col color of element. Defaults to `'black'`.
 #'
 #' @details If the analytic element has a point geometry and has a collocation point
 #'    (e.g. [headwell()]), that point is also plotted.
@@ -131,7 +134,7 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #'    clutter the plot.
 #'
 #' @export
-#' @importFrom graphics points lines plot.new
+#' @importFrom graphics points lines plot.new polygon frame plot.window axis box
 #' @rdname aem
 #' @include aem.R
 #' @examples
@@ -140,7 +143,7 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' plot(w, add = TRUE)
 #' plot(uf) # empty
 #'
-plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
+plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.widths = TRUE, col = 'black', ...) {
   element <- x
   if(inherits(element, 'well')) {
     x <- Re(element$zetaw)
@@ -150,17 +153,44 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
       y[2] <- element$yc
     }
     if(add) {
-      return(points(x, y, pch = pch, cex = cex, ...))
+      return(points(x, y, pch = pch, cex = cex, col = col, ...))
     } else {
-      return(plot(x, y, pch = pch, cex = cex, ...))
+      return(plot(x, y, pch = pch, cex = cex, col = col, ...))
     }
   } else if(inherits(element, 'linesink') || inherits(element, 'linedoublet')) {
     x <- c(Re(element$z0), Re(element$z1))
     y <- c(Im(element$z0), Im(element$z1))
+    width <- ifelse(is.null(element$width), 0, element$width)
     if(add) {
-      return(lines(x, y, ...))
+      if(use.widths && width > 0) {
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+        xci <- x - 0.5 * width * cos(theta_norm)
+        yci <- y - 0.5 * width * sin(theta_norm)
+        xco <- x + 0.5 * width * cos(theta_norm)
+        yco <- y + 0.5 * width * sin(theta_norm)
+        poly <- matrix(c(xci[1], yci[1], xci[2], yci[2], xco[2], yco[2], xco[1], yco[1]),
+                       byrow = TRUE, ncol = 2)
+        return(polygon(poly, col = col, ...))
+      } else {
+        return(lines(x, y, col = col, ...))
+      }
     } else {
-      return(plot(x, y, type = 'l', ...))
+      if(use.widths && width > 0) {
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+        xci <- x - 0.5 * width * cos(theta_norm)
+        yci <- y - 0.5 * width * sin(theta_norm)
+        xco <- x + 0.5 * width * cos(theta_norm)
+        yco <- y + 0.5 * width * sin(theta_norm)
+        poly <- matrix(c(xci[1], yci[1], xci[2], yci[2], xco[2], yco[2], xco[1], yco[1]),
+                       byrow = TRUE, ncol = 2)
+
+        frame()
+        plot.window(range(c(xci, xco)), range(c(yci, yco)))
+        polygon(poly, col = col, ...)
+        axis(1); axis(2); box()
+      } else {
+        return(plot(x, y, type = 'l', col = col, ...))
+      }
     }
   } else {
     if(add) {
@@ -183,7 +213,7 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...) {
 #' @importFrom graphics frame plot.window axis box
 #' @rdname aem
 #' @include aem.R
-#' @seealso [plot.element()]
+#' @seealso [contours()]
 #' @examples
 #' plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 #'

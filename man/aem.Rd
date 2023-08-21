@@ -20,7 +20,16 @@ aem(
 
 \method{solve}{aem}(a, b, maxiter = 10, verbose = FALSE, ...)
 
-\method{plot}{element}(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, ...)
+\method{plot}{element}(
+  x,
+  y = NULL,
+  add = FALSE,
+  pch = 16,
+  cex = 0.75,
+  use.widths = TRUE,
+  col = "black",
+  ...
+)
 
 \method{plot}{aem}(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...)
 }
@@ -55,6 +64,11 @@ aem(
 
 \item{cex}{numeric symbol size value, defaults to \code{0.75}.}
 
+\item{use.widths}{logical, if line elements with non-zero width are plotted, should they be plotted as polygons including
+the width (\code{TRUE}; default) or as infinitesimally thin lines (\code{FALSE})?}
+
+\item{col}{color of element. Defaults to \code{'black'}.}
+
 \item{xlim}{numeric, plot limits along the x-axis. Required if \code{add = FALSE}.}
 
 \item{ylim}{numeric, plot limits along the y-axis. Required if \code{add = FALSE}.}
@@ -66,7 +80,7 @@ aem(
 a list containing all elements with the names of the objects specified in \code{...}, and a logical \code{solved}
 indicating if the model is solved.
 
-The solved \code{aem} object, i.e. after finding the solution
+\code{\link[=solve.aem]{solve.aem()}} returns the solved \code{aem} object, i.e. after finding the solution
 to the system of equations as constructed by the contained elements.
 }
 \description{
@@ -150,5 +164,5 @@ plot(m, add = TRUE)
 \seealso{
 \code{\link[=add_element]{add_element()}} \code{\link[=contours]{contours()}}
 
-\code{\link[=plot.element]{plot.element()}}
+\code{\link[=contours]{contours()}}
 }

@@ -99,7 +99,7 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose 
 #'    solve a linear system of equations. The model parameters are then updated and the next outer iteration step is
 #'    entered, until `maxiter` iterations are reached. For an linear model, `maxiter` is ignored.
 #'
-#' @return The solved `aem` object, i.e. after finding the solution
+#' @return [solve.aem()] returns the solved `aem` object, i.e. after finding the solution
 #'     to the system of equations as constructed by the contained elements.
 #' @export
 #' @rdname aem
