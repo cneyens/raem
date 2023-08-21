@@ -46,6 +46,8 @@ to \code{x1-y1}).
 
 If \code{split = FALSE} (the default), a single value is returned which is the sum of the positive and negative flows perpendicular to the line.
 If \code{split = TRUE}, both the positive and negative component of the total flow through the line are returned.
+
+If the line corresponds to a line element, the integration might fail. Try to perturbate the line vertices slightly in that case.
 }
 \examples{
 rf <- constant(-1000, 0, hc = 10)

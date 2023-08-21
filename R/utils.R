@@ -134,6 +134,8 @@ dirflow <- function(aem, x, y, angle,
 #' If `split = FALSE` (the default), a single value is returned which is the sum of the positive and negative flows perpendicular to the line.
 #'    If `split = TRUE`, both the positive and negative component of the total flow through the line are returned.
 #'
+#' If the line corresponds to a line element, the integration might fail. Try to perturbate the line vertices slightly in that case.
+#'
 #' @return If `split = FALSE`, a single value with the total flow of variable `flow` passing through the line at a right angle.
 #'    If `split = TRUE` a named vector with the total positive and total negative value of `flow` passing through the line.
 #' @export

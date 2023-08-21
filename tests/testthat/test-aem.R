@@ -310,7 +310,7 @@ test_that('resistances work', {
   h0 <- 10
   phi0 <- h0 * TR
   res <- 10
-  width <- 1  # TODO allow for width in linesink
+  width <- 2
   C <- width / res
 
   xg <- seq(-500, 0, length = 100)
@@ -318,7 +318,7 @@ test_that('resistances work', {
 
   rf <- constant(-1000, 0, h0 + i*1000)
   uf <- uniformflow(TR, i, 0)
-  hls <- headlinesink(0, -1000, 0, 1000, hc = h0, res = res)
+  hls <- headlinesink(0, -1000, 0, 1000, hc = h0, res = res, width = width)
   m <- aem(k, top, base, n, rf, uf, hls, type = 'confined')
   h2 <- heads(m, xg, 0)
 
