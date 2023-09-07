@@ -17,7 +17,7 @@ test_that("linedoublets work", {
 
   dh <- heads(m, ld$xc + 1e-12, ld$yc + 1e-12) - heads(m, ld$xc - 1e-12, ld$yc - 1e-12)
   df <- dirflow(m, ld$xc, ld$yc, angle = 45, flow = 'darcy')
-  expect_equal(df, -dh * k / res) # *k ?
+  expect_equal(df, -dh / res)
 
   # unconfined
   m2 <- aem(k, top, base, n, uf, rf, ld, type = 'variable')
@@ -28,7 +28,7 @@ test_that("linedoublets work", {
   hi <- heads(m2, ld$xc + 1e-12, ld$yc + 1e-12)
   ho <- heads(m2, ld$xc - 1e-12, ld$yc - 1e-12)
   dh <- hi - ho
-  expect_equal(df, -dh * k / res) # *k ?
+  expect_equal(df, -dh / res)
 
 })
 

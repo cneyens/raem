@@ -309,7 +309,7 @@ resfac <- function(element, aem) {
         bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
       }
       if(element$resistance == 0) element$resistance <- 1e-12
-      resfac <- bsat / (element$resistance * b)
+      resfac <- bsat / (element$resistance * b * aem$k)
     }
 
 
