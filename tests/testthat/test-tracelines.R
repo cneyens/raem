@@ -156,7 +156,7 @@ test_that('capzone works', {
   uf <- uniformflow(k*H, gradient = -i, angle = 0)
   m <- aem(k, top, base, n, uf, w, type = 'confined')
   t <- 365*5
-  cp5 <- capzone(m, w, time = t, as.poly = FALSE)
+  cp5 <- capzone(m, w, time = t)
   endp <- endpoints(cp5)[-1,] # not include first value
   t_exact <- trav_time(endp[,'x'], endp[,'y'])
 

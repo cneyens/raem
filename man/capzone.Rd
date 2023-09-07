@@ -5,18 +5,16 @@
 \alias{plot.capzone}
 \title{Calculate capture zone of a well element}
 \usage{
-capzone(
-  aem,
-  well,
-  time,
-  npar = 30,
-  dt = time/100,
-  zstart = aem$base,
+capzone(aem, well, time, npar = 30, dt = time/100, zstart = aem$base, ...)
+
+\method{plot}{capzone}(
+  x,
+  y = NULL,
   as.poly = TRUE,
+  col = ifelse(as.poly, "#BEBEBE90", "black"),
+  add = FALSE,
   ...
 )
-
-\method{plot}{capzone}(x, y = NULL, col = "#BEBEBE90", add = FALSE, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -29,41 +27,37 @@ capzone(
 
 \item{dt}{numeric, time discretization used in the particle tracking. Defaults \code{time / 100}.}
 
-\item{zstart}{numeric vector with the starting elevations of the particles. Defaults to the base of the aquifer. See details.}
+\item{zstart}{numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.}
 
-\item{as.poly}{logical, should the convex hull of the traces (default) be returned or the paths. See details.}
-
-\item{...}{additional arguments passed to \code{\link[=tracelines]{tracelines()}} for \code{\link[=capzone]{capzone()}} or additional arguments passed to \code{\link[=polygon]{polygon()}} when plotting.}
+\item{...}{additional arguments passed to \code{\link[=tracelines]{tracelines()}} for \code{\link[=capzone]{capzone()}} or additional arguments passed to \code{\link[=polygon]{polygon()}} or \code{\link[=plot.tracelines]{plot.tracelines()}} when plotting.}
 
 \item{x}{object of class \code{capzone}}
 
 \item{y}{ignored}
 
-\item{col}{colour of polygon. Defaults to a light grey with reduced opacity.}
+\item{as.poly}{logical, should the polygon of the capture zone be plotted as drawn from the endpoints (\code{TRUE}, default)
+or should the tracelines be plotted using \code{\link[=plot.tracelines]{plot.tracelines()}} (\code{FALSE})?}
+
+\item{col}{colour of polygon or tracelines. Defaults to a light grey with reduced opacity when \code{as.poly = TRUE} and \code{'black'} otherwise.}
 
 \item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 }
 \value{
-\code{\link[=capzone]{capzone()}} returns an object of class \code{capzone} if \code{as.poly = TRUE}, which is a matrix with columns \code{x} and \code{y}
-specifying the coordinates of the convex hull delineating the \code{time} capture zone of \code{well}.
-If \code{as.poly = FALSE}, the output of \code{\link[=tracelines]{tracelines()}} is returned directly.
+\code{\link[=capzone]{capzone()}} returns an object of class \code{capzone} which is simply the output of \code{\link[=tracelines]{tracelines()}} with an additional class
+used for calling the plot method.
 }
 \description{
 \code{\link[=capzone]{capzone()}} determines the capture zone of a well element in the flow field by performing backward
 particle tracking until the requested time is reached.
 
-\code{\link[=plot.capzone]{plot.capzone()}} plots a \code{capzone} object as a polygon.
+\code{\link[=plot.capzone]{plot.capzone()}} plots a \code{capzone} object as a polygon or draws the tracelines.
 }
 \details{
-Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}} and setting the \code{forward = FALSE}.
-Initial particle locations are computed by equally spacing \code{npar} locations at the well radius and repeating this
-for all \code{zstart} elevations. The total number of particles equals \code{npar * length(zstart)}. To obtain a sharper delineation
-of the capture zone, try using more particles.
+\code{\link[=capzone]{capzone()}} is a thin wrapper around \code{\link[=tracelines]{tracelines()}}. Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}}
+and setting \code{forward = FALSE}. Initial particle locations are computed by equally spacing \code{npar} locations at the well
+radius at the \code{zstart} elevation. To obtain a sharper delineation of the capture zone, try using more particles.
 
-Note that different \code{zstart} values only have an effect in models with vertical flow components, i.e. models with area-sinks.
-
-If \code{as.poly = TRUE}, the convex hull of all particle locations is computed and returned. If \code{FALSE},
-the output of \code{\link[=tracelines]{tracelines()}} is returned.
+Note that different \code{zstart} values only have an effect in models with vertical flow components.
 }
 \examples{
 
@@ -86,21 +80,19 @@ yg <- seq(-500, 500, length = 100)
 
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
-plot(cp10, add = TRUE)
+plot(cp10, add = TRUE, as.poly = FALSE) # plot tracelines instead of polygon
 
 # model with vertical flow components
 as <- areasink(0, 0, N = 0.001, R = 1500)
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 
-# three different starting levels, returns convex hull of all particles
-cp5 <- capzone(m, w1, time = 5*365, zstart = c(0, 5, 8))
+# two different starting levels
+cp5a <- capzone(m, w1, time = 5*365, zstart = base)
+cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-plot(cp5, add = TRUE)
-
-# one starting level at z = 8, smaller zone
-cp5_z8 <- capzone(m, w1, time = 5*365, zstart = 8)
-plot(cp5_z8, add = TRUE, col = 'orange3')
+plot(cp5a, add = TRUE)
+plot(cp5b, add = TRUE, col = 'orange3') # smaller zone
 
 }
 \seealso{

@@ -28,7 +28,6 @@ Collate:
 Imports: 
     deSolve,
     graphics,
-    grDevices,
     stats
 Suggests: 
     testthat (>= 3.0.0)

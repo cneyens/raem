@@ -334,26 +334,19 @@ endpoints <- function(tracelines, ...) {
 #' @param time numeric, time of the capture zone
 #' @param npar integer, number of particles to use in the backward tracking. Defaults to 30.
 #' @param dt numeric, time discretization used in the particle tracking. Defaults `time / 100`.
-#' @param zstart numeric vector with the starting elevations of the particles. Defaults to the base of the aquifer. See details.
-#' @param as.poly logical, should the convex hull of the traces (default) be returned or the paths. See details.
+#' @param zstart numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.
 #' @param ... additional arguments passed to [tracelines()].
 #'
-#' @details Backward particle tracking is performed using [tracelines()] and setting the `forward = FALSE`.
-#'    Initial particle locations are computed by equally spacing `npar` locations at the well radius and repeating this
-#'    for all `zstart` elevations. The total number of particles equals `npar * length(zstart)`. To obtain a sharper delineation
-#'    of the capture zone, try using more particles.
+#' @details [capzone()] is a thin wrapper around [tracelines()]. Backward particle tracking is performed using [tracelines()]
+#'     and setting `forward = FALSE`. Initial particle locations are computed by equally spacing `npar` locations at the well
+#'     radius at the `zstart` elevation. To obtain a sharper delineation of the capture zone, try using more particles.
 #'
-#' Note that different `zstart` values only have an effect in models with vertical flow components, i.e. models with area-sinks.
+#' Note that different `zstart` values only have an effect in models with vertical flow components.
 #'
-#' If `as.poly = TRUE`, the convex hull of all particle locations is computed and returned. If `FALSE`,
-#'   the output of [tracelines()] is returned.
-#'
-#' @return [capzone()] returns an object of class `capzone` if `as.poly = TRUE`, which is a matrix with columns `x` and `y`
-#'    specifying the coordinates of the convex hull delineating the `time` capture zone of `well`.
-#'    If `as.poly = FALSE`, the output of [tracelines()] is returned directly.
+#' @return [capzone()] returns an object of class `capzone` which is simply the output of [tracelines()] with an additional class
+#'    used for calling the plot method.
 #' @rdname capzone
 #' @export
-#' @importFrom grDevices chull
 #' @seealso [tracelines()]
 #' @examples
 #'
@@ -376,40 +369,31 @@ endpoints <- function(tracelines, ...) {
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(cp5, add = TRUE)
-#' plot(cp10, add = TRUE)
+#' plot(cp10, add = TRUE, as.poly = FALSE) # plot tracelines instead of polygon
 #'
 #' # model with vertical flow components
 #' as <- areasink(0, 0, N = 0.001, R = 1500)
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'
-#' # three different starting levels, returns convex hull of all particles
-#' cp5 <- capzone(m, w1, time = 5*365, zstart = c(0, 5, 8))
+#' # two different starting levels
+#' cp5a <- capzone(m, w1, time = 5*365, zstart = base)
+#' cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(cp5, add = TRUE)
+#' plot(cp5a, add = TRUE)
+#' plot(cp5b, add = TRUE, col = 'orange3') # smaller zone
 #'
-#' # one starting level at z = 8, smaller zone
-#' cp5_z8 <- capzone(m, w1, time = 5*365, zstart = 8)
-#' plot(cp5_z8, add = TRUE, col = 'orange3')
-#'
-capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$base, as.poly = TRUE, ...) {
+capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$base, ...) {
 
   # define initial particle locations equally spaced at well screen circle
-  # repeat for each elevation in zstart
+  if(length(zstart) > 1) stop('zstart should have length 1', call. = FALSE)
   alpha <- seq(0, 2*pi*(npar/(npar + 1)), length = npar)
   rw <- well$rw + 1e-12 # add small perturbation to prevent starting locations in root
   x <- rw*cos(alpha) + Re(well$zetaw)
   y <- rw*sin(alpha) + Im(well$zetaw)
-  c0 <- data.frame(x = rep(x, length(zstart)), y = rep(y, length(zstart)), z = rep(zstart, each = npar))
+  c0 <- data.frame(x = x, y = y, z = zstart)
 
   paths <- tracelines(aem, x0 = c0$x, y0 = c0$y, z0 = c0$z, times = seq(0, time, dt), forward = FALSE, ...)
-  if(as.poly) {
-    # combine all particle locations in single matrix and subset x and y
-    pts <- do.call(rbind, paths)[,c('x', 'y')]
-    pts <- pts[chull(pts),] # convex hull
-    class(pts) <- 'capzone'
-    return(pts)
-  } else {
-    return(paths)
-  }
+  class(paths) <- c('capzone', class(paths))
+  return(paths)
 }
