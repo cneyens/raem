@@ -62,5 +62,10 @@ test_that("headwell works correctly", {
   m <- aem(k, top, base, n, rf, hw, type = 'variable')
   Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
   expect_equal(Q, -m$elements$hw$parameter)
+
+  # test unconfined resfac with non-zero base
+  m <- aem(k, top, base - 5, n, rf, hw, type = 'variable')
+  Q <- (hc - heads(m, hw$xc, hw$yc))/(res) * (2*pi*hw$rw * satthick(m, hw$xc, hw$yc))
+  expect_equal(Q, -m$elements$hw$parameter)
 })
 

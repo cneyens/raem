@@ -277,7 +277,7 @@ test_that('resistances work', {
 
   k <- 10
   top <- 10
-  base <- 0
+  base <- -5
   n <- 0.2
 
   uf <- uniformflow(100, 0.001, angle = 0)

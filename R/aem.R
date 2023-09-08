@@ -305,7 +305,10 @@ resfac <- function(element, aem) {
 
         hi <- heads(aem, c(xci), c(yci), na.below = FALSE)
         ho <- heads(aem, c(xco), c(yco), na.below = FALSE)
-        b <- ifelse(hi >= aem$top, aem$top - aem$base, 0.5*(hi + ho))
+        hi <- ifelse(hi >= aem$top, aem$top, hi)
+        ho <- ifelse(ho >= aem$top, aem$top, ho)
+
+        b <- 0.5*(hi + ho) - aem$base
         bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
       }
       if(element$resistance == 0) element$resistance <- 1e-12
@@ -319,7 +322,7 @@ resfac <- function(element, aem) {
       bsat <- b
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
       bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
     }
     resfac <- element$resistance * aem$k * b / (2 * pi * element$rw * bsat)
@@ -333,7 +336,7 @@ resfac <- function(element, aem) {
       b <- satthick(aem, element$xc, element$yc)
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
     }
     resfac <- element$resistance * aem$k * b / width
 
@@ -343,7 +346,7 @@ resfac <- function(element, aem) {
       b <- satthick(aem, element$xc, element$yc)
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top - aem$base, 0.5*(h + element$hc))
+      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
     }
     resfac <- -element$resistance * aem$k * b
 

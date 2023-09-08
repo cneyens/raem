@@ -54,4 +54,9 @@ test_that('headareasink works', {
   qz <- (hc - heads(m, has$xc, has$yc)) / res
   expect_equal(m$elements$has$parameter, qz)
 
+  # test unconfined resfac with non-zero base
+  m <- aem(k = 10, top = 10, base = -5, n = 0.2, rf, has, maxiter = 100)
+  qz <- (hc - heads(m, has$xc, has$yc)) / res
+  expect_equal(m$elements$has$parameter, qz)
+
 })

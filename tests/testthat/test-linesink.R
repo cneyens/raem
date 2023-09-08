@@ -20,5 +20,10 @@ test_that("headlinesink works with resistance", {
   sigma <- width * (heads(m, 0, 0) - hc) / res
   expect_equal(sigma, m$elements$hls$parameter)
 
+  # test unconfined resfac with non-zero base
+  m <- aem(k, top, base - 5, n, rf, hls, type = 'variable')
+  sigma <- width * (heads(m, 0, 0) - hc) / res
+  expect_equal(sigma, m$elements$hls$parameter)
+
 })
 
