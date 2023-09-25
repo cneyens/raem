@@ -91,7 +91,9 @@ a numeric vector of length 3 with the current \code{x}, \code{y} and \code{z} co
 \code{aem} and \code{R}. It should return a single logical value indicating if the particle should terminate. See examples.
 
 If initial particle locations are above the saturated aquifer level, they are reset to this elevation with a warning.
-Initial particle locations below the aquifer base are reset at the aquifer base with a warning.
+Initial particle locations below the aquifer base are reset at the aquifer base with a warning. A small
+perturbation is added to these elevations to avoid the particle tracking algorithm to get stuck at these locations.
+If the algorithm does get stuck (i.e. excessive run-times), try resetting the \code{z0} values to elevations well inside the saturated domain.
 
 Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with \code{-1}).
 }
@@ -100,9 +102,10 @@ k <- 10
 top <- 10; base <- 0
 n <- 0.2
 R <- 5
+hc <- 20
 
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
-rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
+rf <- constant(TR, xc = -1000, yc = 0, hc = hc)
 
 m <- aem(k, top, base, n = n, uf, rf)
 

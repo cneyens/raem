@@ -165,7 +165,9 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'    `aem` and `R`. It should return a single logical value indicating if the particle should terminate. See examples.
 #'
 #' If initial particle locations are above the saturated aquifer level, they are reset to this elevation with a warning.
-#'    Initial particle locations below the aquifer base are reset at the aquifer base with a warning.
+#'    Initial particle locations below the aquifer base are reset at the aquifer base with a warning. A small
+#'    perturbation is added to these elevations to avoid the particle tracking algorithm to get stuck at these locations.
+#'    If the algorithm does get stuck (i.e. excessive run-times), try resetting the `z0` values to elevations well inside the saturated domain.
 #'
 #' Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with `-1`).
 #'
@@ -184,9 +186,10 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' top <- 10; base <- 0
 #' n <- 0.2
 #' R <- 5
+#' hc <- 20
 #'
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
-#' rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
+#' rf <- constant(TR, xc = -1000, yc = 0, hc = hc)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf)
 #'
@@ -254,13 +257,15 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
   if(!is.null(tfunc) & !is.list(tfunc)) tfunc <- list(tfunc)
   direction <- ifelse(forward, 1, -1)
 
-  # reset initial locations if outside vertical domain, add perturbation if particles will get stuck
+  # reset initial locations if outside vertical domain, add perturbation so particles won't get stuck
   outside_v_init <- outside_vertical(aem, x0, y0, z0)
   if(any(outside_v_init$outside)) warning('Resetting z0 values above saturated aquifer level or below aquifer base', call. = FALSE)
-  vz <- direction * velocity(aem, x=x0, y=y0, z=outside_v_init$coords, R = R, verbose = FALSE)[,'vz']
-  up <- vz > 0 & outside_v_init$updown[,'up']
-  down <- vz < 0 & outside_v_init$updown[,'down']
-  z0 <- outside_v_init$coords + ifelse(up, -1e-12, ifelse(down, 1e-12, 0))
+  # vz <- direction * velocity(aem, x=x0, y=y0, z=outside_v_init$coords, R = R, verbose = FALSE)[,'vz']
+  # up <- vz > 0 & outside_v_init$updown[,'up']
+  # down <- vz < 0 & outside_v_init$updown[,'down']
+  up <- outside_v_init$updown[,'up']
+  down <- outside_v_init$updown[,'down']
+  z0 <- outside_v_init$coords + ifelse(up, -1, ifelse(down, 1, 0)) * 1e-8
 
   # wrapper to obtain velocity
   vxvy <- function(t, coords, parms, ...) {

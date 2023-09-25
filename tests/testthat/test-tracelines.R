@@ -191,4 +191,23 @@ test_that('initial particles are not stuck', {
   expect_equal(endp[1,3], start[2])
   expect_equal(unname(endp[1,4]), unname(heads(m, endp[1,2], endp[1,3])))
 
+  # checks on stuck particle locations
+  base <- -5
+  uf <- uniformflow(TR = k * (top - base), gradient = 0.001, angle = -45)
+  rf <- constant(-1000, 0, 10)
+  w1 <- well(-250, -50, 250)
+  w2 <- well(300, 100, 400)
+
+  m <- aem(k, top, base, n, rf, uf, w1, w2)
+
+  # should run with warning of resetting
+  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
+  )
+
+  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = base - 2, times = seq(0, 5*365, 365/20))
+  )
+
+  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20), forward = FALSE)
+  )
+
 })

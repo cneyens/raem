@@ -122,7 +122,8 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
 
   # no unknowns
   if(!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
-    if(verbose) cat(' Linear model with', length(aem$elements), 'elements and 0 unknowns', '\n', 'Model solved', '\n')
+    if(verbose) cat(' Linear model with', length(aem$elements), ifelse(length(aem$elements) == 1, 'element', 'elements'),
+                    'and 0 unknowns', '\n', 'Model solved', '\n')
     aem$solved <- TRUE
     return(aem)
   }
@@ -142,8 +143,8 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   is_nonlinear <- any(vapply(esolve, function(i) ifelse(is.null(i$resistance), 0, i$resistance), 0) != 0) && aem$type == 'variable'
   if(!is_nonlinear) maxiter <- 1
   if(verbose) {
-    cat(ifelse(is_nonlinear, ' Non-linear', ' Linear'), 'model with', length(aem$elements), 'elements and',
-        nunknowns, 'unknowns', '\n')
+    cat(ifelse(is_nonlinear, ' Non-linear', ' Linear'), 'model with', length(aem$elements), ifelse(length(aem$elements) == 1, 'element', 'elements'),
+        'and', nunknowns, ifelse(nunknowns == 1, 'unknown', 'unknowns'), '\n')
   }
 
   # TODO closer criterion to exit Picard loop when criterion is satisfied
