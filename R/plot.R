@@ -249,11 +249,15 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param type character indicating what type of plot to draw. See [plot()]. Defaults to `'l'` (lines).
 #' @param arrows logical indicating if arrows should be drawn using [arrows()]. Defaults to `FALSE`.
-#' @param marker numeric, time interval at which to plot point markers. Defaults to `NULL` (no markers).
+#' @param marker numeric, time interval at which to plot point markers. Defaults to `NULL` (no markers). See details.
 #' @param ... additional arguments passed to [plot()] or [arrows()].
+#'
+#' @details The `marker` value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
+#'    The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.
 #'
 #' @export
 #' @importFrom graphics arrows lines points
+#' @importFrom stats approx
 #' @rdname tracelines
 #' @include tracelines.R
 #' @examples
@@ -265,6 +269,9 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' # plot point markers every 2.5 years
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+#'
+#' # plot point markers every 600 days
+#' plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
 #'
 plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, marker = NULL, ...) {
   if(!is.list(x)) {
@@ -296,13 +303,17 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 
   # point markers
   if(!is.null(marker)) {
-    if(is.numeric(marker)) {
+    if(is.numeric(marker) && length(marker) == 1) {
       for(i in seq_along(x)) {
-        ids <- which((x[[i]][, 'time'] %% marker) == 0)
-        if(length(ids) > 0) points(x[[i]][ids, 'x'], x[[i]][ids, 'y'], ...)
+        t <- seq(x[[i]][1, 'time'], x[[i]][nrow(x[[i]]), 'time'], by = marker)
+        if(length(t) > 0) {
+          xpts <- approx(x[[i]][, 'time'], x[[i]][, 'x'], xout = t)$y
+          ypts <- approx(x[[i]][, 'time'], x[[i]][, 'y'], xout = t)$y
+          points(xpts, ypts, ...)
+        }
       }
     } else {
-      stop('marker should be numeric or NULL', call. = FALSE)
+      stop('marker should be numeric of length 1 or NULL', call. = FALSE)
     }
   }
 
@@ -313,8 +324,8 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 #'
 #' @param x object of class `capzone`
 #' @param y ignored
-#' @param as.poly logical, should the polygon of the capture zone be plotted as drawn from the endpoints (`TRUE`, default)
-#'    or should the tracelines be plotted using [plot.tracelines()] (`FALSE`)?
+#' @param as.poly logical, should the polygon of the capture zone be plotted as drawn from the endpoints (`TRUE`)
+#'    or should the tracelines be plotted using [plot.tracelines()] (`FALSE`, default)?
 #' @param col colour of polygon or tracelines. Defaults to a light grey with reduced opacity when `as.poly = TRUE` and `'black'` otherwise.
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param ... additional arguments passed to [tracelines()] for [capzone()] or additional arguments passed to [polygon()] or [plot.tracelines()] when plotting.
@@ -324,7 +335,7 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
 #' @rdname capzone
 #' @include tracelines.R
 #'
-plot.capzone <- function(x, y = NULL, as.poly = TRUE, col = ifelse(as.poly, "#BEBEBE90", "black"), add = FALSE, ...) {
+plot.capzone <- function(x, y = NULL, as.poly = FALSE, col = ifelse(as.poly, "#BEBEBE90", "black"), add = FALSE, ...) {
   if(as.poly) {
     x <- endpoints(x)[,c('x', 'y')]
     if(add) {

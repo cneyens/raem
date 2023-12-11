@@ -367,14 +367,14 @@ endpoints <- function(tracelines, ...) {
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 #'
 #' cp5 <- capzone(m, w1, time = 5*365)
-#' cp10 <- capzone(m, w2, time = 10*365, as.poly = FALSE)
+#' cp10 <- capzone(m, w2, time = 10*365)
 #'
 #' xg <- seq(-800, 800, length = 100)
 #' yg <- seq(-500, 500, length = 100)
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(cp5, add = TRUE)
-#' plot(cp10, add = TRUE, as.poly = FALSE) # plot tracelines instead of polygon
+#' plot(cp10, add = TRUE, as.poly = TRUE) # plot polygon instead of tracelines
 #'
 #' # model with vertical flow components
 #' as <- areasink(0, 0, N = 0.001, R = 1500)
@@ -385,7 +385,7 @@ endpoints <- function(tracelines, ...) {
 #' cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(cp5a, add = TRUE)
+#' plot(cp5a, add = TRUE, as.poly = TRUE)
 #' plot(cp5b, add = TRUE, col = 'orange3') # smaller zone
 #'
 capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$base, ...) {

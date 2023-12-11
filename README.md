@@ -7,7 +7,8 @@
 <!-- badges: end -->
 
 `raem` is an R package for modeling steady-state single-layer
-groundwater flow using analytic elements.
+groundwater flow under the Dupuit-Forchheimer assumption using analytic
+elements.
 
 ## Installation
 

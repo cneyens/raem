@@ -56,7 +56,7 @@ endpoints(tracelines, ...)
 
 \item{arrows}{logical indicating if arrows should be drawn using \code{\link[=arrows]{arrows()}}. Defaults to \code{FALSE}.}
 
-\item{marker}{numeric, time interval at which to plot point markers. Defaults to \code{NULL} (no markers).}
+\item{marker}{numeric, time interval at which to plot point markers. Defaults to \code{NULL} (no markers). See details.}
 }
 \value{
 \code{\link[=tracelines]{tracelines()}} returns an object of class \code{tracelines} which is a list with length equal to the number of particles where each list element contains
@@ -96,6 +96,9 @@ perturbation is added to these elevations to avoid the particle tracking algorit
 If the algorithm does get stuck (i.e. excessive run-times), try resetting the \code{z0} values to elevations well inside the saturated domain.
 
 Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with \code{-1}).
+
+The \code{marker} value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
+The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.
 }
 \examples{
 k <- 10
@@ -176,6 +179,9 @@ plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
 # plot point markers every 2.5 years
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+
+# plot point markers every 600 days
+plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
 
 }
 \seealso{

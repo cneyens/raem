@@ -10,7 +10,7 @@ capzone(aem, well, time, npar = 30, dt = time/100, zstart = aem$base, ...)
 \method{plot}{capzone}(
   x,
   y = NULL,
-  as.poly = TRUE,
+  as.poly = FALSE,
   col = ifelse(as.poly, "#BEBEBE90", "black"),
   add = FALSE,
   ...
@@ -35,8 +35,8 @@ capzone(aem, well, time, npar = 30, dt = time/100, zstart = aem$base, ...)
 
 \item{y}{ignored}
 
-\item{as.poly}{logical, should the polygon of the capture zone be plotted as drawn from the endpoints (\code{TRUE}, default)
-or should the tracelines be plotted using \code{\link[=plot.tracelines]{plot.tracelines()}} (\code{FALSE})?}
+\item{as.poly}{logical, should the polygon of the capture zone be plotted as drawn from the endpoints (\code{TRUE})
+or should the tracelines be plotted using \code{\link[=plot.tracelines]{plot.tracelines()}} (\code{FALSE}, default)?}
 
 \item{col}{colour of polygon or tracelines. Defaults to a light grey with reduced opacity when \code{as.poly = TRUE} and \code{'black'} otherwise.}
 
@@ -73,14 +73,14 @@ w2 = well(-200, -100, Q = 450)
 m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 
 cp5 <- capzone(m, w1, time = 5*365)
-cp10 <- capzone(m, w2, time = 10*365, as.poly = FALSE)
+cp10 <- capzone(m, w2, time = 10*365)
 
 xg <- seq(-800, 800, length = 100)
 yg <- seq(-500, 500, length = 100)
 
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
-plot(cp10, add = TRUE, as.poly = FALSE) # plot tracelines instead of polygon
+plot(cp10, add = TRUE, as.poly = TRUE) # plot polygon instead of tracelines
 
 # model with vertical flow components
 as <- areasink(0, 0, N = 0.001, R = 1500)
@@ -91,7 +91,7 @@ cp5a <- capzone(m, w1, time = 5*365, zstart = base)
 cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 
 contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-plot(cp5a, add = TRUE)
+plot(cp5a, add = TRUE, as.poly = TRUE)
 plot(cp5b, add = TRUE, col = 'orange3') # smaller zone
 
 }
