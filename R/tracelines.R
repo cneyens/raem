@@ -338,18 +338,18 @@ endpoints <- function(tracelines, ...) {
 #' @param well well analytic element of class `well` or inherits from it.
 #' @param time numeric, time of the capture zone
 #' @param npar integer, number of particles to use in the backward tracking. Defaults to 30.
-#' @param dt numeric, time discretization used in the particle tracking. Defaults `time / 100`.
+#' @param dt numeric, time step length used in the particle tracking. Defaults `time / 20`.
 #' @param zstart numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.
 #' @param ... additional arguments passed to [tracelines()].
 #'
 #' @details [capzone()] is a thin wrapper around [tracelines()]. Backward particle tracking is performed using [tracelines()]
 #'     and setting `forward = FALSE`. Initial particle locations are computed by equally spacing `npar` locations at the well
-#'     radius at the `zstart` elevation. To obtain a sharper delineation of the capture zone, try using more particles.
+#'     radius at the `zstart` elevation. To obtain a sharper delineation of the capture zone, try using more particles or
+#'     decreasing `dt`.
 #'
 #' Note that different `zstart` values only have an effect in models with vertical flow components.
 #'
-#' @return [capzone()] returns an object of class `capzone` which is simply the output of [tracelines()] with an additional class
-#'    used for calling the plot method.
+#' @return [capzone()] returns an object of class `tracelines`.
 #' @rdname capzone
 #' @export
 #' @seealso [tracelines()]
@@ -374,7 +374,7 @@ endpoints <- function(tracelines, ...) {
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 #' plot(cp5, add = TRUE)
-#' plot(cp10, add = TRUE, as.poly = TRUE) # plot polygon instead of tracelines
+#' plot(cp10, add = TRUE, col = 'orange3')
 #'
 #' # model with vertical flow components
 #' as <- areasink(0, 0, N = 0.001, R = 1500)
@@ -385,10 +385,21 @@ endpoints <- function(tracelines, ...) {
 #' cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 #'
 #' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(cp5a, add = TRUE, as.poly = TRUE)
-#' plot(cp5b, add = TRUE, col = 'orange3') # smaller zone
+#' plot(cp5a, add = TRUE)
+#' plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 #'
-capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$base, ...) {
+#' # plot the convex hull of the endpoints as a polygon
+#' endp <- endpoints(cp5b)
+#' hull <- chull(endp[, c('x', 'y')])
+#' polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))
+#'
+capzone <- function(aem,
+                    well,
+                    time,
+                    npar = 30,
+                    dt = time / 20,
+                    zstart = aem$base,
+                    ...) {
 
   # define initial particle locations equally spaced at well screen circle
   if(length(zstart) > 1) stop('zstart should have length 1', call. = FALSE)
@@ -399,6 +410,5 @@ capzone <- function(aem, well, time, npar = 30, dt = time / 100, zstart = aem$ba
   c0 <- data.frame(x = x, y = y, z = zstart)
 
   paths <- tracelines(aem, x0 = c0$x, y0 = c0$y, z0 = c0$z, times = seq(0, time, dt), forward = FALSE, ...)
-  class(paths) <- c('capzone', class(paths))
   return(paths)
 }

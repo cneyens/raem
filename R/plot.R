@@ -318,35 +318,3 @@ plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE
   }
 
 }
-
-#'
-#' @description [plot.capzone()] plots a `capzone` object as a polygon or draws the tracelines.
-#'
-#' @param x object of class `capzone`
-#' @param y ignored
-#' @param as.poly logical, should the polygon of the capture zone be plotted as drawn from the endpoints (`TRUE`)
-#'    or should the tracelines be plotted using [plot.tracelines()] (`FALSE`, default)?
-#' @param col colour of polygon or tracelines. Defaults to a light grey with reduced opacity when `as.poly = TRUE` and `'black'` otherwise.
-#' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
-#' @param ... additional arguments passed to [tracelines()] for [capzone()] or additional arguments passed to [polygon()] or [plot.tracelines()] when plotting.
-#'
-#' @export
-#' @importFrom graphics polygon frame plot.window axis box
-#' @rdname capzone
-#' @include tracelines.R
-#'
-plot.capzone <- function(x, y = NULL, as.poly = FALSE, col = ifelse(as.poly, "#BEBEBE90", "black"), add = FALSE, ...) {
-  if(as.poly) {
-    x <- endpoints(x)[,c('x', 'y')]
-    if(add) {
-      polygon(x, col = col, ...)
-    } else {
-      frame()
-      plot.window(range(x[,1]), range(x[,2]))
-      polygon(x, col = col, ...)
-      axis(1); axis(2); box()
-    }
-  } else {
-    plot.tracelines(x = x, y = y, col = col, add = add, ...)
-  }
-}
