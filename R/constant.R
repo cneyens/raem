@@ -1,4 +1,3 @@
-
 #' Create a constant-head analytic element
 #'
 #' [constant()] creates an analytic element containing a constant head, often referred to
@@ -20,7 +19,7 @@ constant <- function(xc, yc, hc, ...) {
   cn$xc <- xc
   cn$yc <- yc
   cn$hc <- hc
-  class(cn) <- c('constant', class(cn))
+  class(cn) <- c("constant", class(cn))
   return(cn)
 }
 
@@ -31,7 +30,7 @@ constant <- function(xc, yc, hc, ...) {
 #' @noRd
 #'
 omegainf.constant <- function(constant, x, y, ...) {
-  omi <- as.complex(x*0 + 1)
+  omi <- as.complex(x * 0 + 1)
   return(omi)
 }
 

@@ -47,19 +47,21 @@ ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, rf)
 xg <- seq(-350, 200, length = 100)
 yg <- seq(-125, 125, length = 100)
 
-contours(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
-contours(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3',
-         drawlabels = FALSE, add = TRUE)
+contours(ml, xg, yg, nlevels = 20, col = "dodgerblue3", labcex = 1)
+contours(ml, xg, yg, "streamfunction",
+  nlevels = 20, col = "orange3",
+  drawlabels = FALSE, add = TRUE
+)
 
 # Not to be confused by contour()
 try(
-contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
+  contour(ml, xg, yg, nlevels = 20, col = "dodgerblue3", labcex = 1)
 )
 
 # For image() or filled.contour()
 library(graphics)
 h <- heads(ml, xg, yg, as.grid = TRUE)
-h_im <- t(h[dim(h)[1]:1,])
+h_im <- t(h[dim(h)[1]:1, ])
 image(xg, yg, h_im, asp = 1)
 contour(xg, yg, h_im, asp = 1, add = TRUE) # contours() is a wrapper for this
 filled.contour(xg, yg, h_im, asp = 1)

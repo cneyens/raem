@@ -1,4 +1,3 @@
-
 #' Compute the saturated thickness
 #'
 #' [satthick()] computes the saturated thickness of the aquifer of an `aem` object
@@ -22,18 +21,19 @@
 #' @examples
 #' uf <- uniformflow(100, 0.001, 0)
 #' rf <- constant(-1000, 0, 11)
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'confined')
+#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = "confined")
 #'
 #' satthick(m, x = c(-200, 0, 200), y = 0) # confined
-#' satthick(m, x = seq(-500, 500, length = 100),
-#'          y = seq(-250, 250, length = 100), as.grid = TRUE)
+#' satthick(m,
+#'   x = seq(-500, 500, length = 100),
+#'   y = seq(-250, 250, length = 100), as.grid = TRUE
+#' )
 #'
-#' mv <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'variable')
+#' mv <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = "variable")
 #' satthick(mv, x = c(-200, 0, 200), y = 0) # variable
 #'
 satthick <- function(aem, x, y, as.grid = FALSE, ...) {
-
-  if(as.grid) {
+  if (as.grid) {
     df <- expand.grid(x = x, y = y) # increasing x and y values
     gx <- df$x
     gy <- df$y
@@ -42,15 +42,15 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
     gy <- y
   }
 
-  if(aem$type == 'confined') {
+  if (aem$type == "confined") {
     d <- aem$top - aem$base
-  } else if(aem$type == 'variable') {
+  } else if (aem$type == "variable") {
     h <- heads(aem, x = gx, y = gy, as.grid = FALSE, ...)
     d <- ifelse(h >= aem$top, aem$top - aem$base, h - aem$base)
   }
-  mb <- c(cbind(x = gx, y = gy, b = d)[,'b'], use.names = FALSE) # recycle x and y
-  if(as.grid) {
-    mb <- matrix(mb, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
+  mb <- c(cbind(x = gx, y = gy, b = d)[, "b"], use.names = FALSE) # recycle x and y
+  if (as.grid) {
+    mb <- matrix(mb, nrow = length(x), ncol = length(y)) # as used by {image} or {contour}. NROW and NCOL are switched
     mb <- image_to_matrix(mb)
   }
   return(mb)
@@ -87,28 +87,29 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
 #' dirflow(m, x = c(0, 100), y = 50, angle = -45)
 #'
-#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = 'confined')
-#' dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = 'velocity', as.grid = TRUE)
+#' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = "confined")
+#' dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = "velocity", as.grid = TRUE)
 #'
 dirflow <- function(aem, x, y, angle,
-                     flow = c('discharge', 'darcy', 'velocity'), as.grid = FALSE, ...) {
-  theta <- angle * pi/180
+                    flow = c("discharge", "darcy", "velocity"), as.grid = FALSE, ...) {
+  theta <- angle * pi / 180
   z <- aem$base
   flow <- match.arg(flow)
   flux <- switch(flow,
-                 discharge = discharge(aem, x, y, z, as.grid = as.grid, ...),
-                 darcy = darcy(aem, x, y, z, as.grid = as.grid, ...),
-                 velocity = velocity(aem, x, y, z, as.grid = as.grid, ...))
+    discharge = discharge(aem, x, y, z, as.grid = as.grid, ...),
+    darcy = darcy(aem, x, y, z, as.grid = as.grid, ...),
+    velocity = velocity(aem, x, y, z, as.grid = as.grid, ...)
+  )
 
-  if(as.grid) {
+  if (as.grid) {
     ndim <- length(dim(flux))
-    if(ndim == 4) {
-      f <- flux[,,,1] * cos(theta) + flux[,,,2] * sin(theta)
-    } else if(ndim == 3) {
-      f <- flux[,,1] * cos(theta) + flux[,,2] * sin(theta)
+    if (ndim == 4) {
+      f <- flux[, , , 1] * cos(theta) + flux[, , , 2] * sin(theta)
+    } else if (ndim == 3) {
+      f <- flux[, , 1] * cos(theta) + flux[, , 2] * sin(theta)
     }
   } else {
-    f <- flux[,1] * cos(theta) + flux[,2] * sin(theta)
+    f <- flux[, 1] * cos(theta) + flux[, 2] * sin(theta)
   }
 
   return(unname(f))
@@ -146,8 +147,9 @@ dirflow <- function(aem, x, y, angle,
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
 #'
-#' xg <- seq(-500, 500, l=100); yg <- seq(-300, 300, l=100)
-#' contours(m, xg, yg, col='dodgerblue3', nlevels=20)
+#' xg <- seq(-500, 500, l = 100)
+#' yg <- seq(-300, 300, l = 100)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #'
 #' x0 <- -200
 #' y0 <- -50
@@ -160,33 +162,32 @@ dirflow <- function(aem, x, y, angle,
 #'
 #' w <- well(125, 200, 150)
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w)
-#' contours(m, xg, yg, col='dodgerblue3', nlevels=20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' lines(matrix(c(x0, y0, x1, y1), ncol = 2, byrow = TRUE))
 #'
-#' flow_through_line(m, x0, y0, x1, y1, flow = 'darcy')
-#' flow_through_line(m, x0, y0, x1, y1, flow = 'darcy', split = TRUE)
+#' flow_through_line(m, x0, y0, x1, y1, flow = "darcy")
+#' flow_through_line(m, x0, y0, x1, y1, flow = "darcy", split = TRUE)
 #'
-flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'), split = FALSE, ...) {
-
+flow_through_line <- function(aem, x0, y0, x1, y1, flow = c("discharge", "darcy"), split = FALSE, ...) {
   # TODO allow matrix for multiple lines (vectorize integral and sum total flow)
   flow <- match.arg(flow) # no velocity allowed
   theta_line <- atan2(y1 - y0, x1 - x0)
-  angle_norm <- (theta_line * 180/pi) + 90 # + 90: (= -90 * -flux) means positive flux is to the left when looking in direction of line
+  angle_norm <- (theta_line * 180 / pi) + 90 # + 90: (= -90 * -flux) means positive flux is to the left when looking in direction of line
   len <- sqrt((y1 - y0)^2 + (x1 - x0)^2)
   nflow_int <- function(l, dropneg) {
     xi <- l * cos(theta_line) + x0
     yi <- l * sin(theta_line) + y0
     f <- dirflow(aem, xi, yi, angle = angle_norm, flow = flow)
-    if(dropneg) f <- ifelse(f < 0, 0, f)
+    if (dropneg) f <- ifelse(f < 0, 0, f)
     return(f)
   }
-  if(!split) {
+  if (!split) {
     fint <- integrate(nflow_int, 0, len, dropneg = FALSE)$value
   } else {
     fintg <- integrate(nflow_int, 0, len, dropneg = FALSE)$value
     fintp <- integrate(nflow_int, 0, len, dropneg = TRUE)$value
     fintn <- fintg - fintp
-    fint <- c('positive' = fintp, 'negative' = fintn)
+    fint <- c("positive" = fintp, "negative" = fintn)
   }
   return(fint)
 }
@@ -227,21 +228,21 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
 #' as <- areasink(xc = 0, yc = 0, N = 0.0005, R = 500)
 #' m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
 #'
-#' element_discharge(m, name = c('hls', 'as'))
-#' element_discharge(m, type = 'well')
+#' element_discharge(m, name = c("hls", "as"))
+#' element_discharge(m, type = "well")
 #'
 element_discharge <- function(aem, name = NULL, type = NULL, ...) {
-  if((is.null(name) && is.null(type)) || (!is.null(name) && !is.null(type))) stop('Either "name" or "type" should be specified', call. = FALSE)
-  if(!is.null(name)) {
+  if ((is.null(name) && is.null(type)) || (!is.null(name) && !is.null(type))) stop('Either "name" or "type" should be specified', call. = FALSE)
+  if (!is.null(name)) {
     elnames <- names(aem$elements)
     id <- which(elnames %in% name)
-    if(any(length(id) == 0)) stop('element with name "', name[which(length(id) == 0)], '" not found', call. = FALSE)
+    if (any(length(id) == 0)) stop('element with name "', name[which(length(id) == 0)], '" not found', call. = FALSE)
     get_Q_name <- function(el) {
-      if(inherits(el, 'well')) {
+      if (inherits(el, "well")) {
         return(el$parameter)
-      } else if(inherits(el, 'linesink')) {
+      } else if (inherits(el, "linesink")) {
         return(el$parameter * el$L)
-      } else if(inherits(el, 'areasink')) {
+      } else if (inherits(el, "areasink")) {
         return(-el$parameter * pi * el$R^2)
       } else {
         return(0) # uniformflow, constant, linedoublet
@@ -250,17 +251,17 @@ element_discharge <- function(aem, name = NULL, type = NULL, ...) {
     Q <- unlist(lapply(aem$elements[id], get_Q_name))
     names(Q) <- name
   } else {
-    types <- c('headwell', 'well', 'linesink', 'headlinesink', 'areasink', 'headareasink')
-    if(length(type) > 1) stop('Only one type should be specified', call. = FALSE)
-    if(!(type %in% types)) stop('"type" should be one of ', paste(types, collapse = ', '), call. = FALSE)
+    types <- c("headwell", "well", "linesink", "headlinesink", "areasink", "headareasink")
+    if (length(type) > 1) stop("Only one type should be specified", call. = FALSE)
+    if (!(type %in% types)) stop('"type" should be one of ', paste(types, collapse = ", "), call. = FALSE)
 
     get_Q_type <- function(el) {
-      if(inherits(el, type, which = TRUE) == 1) { # makes sure el inherits from type but not if it is a parent class
-        if(grepl('well', type)) {
+      if (inherits(el, type, which = TRUE) == 1) { # makes sure el inherits from type but not if it is a parent class
+        if (grepl("well", type)) {
           return(el$parameter)
-        } else if(grepl('linesink', type)) {
+        } else if (grepl("linesink", type)) {
           return(el$parameter * el$L)
-        } else if(grepl('areasink', type)) {
+        } else if (grepl("areasink", type)) {
           return(-el$parameter * pi * el$R^2)
         }
       } else {
@@ -286,11 +287,13 @@ element_discharge <- function(aem, name = NULL, type = NULL, ...) {
 #' @noRd
 #'
 #' @examples
-#' poly <- rbind(c(-0.25, 0.25), c(0.32, 0.64), c(-0.25, 1.5), c(1, 1), c(0.76, 0.3),
-#'               c(0.25, -0.25), c(-0.25, -0.5))
+#' poly <- rbind(
+#'   c(-0.25, 0.25), c(0.32, 0.64), c(-0.25, 1.5), c(1, 1), c(0.76, 0.3),
+#'   c(0.25, -0.25), c(-0.25, -0.5)
+#' )
 #'
-#' pinside <- c(0.5,0.5) # point inside the poly
-#' poutside <- c(1.5,1) # point outside the poly
+#' pinside <- c(0.5, 0.5) # point inside the poly
+#' poutside <- c(1.5, 1) # point outside the poly
 #'
 #' point_in_polygon(pinside, poly)
 #' point_in_polygon(poutside, poly)
@@ -298,7 +301,7 @@ element_discharge <- function(aem, name = NULL, type = NULL, ...) {
 #' n <- 1000
 #' rpts <- cbind(x = runif(n, -0.5, 1.5), y = runif(n, -1, 2))
 #' io <- apply(rpts, 1, point_in_polygon, polygon = poly)
-#' df <- cbind(as.data.frame(rpts), col = ifelse(io, 'blue', 'red'))
+#' df <- cbind(as.data.frame(rpts), col = ifelse(io, "blue", "red"))
 #'
 #' plot(df$x, df$y, col = df$col, xlim = c(-0.6, 1.6), ylim = c(-1.1, 2.1))
 #' polygon(poly)
@@ -306,14 +309,14 @@ element_discharge <- function(aem, name = NULL, type = NULL, ...) {
 point_in_polygon <- function(point, polygon) {
   x <- point[1]
   y <- point[2]
-  poly_x <- polygon[,1]
-  poly_y <- polygon[,2]
+  poly_x <- polygon[, 1]
+  poly_y <- polygon[, 2]
   nvert <- length(poly_x)
   inside <- FALSE
   j <- nvert
   for (i in 1:nvert) {
     if (((poly_y[i] > y) != (poly_y[j] > y)) &&
-        (x < (poly_x[j] - poly_x[i]) * (y - poly_y[i]) / (poly_y[j] - poly_y[i]) + poly_x[i])) {
+      (x < (poly_x[j] - poly_x[i]) * (y - poly_y[i]) / (poly_y[j] - poly_y[i]) + poly_x[i])) {
       inside <- !inside
     }
     j <- i

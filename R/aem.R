@@ -1,4 +1,3 @@
-
 #' Create an analytic element model
 #'
 #' [aem()] creates an analytic element model to which elements can be added
@@ -40,37 +39,37 @@
 #'
 #' # or with elements in named list
 #' m <- aem(k, top, base, n,
-#'          list('well' = w, 'constant' = rf, 'flow' = uf, 'headwell' = hdw, 'river' = ls),
-#'          type = 'confined')
+#'   list("well" = w, "constant" = rf, "flow" = uf, "headwell" = hdw, "river" = ls),
+#'   type = "confined"
+#' )
 #'
-aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose = FALSE, maxiter = 10) {
-
+aem <- function(k, top, base, n, ..., type = c("variable", "confined"), verbose = FALSE, maxiter = 10) {
   type <- match.arg(type)
 
   l <- list(...)
   # setting names
   nms <- sapply(substitute(...()), deparse) # object names
   lnames <- names(l) # named arguments
-  if(length(lnames) == 0) lnames <- nms
+  if (length(lnames) == 0) lnames <- nms
   noname <- which(nchar(lnames) == 0) # substitue lnames with nms
-  if(length(noname) > 0) lnames[noname] <- nms[noname]
+  if (length(noname) > 0) lnames[noname] <- nms[noname]
   names(l) <- lnames
 
-  if(length(l) == 1 && inherits(l[[1]], 'list') && !inherits(l[[1]], 'element')) {
+  if (length(l) == 1 && inherits(l[[1]], "list") && !inherits(l[[1]], "element")) {
     l <- l[[1]]
   }
 
   # checks
-  if(any(vapply(l, function(i) !inherits(i, 'element'), FALSE))) stop('All supplied elements should be of class \'element\'', call. = FALSE)
-  if(inherits(k, 'element') || !is.numeric(k)) stop('k should be numeric, not of class \'element\'', call. = FALSE)
-  if(inherits(top, 'element') || !is.numeric(top)) stop('top should be numeric, not of class \'element\'', call. = FALSE)
-  if(inherits(base, 'element') || !is.numeric(base)) stop('base should be numeric, not of class \'element\'', call. = FALSE)
-  if(inherits(n, 'element') || !is.numeric(n)) stop('n should be numeric, not of class \'element\'', call. = FALSE)
+  if (any(vapply(l, function(i) !inherits(i, "element"), FALSE))) stop("All supplied elements should be of class 'element'", call. = FALSE)
+  if (inherits(k, "element") || !is.numeric(k)) stop("k should be numeric, not of class 'element'", call. = FALSE)
+  if (inherits(top, "element") || !is.numeric(top)) stop("top should be numeric, not of class 'element'", call. = FALSE)
+  if (inherits(base, "element") || !is.numeric(base)) stop("base should be numeric, not of class 'element'", call. = FALSE)
+  if (inherits(n, "element") || !is.numeric(n)) stop("n should be numeric, not of class 'element'", call. = FALSE)
   # if(length(l) == 0) warning('No elements supplied. Add them using \'add_element\'', call. = FALSE)
-  if(any(duplicated(names(l)))) stop('Duplicate names in \'elements\' not allowed', call. = FALSE)
+  if (any(duplicated(names(l)))) stop("Duplicate names in 'elements' not allowed", call. = FALSE)
 
   aem <- list(k = k, top = top, base = base, n = n, elements = l, type = type, solved = FALSE)
-  class(aem) <- 'aem'
+  class(aem) <- "aem"
 
   aem <- solve(aem, maxiter = maxiter, verbose = verbose)
 
@@ -114,25 +113,30 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose 
 #'
 solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   aem <- a
-  if(length(aem$elements) == 0) {
-    if(verbose) warning('No elements in model. Can not solve.', call. = FALSE)
+  if (length(aem$elements) == 0) {
+    if (verbose) warning("No elements in model. Can not solve.", call. = FALSE)
     return(aem)
   }
-  if(verbose) cat('Solving analytic element model ...', '\n')
+  if (verbose) cat("Solving analytic element model ...", "\n")
 
   # no unknowns
-  if(!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
-    if(verbose) cat(' Linear model with', length(aem$elements), ifelse(length(aem$elements) == 1, 'element', 'elements'),
-                    'and 0 unknowns', '\n', 'Model solved', '\n')
+  if (!any(vapply(aem$elements, function(i) i$nunknowns > 0, TRUE))) {
+    if (verbose) {
+      cat(
+        " Linear model with", length(aem$elements), ifelse(length(aem$elements) == 1, "element", "elements"),
+        "and 0 unknowns", "\n", "Model solved", "\n"
+      )
+    }
     aem$solved <- TRUE
     return(aem)
   }
 
   # check if reference point is provided
   # this is actually only necessary when headlinesink elements are specified
-  if(!any(vapply(aem$element, function(i) inherits(i, 'constant'), TRUE))) {
-    stop('Please provide an element of class \'constant\' when solving for unknown parameters in elements',
-         call. = FALSE)
+  if (!any(vapply(aem$element, function(i) inherits(i, "constant"), TRUE))) {
+    stop("Please provide an element of class 'constant' when solving for unknown parameters in elements",
+      call. = FALSE
+    )
   }
 
   # TODO allow for multiple unknowns per element (have to change the loops and omega())
@@ -140,47 +144,48 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
   esolve_id <- which(nun > 0)
   esolve <- aem$elements[esolve_id]
   nunknowns <- sum(nun)
-  is_nonlinear <- any(vapply(esolve, function(i) ifelse(is.null(i$resistance), 0, i$resistance), 0) != 0) && aem$type == 'variable'
-  if(!is_nonlinear) maxiter <- 1
-  if(verbose) {
-    cat(ifelse(is_nonlinear, ' Non-linear', ' Linear'), 'model with', length(aem$elements), ifelse(length(aem$elements) == 1, 'element', 'elements'),
-        'and', nunknowns, ifelse(nunknowns == 1, 'unknown', 'unknowns'), '\n')
+  is_nonlinear <- any(vapply(esolve, function(i) ifelse(is.null(i$resistance), 0, i$resistance), 0) != 0) && aem$type == "variable"
+  if (!is_nonlinear) maxiter <- 1
+  if (verbose) {
+    cat(
+      ifelse(is_nonlinear, " Non-linear", " Linear"), "model with", length(aem$elements), ifelse(length(aem$elements) == 1, "element", "elements"),
+      "and", nunknowns, ifelse(nunknowns == 1, "unknown", "unknowns"), "\n"
+    )
   }
 
   # TODO closer criterion to exit Picard loop when criterion is satisfied
   # e.g. if max absolute head difference at control points at iter i and iter i-1 < hclose, exit Picard loop
 
   # Picard iteration
-  if(verbose & is_nonlinear) cat(' Entering outer iteration loop ...', '\n')
-  for(iter in seq_len(maxiter)) {
-    if(verbose & is_nonlinear) cat('  Iteration', iter, '\n')
+  if (verbose & is_nonlinear) cat(" Entering outer iteration loop ...", "\n")
+  for (iter in seq_len(maxiter)) {
+    if (verbose & is_nonlinear) cat("  Iteration", iter, "\n")
 
     # set up system of equations
     m <- matrix(0, nrow = nunknowns, ncol = nunknowns)
     rhs <- rep(0, nunknowns)
     irow <- 0
-    for(i in seq_along(esolve)) {
+    for (i in seq_along(esolve)) {
       el <- esolve[[i]]
       nunel <- el$nunknowns
       irow <- seq(1, nunel) + irow[length(irow)]
       eq <- equation(el, aem, esolve_id[i])
-      m[irow,] <- eq[[1]]
+      m[irow, ] <- eq[[1]]
       rhs[irow] <- eq[[2]]
     }
 
     # solve and set model parameters
     solution <- solve(m, rhs)
     irow <- 0
-    for(i in seq_along(esolve)) {
+    for (i in seq_along(esolve)) {
       nunel <- esolve[[i]]$nunknowns
       irow <- seq(1, nunel) + irow[length(irow)]
       esolve[[i]]$parameter <- solution[irow]
     }
     aem$elements[esolve_id] <- esolve
-
   }
 
-  if(verbose) cat('Model solved', '\n')
+  if (verbose) cat("Model solved", "\n")
   aem$solved <- TRUE
   # aem$linear <- !is_nonlinear
   return(aem)
@@ -205,46 +210,44 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
 #' @seealso [solve.aem()]
 #'
 equation <- function(element, aem, id, ...) {
-  if(!(element$nunknowns > 0)) stop('element should have 1 or more unknowns', call. = FALSE)
-  row <- vector(mode = 'numeric')
+  if (!(element$nunknowns > 0)) stop("element should have 1 or more unknowns", call. = FALSE)
+  row <- vector(mode = "numeric")
   xc <- element$xc
   yc <- element$yc
   resf <- resfac(element, aem)
 
-  if(inherits(element, 'linedoublet')) {
+  if (inherits(element, "linedoublet")) {
     rhs <- 0
     tol <- 1e-12
-    theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+    theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi / 2
     xci <- xc - tol * cos(theta_norm)
     yci <- yc - tol * sin(theta_norm)
     xco <- xc + tol * cos(theta_norm)
     yco <- yc + tol * sin(theta_norm)
 
-    for(i in aem$elements) {
-      if(i$nunknowns > 0) {
+    for (i in aem$elements) {
+      if (i$nunknowns > 0) {
         Qinf <- domegainf(i, xc, yc)
         dphi <- potinf(i, xci, yci) - potinf(i, xco, yco)
-        row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
-
+        row[length(row) + 1] <- sum(Re(Qinf) * cos(theta_norm) - Im(Qinf) * sin(theta_norm) - resf * dphi)
       } else {
         Q <- domega(i, xc, yc)
         dphi <- potential(i, xci, yci) - potential(i, xco, yco)
-        rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi)
+        rhs <- rhs - sum(Re(Q) * cos(theta_norm) - Im(Q) * sin(theta_norm) + resf * dphi)
       }
     }
-
   } else {
-    if(inherits(element, 'inhomogeneity')) {
+    if (inherits(element, "inhomogeneity")) {
       rhs <- 0
     } else {
       rhs <- head_to_potential(aem, element$hc)
     }
 
-    for(e in seq_along(aem$elements)) {
+    for (e in seq_along(aem$elements)) {
       i <- aem$element[[e]]
-      if(i$nunknowns > 0) {
-        row[length(row)+1] <- sum(potinf(i, xc, yc))
-        if(e == id) row[length(row)] <- row[length(row)] - resf
+      if (i$nunknowns > 0) {
+        row[length(row) + 1] <- sum(potinf(i, xc, yc))
+        if (e == id) row[length(row)] <- row[length(row)] - resf
       } else {
         rhs <- rhs - sum(potential(i, xc, yc))
       }
@@ -270,7 +273,7 @@ element <- function(p, un = 0, ...) {
   el <- list()
   el$parameter <- p
   el$nunknowns <- un
-  class(el) <- c('element')
+  class(el) <- c("element")
   return(el)
 }
 
@@ -283,22 +286,20 @@ element <- function(p, un = 0, ...) {
 #' @noRd
 #'
 resfac <- function(element, aem) {
+  if (element$nunknowns == 0) stop("nunknowns should be > 0 to get resfac", call. = FALSE)
 
-  if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
-
-  if(inherits(element, 'inhomogeneity')) {
+  if (inherits(element, "inhomogeneity")) {
     resfac <- aem$k / (element$k - aem$k)
-
-  } else if(inherits(element, 'linedoublet')) {
-    if(element$resistance == Inf) { # Impermeable wall
+  } else if (inherits(element, "linedoublet")) {
+    if (element$resistance == Inf) { # Impermeable wall
       resfac <- rep(0, length(element$xc))
     } else {
-      if(aem$type == 'confined') {
+      if (aem$type == "confined") {
         b <- satthick(aem, element$xc, element$yc)
         bsat <- b
       } else {
         tol <- 1e-12
-        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi / 2
         xci <- element$xc - tol * cos(theta_norm)
         yci <- element$yc - tol * sin(theta_norm)
         xco <- element$xc + tol * cos(theta_norm)
@@ -309,48 +310,43 @@ resfac <- function(element, aem) {
         hi <- ifelse(hi >= aem$top, aem$top, hi)
         ho <- ifelse(ho >= aem$top, aem$top, ho)
 
-        b <- 0.5*(hi + ho) - aem$base
+        b <- 0.5 * (hi + ho) - aem$base
         bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
       }
-      if(element$resistance == 0) element$resistance <- 1e-12
+      if (element$resistance == 0) element$resistance <- 1e-12
       resfac <- bsat / (element$resistance * b * aem$k)
     }
-
-
-  } else if(inherits(element, 'headwell')) {
-    if(aem$type == 'confined') {
+  } else if (inherits(element, "headwell")) {
+    if (aem$type == "confined") {
       b <- satthick(aem, element$xc, element$yc)
       bsat <- b
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
+      b <- ifelse(h >= aem$top, aem$top, 0.5 * (h + element$hc)) - aem$base
       bsat <- satthick(aem, element$xc, element$yc, na.below = FALSE)
     }
     resfac <- element$resistance * aem$k * b / (2 * pi * element$rw * bsat)
-
-  } else if(inherits(element, 'headlinesink')) {
+  } else if (inherits(element, "headlinesink")) {
     # remove width if width = 0
     width <- ifelse(element$width == 0, 1, element$width)
 
     # Haitjema, 1995, eq. 5.64 & 5.66
-    if(aem$type == 'confined') {
+    if (aem$type == "confined") {
       b <- satthick(aem, element$xc, element$yc)
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
+      b <- ifelse(h >= aem$top, aem$top, 0.5 * (h + element$hc)) - aem$base
     }
     resfac <- element$resistance * aem$k * b / width
-
-  } else if(inherits(element, 'headareasink')) {
+  } else if (inherits(element, "headareasink")) {
     # Haitjema, 1995, eq. 5.64 & 5.66
-    if(aem$type == 'confined') {
+    if (aem$type == "confined") {
       b <- satthick(aem, element$xc, element$yc)
     } else {
       h <- heads(aem, element$xc, element$yc, na.below = FALSE)
-      b <- ifelse(h >= aem$top, aem$top, 0.5*(h + element$hc)) - aem$base
+      b <- ifelse(h >= aem$top, aem$top, 0.5 * (h + element$hc)) - aem$base
     }
     resfac <- -element$resistance * aem$k * b
-
   } else {
     resfac <- rep(0, length(element$xc))
   }
@@ -374,7 +370,7 @@ resfac <- function(element, aem) {
 #' @seealso [aem()]
 #' @examples
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2)
-#' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
+#' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = "rf")
 #'
 #' # if name not supplied, tries to obtain it from object name
 #' rf <- constant(xc = 0, yc = 1000, hc = 12)
@@ -382,31 +378,32 @@ resfac <- function(element, aem) {
 #'
 #' # or else sets it sequentially from number of elements
 #' add_element(m, constant(xc = 0, yc = 1000, hc = 12))
-#' @examplesIf getRversion() >= '4.1.0'
+#' @examplesIf getRversion() >= "4.1.0"
 #' # add_element() is pipe-friendly
 #' aem(k = 10, top = 10, base = 0, n = 0.2) |>
-#'     add_element(rf, name = 'rf') |>
-#'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
-#'                 name = 'headwell', solve = TRUE)
+#'   add_element(rf, name = "rf") |>
+#'   add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
+#'     name = "headwell", solve = TRUE
+#'   )
 #'
 add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
-  if(!inherits(aem, 'aem')) stop('\'aem\' object should be of class aem', call. = FALSE)
-  if(!inherits(element, 'element')) stop('\'element\' object should be of class element', call. = FALSE)
-  if(is.null(aem$elements)) aem$elements <- list()
+  if (!inherits(aem, "aem")) stop("'aem' object should be of class aem", call. = FALSE)
+  if (!inherits(element, "element")) stop("'element' object should be of class element", call. = FALSE)
+  if (is.null(aem$elements)) aem$elements <- list()
   aem$elements[[length(aem$elements) + 1]] <- element
-  if(is.null(name)) {
+  if (is.null(name)) {
     name <- sapply(substitute(element), deparse) # object name
-    if(length(name) > 1) name <- NULL # weak test ...
+    if (length(name) > 1) name <- NULL # weak test ...
   }
-  if(!is.null(name)) {
-    if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
+  if (!is.null(name)) {
+    if (name %in% names(aem$elements)) stop("element ", "'", name, "'", " already exists", call. = FALSE)
     names(aem$elements)[length(aem$elements)] <- name
   } else {
-    names(aem$elements)[length(aem$element)] <- paste('element', length(aem$elements), sep = '_')
+    names(aem$elements)[length(aem$element)] <- paste("element", length(aem$elements), sep = "_")
   }
-  if(solve) {
+  if (solve) {
     aem <- solve(aem)
-  } else if(aem$solved) {
+  } else if (aem$solved) {
     aem$solved <- FALSE
   }
   return(aem)

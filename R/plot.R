@@ -1,4 +1,3 @@
-
 #' Convert a print style array to an image style array
 #'
 #' @param m 2D or 3D array in the conventional print layout style See details.
@@ -18,12 +17,12 @@ matrix_to_image <- function(m) {
   dims <- dim(m)
   ndim <- length(dims)
   stopifnot(ndim <= 4)
-  if(ndim == 2) {
-    return(t(m[dims[1]:1,]))
-  } else if(ndim == 3) {
-    return(aperm(m[dims[1]:1,,, drop = FALSE], c(2, 1, 3)))
+  if (ndim == 2) {
+    return(t(m[dims[1]:1, ]))
+  } else if (ndim == 3) {
+    return(aperm(m[dims[1]:1, , , drop = FALSE], c(2, 1, 3)))
   } else {
-    return(aperm(m[dims[1]:1,,,, drop = FALSE], c(2, 1, 3, 4)))
+    return(aperm(m[dims[1]:1, , , , drop = FALSE], c(2, 1, 3, 4)))
   }
 }
 
@@ -46,12 +45,12 @@ image_to_matrix <- function(m) {
   dims <- dim(m)
   ndim <- length(dims)
   stopifnot(ndim <= 4)
-  if(ndim == 2) {
-    return(t(m[,dims[2]:1]))
-  } else if(ndim == 3) {
-    return(aperm(m[,dims[2]:1,, drop = FALSE], c(2, 1, 3)))
+  if (ndim == 2) {
+    return(t(m[, dims[2]:1]))
+  } else if (ndim == 3) {
+    return(aperm(m[, dims[2]:1, , drop = FALSE], c(2, 1, 3)))
   } else {
-    return(aperm(m[,dims[2]:1,,, drop = FALSE], c(2, 1, 3, 4)))
+    return(aperm(m[, dims[2]:1, , , drop = FALSE], c(2, 1, 3, 4)))
   }
 }
 
@@ -86,30 +85,32 @@ image_to_matrix <- function(m) {
 #' xg <- seq(-350, 200, length = 100)
 #' yg <- seq(-125, 125, length = 100)
 #'
-#' contours(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
-#' contours(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3',
-#'          drawlabels = FALSE, add = TRUE)
+#' contours(ml, xg, yg, nlevels = 20, col = "dodgerblue3", labcex = 1)
+#' contours(ml, xg, yg, "streamfunction",
+#'   nlevels = 20, col = "orange3",
+#'   drawlabels = FALSE, add = TRUE
+#' )
 #'
 #' # Not to be confused by contour()
 #' try(
-#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
+#'   contour(ml, xg, yg, nlevels = 20, col = "dodgerblue3", labcex = 1)
 #' )
 #'
 #' # For image() or filled.contour()
 #' library(graphics)
 #' h <- heads(ml, xg, yg, as.grid = TRUE)
-#' h_im <- t(h[dim(h)[1]:1,])
+#' h_im <- t(h[dim(h)[1]:1, ])
 #' image(xg, yg, h_im, asp = 1)
 #' contour(xg, yg, h_im, asp = 1, add = TRUE) # contours() is a wrapper for this
 #' filled.contour(xg, yg, h_im, asp = 1)
 #'
-contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potential'), asp = 1, ...) {
+contours <- function(aem, x, y, variable = c("heads", "streamfunction", "potential"), asp = 1, ...) {
   variable <- match.arg(variable)
-  if(!inherits(aem, 'aem')) stop('contours() should be called with an \'aem\' object', call. = FALSE)
+  if (!inherits(aem, "aem")) stop("contours() should be called with an 'aem' object", call. = FALSE)
   m <- switch(variable,
-              heads = heads(aem, x, y, as.grid = TRUE),
-              streamfunction = streamfunction(aem, x, y, as.grid = TRUE),
-              potential = potential(aem, x, y, as.grid = TRUE)
+    heads = heads(aem, x, y, as.grid = TRUE),
+    streamfunction = streamfunction(aem, x, y, as.grid = TRUE),
+    potential = potential(aem, x, y, as.grid = TRUE)
   )
   m <- matrix_to_image(m)
   return(contour(x = x, y = y, z = m, asp = asp, ...))
@@ -143,57 +144,61 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' plot(w, add = TRUE)
 #' plot(uf) # empty
 #'
-plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.widths = TRUE, col = 'black', ...) {
+plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.widths = TRUE, col = "black", ...) {
   element <- x
-  if(inherits(element, 'well')) {
+  if (inherits(element, "well")) {
     x <- Re(element$zetaw)
     y <- Im(element$zetaw)
-    if(inherits(element, 'headwell')) {
+    if (inherits(element, "headwell")) {
       x[2] <- element$xc
       y[2] <- element$yc
     }
-    if(add) {
+    if (add) {
       return(points(x, y, pch = pch, cex = cex, col = col, ...))
     } else {
       return(plot(x, y, pch = pch, cex = cex, col = col, ...))
     }
-  } else if(inherits(element, 'linesink') || inherits(element, 'linedoublet')) {
+  } else if (inherits(element, "linesink") || inherits(element, "linedoublet")) {
     x <- c(Re(element$z0), Re(element$z1))
     y <- c(Im(element$z0), Im(element$z1))
     width <- ifelse(is.null(element$width), 0, element$width)
-    if(add) {
-      if(use.widths && width > 0) {
-        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+    if (add) {
+      if (use.widths && width > 0) {
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi / 2
         xci <- x - 0.5 * width * cos(theta_norm)
         yci <- y - 0.5 * width * sin(theta_norm)
         xco <- x + 0.5 * width * cos(theta_norm)
         yco <- y + 0.5 * width * sin(theta_norm)
         poly <- matrix(c(xci[1], yci[1], xci[2], yci[2], xco[2], yco[2], xco[1], yco[1]),
-                       byrow = TRUE, ncol = 2)
+          byrow = TRUE, ncol = 2
+        )
         return(polygon(poly, col = col, ...))
       } else {
         return(lines(x, y, col = col, ...))
       }
     } else {
-      if(use.widths && width > 0) {
-        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi/2
+      if (use.widths && width > 0) {
+        theta_norm <- atan2(Im(element$z1 - element$z0), Re(element$z1 - element$z0)) - pi / 2
         xci <- x - 0.5 * width * cos(theta_norm)
         yci <- y - 0.5 * width * sin(theta_norm)
         xco <- x + 0.5 * width * cos(theta_norm)
         yco <- y + 0.5 * width * sin(theta_norm)
         poly <- matrix(c(xci[1], yci[1], xci[2], yci[2], xco[2], yco[2], xco[1], yco[1]),
-                       byrow = TRUE, ncol = 2)
+          byrow = TRUE, ncol = 2
+        )
 
         frame()
         plot.window(range(c(xci, xco)), range(c(yci, yco)))
         polygon(poly, col = col, ...)
-        axis(1); axis(2); box()
+        axis(1)
+        axis(2)
+        box()
       } else {
-        return(plot(x, y, type = 'l', col = col, ...))
+        return(plot(x, y, type = "l", col = col, ...))
       }
     }
   } else {
-    if(add) {
+    if (add) {
       invisible()
     } else {
       plot.new()
@@ -220,12 +225,12 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
 #' xg <- seq(-500, 500, length = 200)
 #' yg <- seq(-250, 250, length = 100)
 #'
-#' contours(m, x = xg, y = yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, x = xg, y = yg, col = "dodgerblue3", nlevels = 20)
 #' plot(m, add = TRUE)
 #'
 plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
   aem <- x
-  if(add) {
+  if (add) {
     pl <- lapply(aem$elements, plot, add = add, ...)
     invisible(pl)
   } else {
@@ -233,8 +238,8 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 
     frame()
     plot.window(xlim, ylim)
-    if(ln > 0) {
-      for(i in seq_along(aem$elements)) plot(aem$elements[[i]], add = TRUE, ...)
+    if (ln > 0) {
+      for (i in seq_along(aem$elements)) plot(aem$elements[[i]], add = TRUE, ...)
     }
     axis(1)
     axis(2)
@@ -263,58 +268,61 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' @examples
 #'
 #' # plot arrows
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
+#' plot(paths, add = TRUE, col = "orange3", arrows = TRUE, length = 0.05)
 #'
 #' # plot point markers every 2.5 years
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
+#' plot(paths, add = TRUE, col = "orange3", marker = 2.5 * 365, pch = 20)
 #'
 #' # plot point markers every 600 days
-#' plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
+#' plot(paths, add = TRUE, col = "forestgreen", marker = 600, pch = 1)
 #'
-plot.tracelines <- function(x, y = NULL, add = FALSE, type = 'l', arrows = FALSE, marker = NULL, ...) {
-  if(!is.list(x)) {
+plot.tracelines <- function(x, y = NULL, add = FALSE, type = "l", arrows = FALSE, marker = NULL, ...) {
+  if (!is.list(x)) {
     x <- list(x)
   }
-  if(add) {
-    if(arrows) {
-      for(i in seq_along(x)) {
-        arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
-               x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
-               ...)
+  if (add) {
+    if (arrows) {
+      for (i in seq_along(x)) {
+        arrows(
+          x0 = x[[i]][1:(nrow(x[[i]]) - 1), 2], y0 = x[[i]][1:(nrow(x[[i]]) - 1), 3],
+          x1 = x[[i]][2:nrow(x[[i]]), 2], y1 = x[[i]][2:nrow(x[[i]]), 3],
+          ...
+        )
       }
     } else {
-      for(i in seq_along(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
+      for (i in seq_along(x)) lines(x[[i]][, 2], x[[i]][, 3], type = type, ...)
     }
   } else {
-    if(arrows) {
-      plot(x[[1]][,2], x[[1]][,3], type = 'l', ...)
-      for(i in seq_along(x)) {
-        arrows(x0 = x[[i]][1:(nrow(x[[i]])-1),2], y0 = x[[i]][1:(nrow(x[[i]])-1),3],
-               x1 = x[[i]][2:nrow(x[[i]]),2], y1 = x[[i]][2:nrow(x[[i]]),3],
-               ...)
+    if (arrows) {
+      plot(x[[1]][, 2], x[[1]][, 3], type = "l", ...)
+      for (i in seq_along(x)) {
+        arrows(
+          x0 = x[[i]][1:(nrow(x[[i]]) - 1), 2], y0 = x[[i]][1:(nrow(x[[i]]) - 1), 3],
+          x1 = x[[i]][2:nrow(x[[i]]), 2], y1 = x[[i]][2:nrow(x[[i]]), 3],
+          ...
+        )
       }
     } else {
-      plot(x[[1]][,2], x[[1]][,3], type = type, ...)
-      if(length(x) > 1) for(i in 2:length(x)) lines(x[[i]][,2], x[[i]][,3], type = type,...)
+      plot(x[[1]][, 2], x[[1]][, 3], type = type, ...)
+      if (length(x) > 1) for (i in 2:length(x)) lines(x[[i]][, 2], x[[i]][, 3], type = type, ...)
     }
   }
 
   # point markers
-  if(!is.null(marker)) {
-    if(is.numeric(marker) && length(marker) == 1) {
-      for(i in seq_along(x)) {
-        t <- seq(x[[i]][1, 'time'], x[[i]][nrow(x[[i]]), 'time'], by = marker)
-        if(length(t) > 0) {
-          xpts <- approx(x[[i]][, 'time'], x[[i]][, 'x'], xout = t)$y
-          ypts <- approx(x[[i]][, 'time'], x[[i]][, 'y'], xout = t)$y
+  if (!is.null(marker)) {
+    if (is.numeric(marker) && length(marker) == 1) {
+      for (i in seq_along(x)) {
+        t <- seq(x[[i]][1, "time"], x[[i]][nrow(x[[i]]), "time"], by = marker)
+        if (length(t) > 0) {
+          xpts <- approx(x[[i]][, "time"], x[[i]][, "x"], xout = t)$y
+          ypts <- approx(x[[i]][, "time"], x[[i]][, "y"], xout = t)$y
           points(xpts, ypts, ...)
         }
       }
     } else {
-      stop('marker should be numeric of length 1 or NULL', call. = FALSE)
+      stop("marker should be numeric of length 1 or NULL", call. = FALSE)
     }
   }
-
 }

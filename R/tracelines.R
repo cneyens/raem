@@ -1,5 +1,3 @@
-
-
 #' Check if point is on line
 #'
 #' [point_on_line()] checks if point p is on the line determined by points l0 and l1
@@ -21,9 +19,9 @@
 #' p3 <- c(30, 31, 0)
 #' p4 <- c(30, 30, 0)
 #'
-#' plot(m, xlab = 'x', ylab = 'y')
+#' plot(m, xlab = "x", ylab = "y")
 #' lines(m)
-#' points(matrix(c(p3, p4), ncol = 3, byrow = TRUE), col = c('red', 'blue'))
+#' points(matrix(c(p3, p4), ncol = 3, byrow = TRUE), col = c("red", "blue"))
 #'
 #' point_on_line(p1, p2, p3)
 #' point_on_line(p1, p2, p4)
@@ -32,11 +30,12 @@
 #' point_on_line(p1, p2, p3, width = 2)
 #'
 point_on_line <- function(l0, l1, p, width = 0, tol = 1e-3) {
-
   # check if point is within distance of line, accounting for linewidth and tolerance
-  r <- sqrt((l1[1]-l0[1])^2 + (l1[2]-l0[2])^2)
-  d <- abs((l1[1] - l0[1])*(l0[2] - p[2]) - (l0[1] - p[1])*(l1[2] - l0[2])) / r
-  if(d > (0.5*width + tol)) return(FALSE)
+  r <- sqrt((l1[1] - l0[1])^2 + (l1[2] - l0[2])^2)
+  d <- abs((l1[1] - l0[1]) * (l0[2] - p[2]) - (l0[1] - p[1]) * (l1[2] - l0[2])) / r
+  if (d > (0.5 * width + tol)) {
+    return(FALSE)
+  }
 
   # if point within distance,
   # and if dotproduct is positive and less than the squared length of the line,
@@ -45,9 +44,13 @@ point_on_line <- function(l0, l1, p, width = 0, tol = 1e-3) {
   b <- p - l1
   c <- p - l0
   dotproduct <- sum(a * c) # pracma::dot
-  if(dotproduct < 0) return(FALSE)
+  if (dotproduct < 0) {
+    return(FALSE)
+  }
   sqL <- sum(a^2)
-  if(dotproduct > sqL) return(FALSE)
+  if (dotproduct > sqL) {
+    return(FALSE)
+  }
   return(TRUE)
 }
 
@@ -120,9 +123,9 @@ reached_well <- function(well, x, y, ...) {
 #' @examples
 #' uf <- uniformflow(100, 0.001, 0)
 #' rf <- constant(-1000, 0, 10.6)
-#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'confined')
+#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = "confined")
 #' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # confined
-#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = 'variable')
+#' m <- aem(k = 10, top = 10, base = -5, n = 0.2, uf, rf, type = "variable")
 #' outside_vertical(m, x = c(-200, 0, 200), y = 0, z = c(12, -10, 10)) # unconfined
 #'
 outside_vertical <- function(aem, x, y, z, ...) {
@@ -183,7 +186,8 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @seealso [capzone()]
 #' @examples
 #' k <- 10
-#' top <- 10; base <- 0
+#' top <- 10
+#' base <- 0
 #' n <- 0.2
 #' R <- 5
 #' hc <- 20
@@ -193,7 +197,8 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'
 #' m <- aem(k, top, base, n = n, uf, rf)
 #'
-#' x0 <- -200; y0 <- seq(-200, 200, 50)
+#' x0 <- -200
+#' y0 <- seq(-200, 200, 50)
 #' times <- seq(0, 25 * 365, 365 / 4)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 #' endp <- endpoints(paths)
@@ -201,13 +206,13 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' xg <- seq(-500, 500, length = 100)
 #' yg <- seq(-300, 300, length = 100)
 #'
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange3')
-#' points(endp[, c('x', 'y')])
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
+#' plot(paths, add = TRUE, col = "orange3")
+#' points(endp[, c("x", "y")])
 #'
 #' # Backward tracking with retardation; plot point marker every 5 years
 #' paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
-#' plot(paths_back, add = TRUE, col = 'forestgreen', marker = 5*365, cex = 0.5)
+#' plot(paths_back, add = TRUE, col = "forestgreen", marker = 5 * 365, cex = 0.5)
 #'
 #' # Termination at wells and line-sinks
 #' w1 <- well(200, 50, Q = 250)
@@ -215,28 +220,29 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' ls <- headlinesink(x0 = -100, y0 = 100, x1 = 400, y1 = -300, hc = 7)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' plot(m, add = TRUE)
 #'
-#' x0 <- seq(-400, 400, 50); y0 <- 200
+#' x0 <- seq(-400, 400, 50)
+#' y0 <- 200
 #' times <- seq(0, 5 * 365, 365 / 20)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times)
-#' plot(paths, add = TRUE, col = 'orange3')
+#' plot(paths, add = TRUE, col = "orange3")
 #'
 #' # User-defined termination in rectangular zone
 #' tzone <- cbind(x = c(-300, -200, -200, -300), y = c(150, 150, 100, 100))
 #' termf <- function(t, coords, parms) {
 #'   x <- coords[1]
 #'   y <- coords[2]
-#'   in_poly <- x <= max(tzone[,'x']) & x >= min(tzone[,'x']) &
-#'              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
+#'   in_poly <- x <= max(tzone[, "x"]) & x >= min(tzone[, "x"]) &
+#'     y <= max(tzone[, "y"]) & y >= min(tzone[, "y"])
 #'   return(in_poly)
 #' }
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' plot(m, add = TRUE)
 #' polygon(tzone)
-#' plot(paths, add = TRUE, col = 'orange3')
+#' plot(paths, add = TRUE, col = "orange3")
 #'
 #' # model with vertical flow due to area-sink
 #' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 1500)
@@ -245,32 +251,31 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # starting z0 locations are above aquifer top and will be reset to top with warning
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 #'
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' plot(m, add = TRUE)
-#' plot(paths, add = TRUE, col = 'orange3')
+#' plot(paths, add = TRUE, col = "orange3")
 #'
 #' # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
-#' plot(paths[[4]][,c('y', 'z')], type = 'l')
+#' plot(paths[[4]][, c("y", "z")], type = "l")
 #'
 tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ...) {
-
-  if(!is.null(tfunc) & !is.list(tfunc)) tfunc <- list(tfunc)
+  if (!is.null(tfunc) & !is.list(tfunc)) tfunc <- list(tfunc)
   direction <- ifelse(forward, 1, -1)
 
   # reset initial locations if outside vertical domain, add perturbation so particles won't get stuck
   outside_v_init <- outside_vertical(aem, x0, y0, z0)
-  if(any(outside_v_init$outside)) warning('Resetting z0 values above saturated aquifer level or below aquifer base', call. = FALSE)
+  if (any(outside_v_init$outside)) warning("Resetting z0 values above saturated aquifer level or below aquifer base", call. = FALSE)
   # vz <- direction * velocity(aem, x=x0, y=y0, z=outside_v_init$coords, R = R, verbose = FALSE)[,'vz']
   # up <- vz > 0 & outside_v_init$updown[,'up']
   # down <- vz < 0 & outside_v_init$updown[,'down']
-  up <- outside_v_init$updown[,'up']
-  down <- outside_v_init$updown[,'down']
+  up <- outside_v_init$updown[, "up"]
+  down <- outside_v_init$updown[, "down"]
   z0 <- outside_v_init$coords + ifelse(up, -1, ifelse(down, 1, 0)) * 1e-8
 
   # wrapper to obtain velocity
   vxvy <- function(t, coords, parms, ...) {
     m <- matrix(coords, ncol = 3, byrow = TRUE) # necessary ??
-    v <- velocity(parms$aem, x=m[,1], y=m[,2], z=m[,3], R = parms$R, verbose = FALSE)
+    v <- velocity(parms$aem, x = m[, 1], y = m[, 2], z = m[, 3], R = parms$R, verbose = FALSE)
     v <- ifelse(is.na(v), 0, v) # Qz = NA if particle is above saturated aquifer or below aquifer base
     return(list(c(direction * v)))
   }
@@ -280,16 +285,16 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
     m <- matrix(coords, ncol = 3, byrow = TRUE) # necessary ??
 
     # check if point is outside vertical domain and got there by an outward directed flow
-    out <- outside_vertical(parms$aem, m[,1], m[,2], m[,3])
-    vz <- direction * velocity(parms$aem, x=m[,1], y=m[,2], z=out$coords, R = parms$R, verbose = FALSE)[,'vz']
-    up <- vz > 0 & out$updown[,'up']
-    down <- vz < 0 & out$updown[,'down']
+    out <- outside_vertical(parms$aem, m[, 1], m[, 2], m[, 3])
+    vz <- direction * velocity(parms$aem, x = m[, 1], y = m[, 2], z = out$coords, R = parms$R, verbose = FALSE)[, "vz"]
+    up <- vz > 0 & out$updown[, "up"]
+    down <- vz < 0 & out$updown[, "down"]
     outside_v <- up | down
 
     # check if termination event is reached at linesinks, wells or user-defined termination
-    wls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, 'well'), reached_well(i, x = m[,1], y = m[,2]), FALSE), TRUE)
-    lls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, 'linesink'), reached_line(i, x = m[,1], y = m[,2], tol = tol), FALSE), TRUE)
-    if(is.null(tfunc)) {
+    wls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, "well"), reached_well(i, x = m[, 1], y = m[, 2]), FALSE), TRUE)
+    lls <- vapply(parms$aem$elements, function(i) ifelse(inherits(i, "linesink"), reached_line(i, x = m[, 1], y = m[, 2], tol = tol), FALSE), TRUE)
+    if (is.null(tfunc)) {
       tfn <- FALSE
     } else {
       tfn <- vapply(tfunc, function(i) do.call(i, list(t, coords, parms)), TRUE)
@@ -300,17 +305,19 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
   }
   # vectorized ODE
   get_paths <- Vectorize(function(x, y, z) {
-    deSolve::lsoda(c(x, y, z), times = times, func = vxvy, parms = list(aem = aem, R = R),
-                   events = list(root = TRUE),
-                   rootfun = rootfun)
+    deSolve::lsoda(c(x, y, z),
+      times = times, func = vxvy, parms = list(aem = aem, R = R),
+      events = list(root = TRUE),
+      rootfun = rootfun
+    )
   }, SIMPLIFY = FALSE)
 
   # get paths and clean
   paths <- get_paths(x0, y0, z0)
-  paths.m <- lapply(paths, matrix, ncol = 4, dimnames = list(NULL, c('time', 'x', 'y', 'z')))
+  paths.m <- lapply(paths, matrix, ncol = 4, dimnames = list(NULL, c("time", "x", "y", "z")))
   names(paths.m) <- NULL
   # if(length(paths) == 1) paths.m <- paths.m[[1]] # return matrix instead of list of matrices when only one particle is tracked
-  class(paths.m) <- 'tracelines'
+  class(paths.m) <- "tracelines"
   return(paths.m)
 }
 
@@ -323,8 +330,8 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
 #' @export
 #' @rdname tracelines
 endpoints <- function(tracelines, ...) {
-  stopifnot('Supplied object is not of class \'tracelines\'' = inherits(tracelines, 'tracelines'))
-  endp <- t(vapply(tracelines, function(i) i[nrow(i),], structure(rep(0, 4), names = c('time', 'x', 'y', 'z'))))
+  stopifnot("Supplied object is not of class 'tracelines'" = inherits(tracelines, "tracelines"))
+  endp <- t(vapply(tracelines, function(i) i[nrow(i), ], structure(rep(0, 4), names = c("time", "x", "y", "z"))))
   return(endp)
 }
 
@@ -356,42 +363,43 @@ endpoints <- function(tracelines, ...) {
 #' @examples
 #'
 #' k <- 10
-#' top <- 10; base <- 0
+#' top <- 10
+#' base <- 0
 #' n <- 0.3
 #'
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 #' rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
-#' w1 = well(200, 50, Q = 250)
-#' w2 = well(-200, -100, Q = 450)
+#' w1 <- well(200, 50, Q = 250)
+#' w2 <- well(-200, -100, Q = 450)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 #'
-#' cp5 <- capzone(m, w1, time = 5*365)
-#' cp10 <- capzone(m, w2, time = 10*365)
+#' cp5 <- capzone(m, w1, time = 5 * 365)
+#' cp10 <- capzone(m, w2, time = 10 * 365)
 #'
 #' xg <- seq(-800, 800, length = 100)
 #' yg <- seq(-500, 500, length = 100)
 #'
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' plot(cp5, add = TRUE)
-#' plot(cp10, add = TRUE, col = 'orange3')
+#' plot(cp10, add = TRUE, col = "orange3")
 #'
 #' # model with vertical flow components
 #' as <- areasink(0, 0, N = 0.001, R = 1500)
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'
 #' # two different starting levels
-#' cp5a <- capzone(m, w1, time = 5*365, zstart = base)
-#' cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
+#' cp5a <- capzone(m, w1, time = 5 * 365, zstart = base)
+#' cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8)
 #'
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
 #' plot(cp5a, add = TRUE)
-#' plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
+#' plot(cp5b, add = TRUE, col = "forestgreen") # smaller zone
 #'
 #' # plot the convex hull of the endpoints as a polygon
 #' endp <- endpoints(cp5b)
-#' hull <- chull(endp[, c('x', 'y')])
-#' polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))
+#' hull <- chull(endp[, c("x", "y")])
+#' polygon(endp[hull, c("x", "y")], col = adjustcolor("forestgreen", alpha.f = 0.7))
 #'
 capzone <- function(aem,
                     well,
@@ -400,13 +408,12 @@ capzone <- function(aem,
                     dt = time / 20,
                     zstart = aem$base,
                     ...) {
-
   # define initial particle locations equally spaced at well screen circle
-  if(length(zstart) > 1) stop('zstart should have length 1', call. = FALSE)
-  alpha <- seq(0, 2*pi*(npar/(npar + 1)), length = npar)
+  if (length(zstart) > 1) stop("zstart should have length 1", call. = FALSE)
+  alpha <- seq(0, 2 * pi * (npar / (npar + 1)), length = npar)
   rw <- well$rw + 1e-12 # add small perturbation to prevent starting locations in root
-  x <- rw*cos(alpha) + Re(well$zetaw)
-  y <- rw*sin(alpha) + Im(well$zetaw)
+  x <- rw * cos(alpha) + Re(well$zetaw)
+  y <- rw * sin(alpha) + Im(well$zetaw)
   c0 <- data.frame(x = x, y = y, z = zstart)
 
   paths <- tracelines(aem, x0 = c0$x, y0 = c0$y, z0 = c0$z, times = seq(0, time, dt), forward = FALSE, ...)

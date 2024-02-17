@@ -1,4 +1,3 @@
-
 #' Create a line-doublet analytic element with a specified resistance
 #'
 #' [linedoublet()] creates a line-doublet analytic element with a constant specified resistance
@@ -32,15 +31,15 @@ linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
   ld$z1 <- x1 + y1 * 1i
   ld$L <- abs(ld$z1 - ld$z0)
 
-  ld$xc <- 0.5*(x0 + x1)
-  ld$yc <- 0.5*(y0 + y1)
+  ld$xc <- 0.5 * (x0 + x1)
+  ld$yc <- 0.5 * (y0 + y1)
   ld$hc <- 0
 
   ld$order <- order
-  if(resistance < 0) stop('Resistance should not be negative', call. = FALSE)
+  if (resistance < 0) stop("Resistance should not be negative", call. = FALSE)
   ld$resistance <- resistance
 
-  class(ld) <- c('linedoublet', class(ld))
+  class(ld) <- c("linedoublet", class(ld))
   return(ld)
 }
 
@@ -56,7 +55,7 @@ omegainf.linedoublet <- function(linedoublet, x, y, ...) {
   tol <- 1e-12
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
-  omi <- 1/(2*pi*1i) * log((zm1) / (zp1)) # order 0
+  omi <- 1 / (2 * pi * 1i) * log((zm1) / (zp1)) # order 0
 
   return(omi)
 }
@@ -74,8 +73,7 @@ domegainf.linedoublet <- function(linedoublet, x, y, ...) {
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
   m <- linedoublet$z1 - linedoublet$z0
-  wi <- -(1/(2*pi*1i)) * zp1 * (2/(m*zp1) -  (2*zm1/(m*zp1^2))) / zm1 # order 0
+  wi <- -(1 / (2 * pi * 1i)) * zp1 * (2 / (m * zp1) - (2 * zm1 / (m * zp1^2))) / zm1 # order 0
 
   return(wi)
 }
-

@@ -108,7 +108,7 @@ heads(ml, xg, yg, as.grid = TRUE)
 
 # do not confuse heads() with utils::head, which will give an error
 try(
-head(ml, c(50, 0), c(25, -25))
+  head(ml, c(50, 0), c(25, -25))
 )
 
 }
