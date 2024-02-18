@@ -46,7 +46,7 @@ hls <- headlinesink(x0 = -200, y0 = -150, x1 = 200, y1 = 150, hc = 8)
 as <- areasink(xc = 0, yc = 0, N = 0.0005, R = 500)
 m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
 
-element_discharge(m, name = c("hls", "as"))
-element_discharge(m, type = "well")
+element_discharge(m, name = c('hls', 'as'))
+element_discharge(m, type = 'well')
 
 }

@@ -1,3 +1,4 @@
+
 #' Create a strength-specified line-sink analytic element
 #'
 #' [linesink()] creates a line-sink analytic element with constant specified strength.
@@ -22,7 +23,7 @@ linesink <- function(x0, y0, x1, y1, sigma, width = 0, ...) {
   ls$z1 <- x1 + y1 * 1i
   ls$L <- abs(ls$z1 - ls$z0)
   ls$width <- width
-  class(ls) <- c("linesink", class(ls))
+  class(ls) <- c('linesink', class(ls))
   return(ls)
 }
 
@@ -60,12 +61,12 @@ linesink <- function(x0, y0, x1, y1, sigma, width = 0, ...) {
 #'
 headlinesink <- function(x0, y0, x1, y1, hc, resistance = 0, width = 0, ...) {
   hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0, width = width)
-  hls$xc <- 0.5 * (x0 + x1)
-  hls$yc <- 0.5 * (y0 + y1)
+  hls$xc <- 0.5*(x0 + x1)
+  hls$yc <- 0.5*(y0 + y1)
   hls$hc <- hc
   hls$nunknowns <- 1
   hls$resistance <- resistance
-  class(hls) <- c("headlinesink", class(hls))
+  class(hls) <- c('headlinesink', class(hls))
   return(hls)
 }
 
@@ -81,7 +82,7 @@ omegainf.linesink <- function(linesink, x, y, ...) {
   tol <- 1e-12
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
-  omi <- linesink$L / (4 * pi) * (zp1 * log(zp1) - zm1 * log(zm1))
+  omi <- linesink$L / (4*pi) * (zp1*log(zp1) - zm1*log(zm1))
   return(omi)
 }
 
@@ -97,6 +98,6 @@ domegainf.linesink <- function(linesink, x, y, ...) {
   tol <- 1e-12
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
-  wi <- -(linesink$L / (2 * pi)) * ((log(zp1) - log(zm1)) / (linesink$z1 - linesink$z0))
+  wi <- -(linesink$L / (2*pi)) * ((log(zp1) - log(zm1)) / (linesink$z1 - linesink$z0))
   return(wi)
 }

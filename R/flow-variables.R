@@ -1,3 +1,4 @@
+
 #' @title Calculate flow variables
 #'
 #' @description [domega()] computes the complex discharge for an `aem` or `element` object
@@ -12,7 +13,7 @@
 #' @export
 #' @seealso [state-variables()], [satthick()], [dirflow()], [flow_through_line()]
 #'
-domega <- function(...) UseMethod("domega")
+domega <- function(...) UseMethod('domega')
 
 #'
 #' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` object
@@ -37,7 +38,7 @@ domega <- function(...) UseMethod("domega")
 #' @rdname flow
 #' @export
 #'
-discharge <- function(...) UseMethod("discharge")
+discharge <- function(...) UseMethod('discharge')
 
 #'
 #' @description [darcy()] computes the `x, y` and `z` components of the Darcy flux vector (also called specific discharge vector)
@@ -49,7 +50,7 @@ discharge <- function(...) UseMethod("discharge")
 #'    the saturated thickness at `x`, `y` and `z`.
 #' @rdname flow
 #'
-darcy <- function(...) UseMethod("darcy")
+darcy <- function(...) UseMethod('darcy')
 
 #'
 #' @description [velocity()] computes the `x, y` and `z` components of the average linear groundwater flow velocity vector
@@ -60,7 +61,7 @@ darcy <- function(...) UseMethod("darcy")
 #'    average linear groundwater flow velocity vector (`vx`, `vy` and `vz`). The values are computed by dividing
 #'    the [darcy()] values by the effective porosity (`aem$n`) and the retardation coefficient `R`.
 #'
-velocity <- function(...) UseMethod("velocity")
+velocity <- function(...) UseMethod('velocity')
 
 #' Calculate the complex discharge influence
 #'
@@ -75,7 +76,7 @@ velocity <- function(...) UseMethod("velocity")
 #' @noRd
 #' @seealso [omegainf()], [potinf()]
 #'
-domegainf <- function(...) UseMethod("domegainf")
+domegainf <- function(...) UseMethod('domegainf')
 
 #'
 #' @param aem `aem` object
@@ -100,7 +101,7 @@ domegainf <- function(...) UseMethod("domegainf")
 #' domega(ml, xg, yg, as.grid = TRUE)
 #'
 domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  if (as.grid) {
+  if(as.grid) {
     df <- expand.grid(x = x, y = y)
     gx <- df$x
     gy <- df$y
@@ -113,8 +114,8 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   # w <- 0 + 0i
   # for(i in aem$elements) w <- w + domega(i, gx, gy)
 
-  if (as.grid) {
-    w <- matrix(w, nrow = length(x), ncol = length(y)) # as used by {image} or {contour}. NROW and NCOL are switched
+  if(as.grid) {
+    w <- matrix(w, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
     w <- image_to_matrix(w)
   }
   return(w)
@@ -138,7 +139,7 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
 #'
 discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verbose = TRUE, ...) {
-  if (as.grid) {
+  if(as.grid) {
     df <- expand.grid(x = x, y = y, z = z)
     gx <- df$x
     gy <- df$y
@@ -155,40 +156,40 @@ discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verb
   Qy <- -Im(W)
 
   # Get Qz: depends on area-sinks and curvature of phreatic surface
-  ntop <- vapply(aem$elements, function(i) ifelse(inherits(i, "areasink") && i$location == "top", i$parameter, 0), 0.0)
-  nbase <- vapply(aem$elements, function(i) ifelse(inherits(i, "areasink") && i$location == "base", i$parameter, 0), 0.0)
+  ntop <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'top', i$parameter, 0), 0.0)
+  nbase <- vapply(aem$elements, function(i) ifelse(inherits(i, 'areasink') && i$location == 'base', i$parameter, 0), 0.0)
   sat <- satthick(aem, gx, gy)
 
-  if (aem$type == "confined") {
+  if(aem$type == 'confined') {
     curv <- 0
-  } else if (aem$type == "variable") {
+  } else if(aem$type == 'variable') {
     b <- aem$top - aem$base
-    dsat <- ifelse(sat == b, 0, -1 / (aem$k * sat))
-    curv <- (Qx / sat * Qx * dsat) + (Qy / sat * Qy * dsat)
+    dsat <- ifelse(sat == b, 0, -1/(aem$k * sat))
+    curv <- (Qx/sat * Qx*dsat) + (Qy/sat * Qy*dsat)
   }
   # from Haitjema, 1995, eq. 5.49
-  Qz <- (gz - aem$base) * (curv - sum(ntop) - sum(nbase)) + sum(nbase) * sat
+  Qz <- (gz - aem$base) * (curv - sum(ntop) - sum(nbase)) + sum(nbase)*sat
 
   # set Qz to NA if z coordinate above saturated part or below aquifer base
   # TODO keep this behaviour? Shouldn't Qx and Qy also be set to NA?
   outside_v <- outside_vertical(aem, gx, gy, gz)$outside
-  if (any(outside_v) && verbose) {
-    warning("Setting Qz values to NA for z above saturated aquifer level or below aquifer base", call. = FALSE)
+  if(any(outside_v) && verbose) {
+    warning('Setting Qz values to NA for z above saturated aquifer level or below aquifer base', call. = FALSE)
   }
   Qz <- ifelse(outside_v, NA, Qz)
   # Qx <- ifelse(outside_v, NA, Qx)
   # Qy <- ifelse(outside_v, NA, Qy)
 
-  if (magnitude) {
+  if(magnitude) {
     qv <- cbind(Qx, Qy, Qz, sqrt(Qx^2 + Qy^2 + Qz^2))
     ndim <- 4
-    nms <- c("Qx", "Qy", "Qz", "Q")
+    nms <- c('Qx', 'Qy', 'Qz', 'Q')
   } else {
     qv <- cbind(Qx, Qy, Qz)
     ndim <- 3
-    nms <- c("Qx", "Qy", "Qz")
+    nms <- c('Qx', 'Qy', 'Qz')
   }
-  if (as.grid) {
+  if(as.grid) {
     Q <- array(c(qv), dim = c(length(x), length(y), length(z), ndim), dimnames = list(NULL, NULL, NULL, nms)) # as used by {image} or {contour}. NROW and NCOL are switched
     Q <- image_to_matrix(Q)
   } else {
@@ -209,7 +210,7 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
   b <- satthick(aem, x, y, as.grid = as.grid, ...)
   q <- Q / array(b, dim = dim(Q))
   ndim <- ifelse(as.grid, 4, 2)
-  dimnames(q)[[ndim]] <- c("qx", "qy", "qz", "q")[1:ifelse(magnitude, 4, 3)]
+  dimnames(q)[[ndim]] <- c('qx', 'qy', 'qz', 'q')[1:ifelse(magnitude, 4, 3)]
   return(q)
 }
 
@@ -225,9 +226,9 @@ velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1
   q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
 
   # reset porosity if inhomogeneities exist
-  inh <- which(vapply(aem$elements, function(i) inherits(i, "inhomogeneity"), TRUE))
-  if (length(inh) > 0) {
-    if (as.grid) {
+  inh <- which(vapply(aem$elements, function(i) inherits(i, 'inhomogeneity'), TRUE))
+  if(length(inh) > 0) {
+    if(as.grid) {
       df <- expand.grid(x = x, y = y)
       gx <- df$x
       gy <- df$y
@@ -238,21 +239,21 @@ velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1
     pts <- cbind(x = gx, y = gy)
     poro <- rep(aem$n, nrow(pts))
 
-    for (i in inh) {
+    for(i in inh) {
       el <- aem$elements[[i]]
       poly <- el$vertices
       pip <- apply(pts, 1, point_in_polygon, polygon = poly)
       poro[pip] <- el$n
     }
     poro <- array(poro, dim = dim(q))
-    if (as.grid) poro <- image_to_matrix(poro) # TODO check this
+    if(as.grid) poro <- image_to_matrix(poro) # TODO check this
   } else {
     poro <- aem$n
   }
 
   v <- q / (poro * R)
   ndim <- ifelse(as.grid, 4, 2)
-  dimnames(v)[[ndim]] <- c("vx", "vy", "vz", "v")[1:ifelse(magnitude, 4, 3)]
+  dimnames(v)[[ndim]] <- c('vx', 'vy', 'vz', 'v')[1:ifelse(magnitude, 4, 3)]
   return(v)
 }
 

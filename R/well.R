@@ -1,3 +1,4 @@
+
 #' Create a analytic element of a constant-discharge well
 #'
 #' [well()] creates an analytic element of a well with constant discharge.
@@ -22,7 +23,7 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
   well <- element(Q)
   well$zetaw <- xw + 1i * yw
   well$rw <- rw
-  class(well) <- c("well", class(well))
+  class(well) <- c('well', class(well))
   return(well)
 }
 
@@ -66,7 +67,7 @@ headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, resistance
   hwe$hc <- hc
   hwe$nunknowns <- 1
   hwe$resistance <- resistance
-  class(hwe) <- c("headwell", class(hwe))
+  class(hwe) <- c('headwell', class(hwe))
   return(hwe)
 }
 
@@ -77,10 +78,10 @@ headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, resistance
 #' @noRd
 #'
 omegainf.well <- function(well, x, y, ...) {
-  zminzw <- (x + 1i * y) - well$zetaw
+  zminzw <- (x + 1i*y) - well$zetaw
   alpha <- atan2(y, x)
-  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw * exp(alpha * 1i), zminzw)
-  omi <- 1 / (2 * pi) * log(zminzw)
+  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw*exp(alpha*1i), zminzw)
+  omi <- 1/(2*pi) * log(zminzw)
   return(omi)
 }
 
@@ -91,9 +92,9 @@ omegainf.well <- function(well, x, y, ...) {
 #' @noRd
 #'
 domegainf.well <- function(well, x, y, ...) {
-  zminzw <- (x + 1i * y) - well$zetaw
+  zminzw <- (x + 1i*y) - well$zetaw
   alpha <- atan2(y, x)
-  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw * exp(alpha * 1i), zminzw)
-  wi <- -1 / (2 * pi * zminzw)
+  zminzw <- ifelse(abs(zminzw) < well$rw, well$rw*exp(alpha*1i), zminzw)
+  wi <- -1/(2*pi*zminzw)
   return(wi)
 }

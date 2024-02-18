@@ -1,3 +1,4 @@
+
 #' Create a circular area-sink analytic element with specified recharge
 #'
 #' [areasink()] creates a circular area-sink analytic element with constant, uniform specified recharge.
@@ -22,16 +23,16 @@
 #' # flux assuming a constant head difference over a confining unit
 #' dh <- 3
 #' res <- 10 / 0.0001
-#' areasink(xc = -500, yc = 0, N = -dh / res, R = 500, location = "base")
+#' areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 #'
-areasink <- function(xc, yc, N, R, location = c("top", "base"), ...) {
+areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
   location <- match.arg(location)
   as <- element(N)
   as$xc <- xc
   as$yc <- yc
   as$R <- R
   as$location <- location
-  class(as) <- c("areasink", class(as))
+  class(as) <- c('areasink', class(as))
   return(as)
 }
 
@@ -67,20 +68,20 @@ areasink <- function(xc, yc, N, R, location = c("top", "base"), ...) {
 #'
 #' # using headareasink, the head difference depends on the computed instead of given aquifer head
 #' headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
-#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = "base")
+#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
 #'
 headareasink <- function(xc,
                          yc,
                          hc,
                          R,
                          resistance = 0,
-                         location = c("top", "base"),
+                         location = c('top', 'base'),
                          ...) {
   has <- areasink(xc = xc, yc = yc, N = 0, R = R, location = location)
   has$hc <- hc
   has$nunknowns <- 1
   has$resistance <- resistance
-  class(has) <- c("headareasink", class(has))
+  class(has) <- c('headareasink', class(has))
   return(has)
 }
 
@@ -93,7 +94,7 @@ headareasink <- function(xc,
 omegainf.areasink <- function(areasink, x, y, ...) {
   Rs <- areasink$R
   r <- sqrt((x - areasink$xc)^2 + (y - areasink$yc)^2)
-  phi <- ifelse(r < Rs, -0.25 * (r^2 - Rs^2), -Rs^2 / 2 * log(r / Rs)) + 0i
+  phi <- ifelse(r < Rs, -0.25*(r^2 - Rs^2), -Rs^2/2 * log(r/Rs)) + 0i
   return(phi)
 }
 
@@ -106,8 +107,8 @@ omegainf.areasink <- function(areasink, x, y, ...) {
 domegainf.areasink <- function(areasink, x, y, ...) {
   Rs <- areasink$R
   r <- sqrt((x - areasink$xc)^2 + (y - areasink$yc)^2)
-  Qr <- ifelse(r <= Rs, r / 2, Rs^2 / (2 * r))
-  W <- Qr * (x - areasink$xc) / r - 1i * (Qr * (y - areasink$yc) / r) # polar to cartesian
+  Qr <- ifelse(r <= Rs, r/2, Rs^2/(2*r))
+  W <- Qr*(x - areasink$xc)/r - 1i*(Qr*(y - areasink$yc)/r) # polar to cartesian
   W[r < 1e-15] <- 0 + 0i # continuous across boundary
   return(W)
 }

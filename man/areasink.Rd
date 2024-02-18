@@ -36,6 +36,6 @@ areasink(xc = -500, yc = 0, N = 0.001, R = 500)
 # flux assuming a constant head difference over a confining unit
 dh <- 3
 res <- 10 / 0.0001
-areasink(xc = -500, yc = 0, N = -dh / res, R = 500, location = "base")
+areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 
 }

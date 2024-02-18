@@ -45,7 +45,7 @@ and iteration is required to solve the model.
 
 # using headareasink, the head difference depends on the computed instead of given aquifer head
 headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
-headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = "base")
+headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
 
 }
 \seealso{

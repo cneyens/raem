@@ -1,3 +1,4 @@
+
 #' @title Calculate state-variables
 #'
 #' @description [omega()] computes the complex potential for an `aem` or `element` object
@@ -11,7 +12,7 @@
 #' @name state-variables
 #' @seealso [flow()], [satthick()], [head_to_potential()]
 #'
-omega <- function(...) UseMethod("omega")
+omega <- function(...) UseMethod('omega')
 
 #'
 #' @description [potential()] computes the discharge potential for an `aem` or `element` object
@@ -22,7 +23,7 @@ omega <- function(...) UseMethod("omega")
 #' @export
 #' @rdname state-variables
 #'
-potential <- function(...) UseMethod("potential")
+potential <- function(...) UseMethod('potential')
 
 #'
 #' @description [streamfunction()] computes the streamfunction for an `aem` or `element` object
@@ -33,7 +34,7 @@ potential <- function(...) UseMethod("potential")
 #' @export
 #' @rdname state-variables
 #'
-streamfunction <- function(...) UseMethod("streamfunction")
+streamfunction <- function(...) UseMethod('streamfunction')
 
 #' Calculate the potential influence
 #'
@@ -49,7 +50,7 @@ streamfunction <- function(...) UseMethod("streamfunction")
 #' @noRd
 #' @seealso [omegainf()], [domegainf()]
 #'
-potinf <- function(...) UseMethod("potinf")
+potinf <- function(...) UseMethod('potinf')
 
 #' Calculate the complex potential influence
 #'
@@ -65,7 +66,7 @@ potinf <- function(...) UseMethod("potinf")
 #' @noRd
 #' @seealso [potinf()], [domegainf()]
 #'
-omegainf <- function(...) UseMethod("omegainf")
+omegainf <- function(...) UseMethod('omegainf')
 
 #'
 #' @param aem `aem` object
@@ -89,7 +90,7 @@ omegainf <- function(...) UseMethod("omegainf")
 #' omega(ml, xg, yg, as.grid = TRUE)
 #'
 omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  if (as.grid) {
+  if(as.grid) {
     df <- expand.grid(x = x, y = y) # increasing x and y values
     gx <- df$x
     gy <- df$y
@@ -102,7 +103,7 @@ omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   # om <- 0 + 0i
   # for(i in aem$elements) om <- om + omega(i, gx, gy)
 
-  if (as.grid) {
+  if(as.grid) {
     om <- matrix(om, nrow = length(x), ncol = length(y)) # as used by {image} or {contour}. NROW and NCOL are switched
     om <- image_to_matrix(om)
   }
@@ -194,7 +195,7 @@ potinf.element <- function(element, x, y, ...) {
 #'
 #' # do not confuse heads() with utils::head, which will give an error
 #' try(
-#'   head(ml, c(50, 0), c(25, -25))
+#' head(ml, c(50, 0), c(25, -25))
 #' )
 #'
 heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
@@ -218,13 +219,12 @@ heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
 #' @examples
 #'
 #' k <- 10
-#' top <- 10
-#' base <- 0
+#' top <- 10; base <- 0
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
 #' rf <- constant(TR, xc = -1000, yc = 0, hc = 10)
 #' w1 <- well(200, 50, Q = 250)
-#' m <- aem(k, top, base, n = 0.2, uf, rf, w1, type = "variable") # variable saturated thickness
-#' mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = "confined") # constant saturated thickness
+#' m <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'variable') # variable saturated thickness
+#' mc <- aem(k, top, base, n = 0.2, uf, rf, w1, type = 'confined') # constant saturated thickness
 #' xg <- seq(-500, 500, length = 100)
 #' yg <- seq(-250, 250, length = 100)
 #'
@@ -235,9 +235,9 @@ heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
 #'
 head_to_potential <- function(aem, h, ...) {
   b <- aem$top - aem$base
-  if (aem$type == "confined") {
+  if(aem$type == 'confined') {
     phi <- h * aem$k * b
-  } else if (aem$type == "variable") {
+  } else if(aem$type == 'variable') {
     cn <- 0.5 * aem$k * b^2 + aem$k * b * aem$base
     phi <- ifelse(h >= aem$top, h * aem$k * b - cn, 0.5 * aem$k * (h - aem$base)^2)
   }
@@ -272,7 +272,7 @@ head_to_potential <- function(aem, h, ...) {
 #'
 #' # Converting negative potentials results in NA's with warning
 #' try(
-#'   potential_to_head(m, -300)
+#' potential_to_head(m, -300)
 #' )
 #'
 #' # unless na.below = FALSE
@@ -280,16 +280,16 @@ head_to_potential <- function(aem, h, ...) {
 #'
 potential_to_head <- function(aem, phi, na.below = TRUE, ...) {
   b <- aem$top - aem$base
-  if (aem$type == "confined") {
+  if(aem$type == 'confined') {
     h <- phi / (aem$k * b)
-  } else if (aem$type == "variable") {
+  } else if(aem$type == 'variable') {
     phit <- 0.5 * aem$k * b^2
     cn <- phit + aem$k * b * aem$base
-    if (na.below) {
-      h <- ifelse(phi >= phit, (phi + cn) / (aem$k * b), sqrt(2 * phi / aem$k) + aem$base)
+    if(na.below) {
+      h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*phi/aem$k) + aem$base)
     } else {
-      h <- ifelse(phi >= phit, (phi + cn) / (aem$k * b), sqrt(2 * abs(phi) / aem$k) * ifelse(phi < 0, 1i, 1))
-      h <- ifelse(phi >= phit, h, ifelse(phi < 0, Im(Conj(h)), Re(h)) + aem$base)
+      h <- ifelse(phi >= phit, (phi + cn)/(aem$k * b), sqrt(2*abs(phi)/aem$k) * ifelse(phi < 0, 1i, 1))
+      h <- ifelse(phi >= phit, h, ifelse(phi < 0, Im(Conj(h)), Re(h))  + aem$base)
     }
   }
   return(h)

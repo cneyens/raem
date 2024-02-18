@@ -30,27 +30,25 @@ Specify the aquifer parameters and create elements:
 ``` r
 library(raem)
 
-k <- 10
-top <- 10
-base <- 0
-n <- 0.2
+k = 10
+top = 10
+base = 0
+n = 0.2
 
-hr <- 15 # head at reference point, above aquifer top
-TR <- k * (top - base) # constant transmissivity of background flow
+hr = 15 # head at reference point, above aquifer top
+TR = k * (top - base) # constant transmissivity of background flow
 
-uf <- uniformflow(TR, gradient = 0.001, angle = -45)
-rf <- constant(xc = -1000, yc = 0, hc = hr)
-w1 <- well(xw = 200, yw = 0, Q = 250)
-w2 <- well(xw = -200, yw = -150, Q = 400)
+uf = uniformflow(TR, gradient = 0.001, angle = -45)
+rf = constant(xc = -1000, yc = 0, hc = hr)
+w1 = well(xw = 200, yw = 0, Q = 250)
+w2 = well(xw = -200, yw = -150, Q = 400)
 ```
 
 Create the model. This automatically solves the system of equations.
 
 ``` r
-m <- aem(
-  k = k, top = top, base = base, n = n,
-  uf, rf, w1, w2
-)
+m = aem(k = k, top = top, base = base, n = n, 
+        uf, rf, w1, w2)
 ```
 
 Find the head and discharge at two locations `x = -200, y = 200` and
@@ -71,14 +69,14 @@ Plot head contours and element locations. First, specify the contouring
 grid:
 
 ``` r
-xg <- seq(-500, 500, length = 100)
-yg <- seq(-250, 250, length = 100)
+xg = seq(-500, 500, length = 100)
+yg = seq(-250, 250, length = 100)
 ```
 
 Now plot:
 
 ``` r
-contours(m, xg, yg, "heads", col = "dodgerblue3", nlevels = 20)
+contours(m, xg, yg, 'heads', col = 'dodgerblue3', nlevels = 20)
 plot(m, add = TRUE)
 ```
 
@@ -88,8 +86,8 @@ Compute particle traces starting along `y = 200` at 20 intervals per
 year for 5 years and add to plot:
 
 ``` r
-paths <- tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5 * 365, 365 / 20))
-plot(paths, add = TRUE, col = "orange3")
+paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
+plot(paths, add = TRUE, col = 'orange3')
 ```
 
 <img src="man/figures/README-plot-traces-1.png" width="100%" />

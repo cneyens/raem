@@ -1,3 +1,4 @@
+
 #' Create a uniform-flow analytic element with specified recharge
 #'
 #' [uniformflow()] creates a analytic element of constant uniform background flow.
@@ -21,8 +22,8 @@
 #' uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
 uniformflow <- function(TR, gradient, angle, ...) {
   uf <- element(gradient * TR)
-  uf$udir <- exp(-1i * (angle * pi / 180))
-  class(uf) <- c("uniformflow", class(uf))
+  uf$udir <- exp(-1i * (angle*pi/180))
+  class(uf) <- c('uniformflow', class(uf))
   return(uf)
 }
 
@@ -49,7 +50,7 @@ domegainf.uniformflow <- function(uf, x, y, ...) {
   yy <- ifelse(x == 0 & y == 0, 1e-12, y)
 
   omi <- omegainf(uf, xx, yy, ...)
-  zeta <- xx + yy * 1i
-  wi <- -omi / zeta
+  zeta <- xx + yy*1i
+  wi <- -omi/zeta
   return(wi)
 }

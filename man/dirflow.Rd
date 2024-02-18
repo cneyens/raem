@@ -50,8 +50,8 @@ w <- well(10, -50, Q = 200)
 m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
 dirflow(m, x = c(0, 100), y = 50, angle = -45)
 
-m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = "confined")
-dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = "velocity", as.grid = TRUE)
+m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = 'confined')
+dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = 'velocity', as.grid = TRUE)
 
 }
 \seealso{

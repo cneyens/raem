@@ -39,43 +39,42 @@ Note that different \code{zstart} values only have an effect in models with vert
 \examples{
 
 k <- 10
-top <- 10
-base <- 0
+top <- 10; base <- 0
 n <- 0.3
 
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
-w1 <- well(200, 50, Q = 250)
-w2 <- well(-200, -100, Q = 450)
+w1 = well(200, 50, Q = 250)
+w2 = well(-200, -100, Q = 450)
 
 m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 
-cp5 <- capzone(m, w1, time = 5 * 365)
-cp10 <- capzone(m, w2, time = 10 * 365)
+cp5 <- capzone(m, w1, time = 5*365)
+cp10 <- capzone(m, w2, time = 10*365)
 
 xg <- seq(-800, 800, length = 100)
 yg <- seq(-500, 500, length = 100)
 
-contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5, add = TRUE)
-plot(cp10, add = TRUE, col = "orange3")
+plot(cp10, add = TRUE, col = 'orange3')
 
 # model with vertical flow components
 as <- areasink(0, 0, N = 0.001, R = 1500)
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 
 # two different starting levels
-cp5a <- capzone(m, w1, time = 5 * 365, zstart = base)
-cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8)
+cp5a <- capzone(m, w1, time = 5*365, zstart = base)
+cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 
-contours(m, xg, yg, col = "dodgerblue3", nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
 plot(cp5a, add = TRUE)
-plot(cp5b, add = TRUE, col = "forestgreen") # smaller zone
+plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 
 # plot the convex hull of the endpoints as a polygon
 endp <- endpoints(cp5b)
-hull <- chull(endp[, c("x", "y")])
-polygon(endp[hull, c("x", "y")], col = adjustcolor("forestgreen", alpha.f = 0.7))
+hull <- chull(endp[, c('x', 'y')])
+polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))
 
 }
 \seealso{
