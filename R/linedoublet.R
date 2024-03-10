@@ -38,6 +38,13 @@ linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
 
   ld$xc <- c(x0, 0.5*(x0 + x1), x1)
   ld$yc <- c(y0, 0.5*(y0 + y1), y1)
+
+  # Chebyshev roots # TODO tests fail at collocation points except at center
+  # cheby_root <- cos(pi * (seq(order-1) + 0.5) / order)
+  # half_length <- 0.5*(ld$z1 - ld$z0)
+  # ld$xc <- c(cheby_root * Re(half_length), 0.5*(x0 + x1), -cheby_root * Re(half_length))
+  # ld$yc <- c(cheby_root * Im(half_length), 0.5*(y0 + y1), -cheby_root * Im(half_length))
+
   ld$hc <- rep(0, order + 1)
 
   if(resistance < 0) stop('Resistance should not be negative', call. = FALSE)
@@ -95,7 +102,7 @@ domegainf.linedoublet <- function(linedoublet, x, y, ...) {
   pm <- ((4 * Znum * log(zm1 / zp1)) / m^2) + (zp1 * (Z^2 - 1) * (2 / (m * zp1) - 2 * zm1 / (m * zp1^2))) / zm1
 
   # return in matrix form so omega.element can perform a matrix multiplication with the parameter vector
-  wi <- -1i/(2 * pi) * cbind(fm + pm/2, -pm, gm + pm/2)
+  wi <- -1/(2 * pi * 1i) * cbind(fm + pm/2, -pm, gm + pm/2)
 
   # wi <- -(1/(2*pi*1i)) * zp1 * (2/(m*zp1) -  (2*zm1/(m*zp1^2))) / zm1 # order 0; deprecated
 
