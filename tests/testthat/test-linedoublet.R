@@ -1,3 +1,5 @@
+
+
 test_that("linedoublets work", {
   k <- 8
   top <- 10
@@ -58,6 +60,7 @@ test_that('impermeable wall works', {
   dphi <- potential(m, ld$xc - 1e-12, ld$yc - 1e-12) - potential(m, ld$xc + 1e-12, ld$yc + 1e-12)
   expect_equal(m$element$ld$parameter, -dphi)
 
+  # check that normal flow at collocation points equals zero
   df <- dirflow(m, ld$xc, ld$yc, angle = 45, flow = 'darcy')
-  expect_equal(df, 0)
+  expect_equal(df, rep(0, length(ld$parameter)))
 })

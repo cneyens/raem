@@ -10,11 +10,16 @@
 #' @param resistance numeric, hydraulic resistance of the line-doublet
 #' @param ... ignored
 #'
-#' @details The resistance is used to calculate the constant strength of the line-doublet. If the aquifer is
-#'    unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
-#'    with respect to the hydraulic head and iteration is required to solve the model.
+#' @details The resistance is used to calculate the strength of the line-doublet at the collocation points.
+#'  If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes
+#'  non-linear with respect to the hydraulic head and iteration is required to solve the model.
 #'
 #' For the special case that `resistance = Inf`, the line-doublet models an impermeable wall.
+#'
+#' Three collocation points are defined per line-doublet: one at each vertex of the line-doublet and one in
+#'  the center of the line. A single line-doublet therefore adds three equations to the system of equations.
+#'  The strength distribution is defined at these collocation points and is approximated by a parabolically varying
+#'  strength distribution in between.
 #'
 #' @return Resistance-specified line-doublet analytic element which is an object of class `linedoublet` and inherits from `element`.
 #' @export
@@ -25,18 +30,16 @@
 #' linedoublet(-75, 50, 100, 50, resistance = Inf)
 #'
 linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
-  # TODO order, multiple control points
-  order <- 0
-  ld <- element(0, order + 1)
+  order <- 2 # only parabolic strength allowed
+  ld <- element(rep(0, order + 1), order + 1)
   ld$z0 <- x0 + y0 * 1i
   ld$z1 <- x1 + y1 * 1i
   ld$L <- abs(ld$z1 - ld$z0)
 
-  ld$xc <- 0.5*(x0 + x1)
-  ld$yc <- 0.5*(y0 + y1)
-  ld$hc <- 0
+  ld$xc <- c(x0, 0.5*(x0 + x1), x1)
+  ld$yc <- c(y0, 0.5*(y0 + y1), y1)
+  ld$hc <- rep(0, order + 1)
 
-  ld$order <- order
   if(resistance < 0) stop('Resistance should not be negative', call. = FALSE)
   ld$resistance <- resistance
 
@@ -56,7 +59,17 @@ omegainf.linedoublet <- function(linedoublet, x, y, ...) {
   tol <- 1e-12
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
-  omi <- 1/(2*pi*1i) * log((zm1) / (zp1)) # order 0
+
+  # parabolic strength
+  fm <- -0.5 * zm1 * log(zm1 / zp1) - 1
+  gm <- 0.5 * zp1 * log(zm1 / zp1) + 1
+  pm <- (Z^2 - 1) * log(zm1 / zp1) + 2*Z
+
+  # return in matrix form so omega.element can perform a matrix multiplication with the parameter vector
+  omi <- 1/(2*pi*1i) * cbind(fm + pm/2, -pm, gm + pm/2)
+
+  # omi <- 1/(2*pi*1i) * (s1 * fm + s2*gm + s1*pm/2 + s2*pm/2 - sc*pm) # parabolic, order=2
+  # omi <- 1/(2*pi*1i) * log((zm1) / (zp1)) # constant strength, order=0; deprecated
 
   return(omi)
 }
@@ -74,7 +87,17 @@ domegainf.linedoublet <- function(linedoublet, x, y, ...) {
   zp1 <- ifelse(abs(Z + 1) < tol, tol, Z + 1)
   zm1 <- ifelse(abs(Z - 1) < tol, tol, Z - 1)
   m <- linedoublet$z1 - linedoublet$z0
-  wi <- -(1/(2*pi*1i)) * zp1 * (2/(m*zp1) -  (2*zm1/(m*zp1^2))) / zm1 # order 0
+  Znum <- (2 * zeta - (linedoublet$z0 + linedoublet$z1))
+
+  # parabolic strength
+  fm <- -log(zm1 / zp1) / m - 0.5 * (zp1 * (2 / (m * zp1) - (2*zm1) / (m * zp1^2)))
+  gm <- log(zm1 / zp1) / m + (zp1^2) * (2 / (m * zp1) - 2 * zm1 / (m * zp1^2)) / (2 * zm1)
+  pm <- ((4 * Znum * log(zm1 / zp1)) / m^2) + (zp1 * (Z^2 - 1) * (2 / (m * zp1) - 2 * zm1 / (m * zp1^2))) / zm1
+
+  # return in matrix form so omega.element can perform a matrix multiplication with the parameter vector
+  wi <- -1i/(2 * pi) * cbind(fm + pm/2, -pm, gm + pm/2)
+
+  # wi <- -(1/(2*pi*1i)) * zp1 * (2/(m*zp1) -  (2*zm1/(m*zp1^2))) / zm1 # order 0; deprecated
 
   return(wi)
 }

@@ -221,15 +221,16 @@ equation <- function(element, aem, id, ...) {
     yco <- yc + tol * sin(theta_norm)
 
     for(i in aem$elements) {
-      if(i$nunknowns > 0) {
+      nun <- i$nunknowns
+      if(nun > 0) {
         Qinf <- domegainf(i, xc, yc)
         dphi <- potinf(i, xci, yci) - potinf(i, xco, yco)
-        row[length(row)+1] <- sum(Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
+        row <- c(row, Re(Qinf)*cos(theta_norm) - Im(Qinf)*sin(theta_norm) - resf*dphi)
 
       } else {
         Q <- domega(i, xc, yc)
         dphi <- potential(i, xci, yci) - potential(i, xco, yco)
-        rhs <- rhs - sum(Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi)
+        rhs <- rhs - Re(Q)*cos(theta_norm) - Im(Q)*sin(theta_norm) + resf*dphi
       }
     }
 
@@ -242,11 +243,12 @@ equation <- function(element, aem, id, ...) {
 
     for(e in seq_along(aem$elements)) {
       i <- aem$element[[e]]
-      if(i$nunknowns > 0) {
-        row[length(row)+1] <- sum(potinf(i, xc, yc))
-        if(e == id) row[length(row)] <- row[length(row)] - resf
+      nun <- i$nunknowns
+      if(nun > 0) {
+        resfelm <- ifelse(e == id, resf, 0)
+        row <- c(row, potinf(i, xc, yc) - resfelm)
       } else {
-        rhs <- rhs - sum(potential(i, xc, yc))
+        rhs <- rhs - potential(i, xc, yc)
       }
     }
   }

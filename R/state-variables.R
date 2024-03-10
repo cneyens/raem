@@ -145,8 +145,13 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' omega(w, c(50, 0), c(-25, 25))
 #'
 omega.element <- function(element, x, y, ...) {
-  om <- element$parameter * omegainf(element, x, y, ...)
-  return(om)
+  if(length(element$parameter) == 1) {
+    om <- element$parameter * omegainf(element, x, y, ...)
+  } else { # sum of sn*omegainf_n, only for elements with more than 1 parameter
+    om <- omegainf(element, x, y, ...) %*% element$parameter
+  }
+
+  return(c(om))
 }
 
 #'

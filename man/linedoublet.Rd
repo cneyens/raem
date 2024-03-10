@@ -26,11 +26,16 @@ Resistance-specified line-doublet analytic element which is an object of class \
 \code{\link[=linedoublet]{linedoublet()}} creates a line-doublet analytic element with a constant specified resistance
 }
 \details{
-The resistance is used to calculate the constant strength of the line-doublet. If the aquifer is
-unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
-with respect to the hydraulic head and iteration is required to solve the model.
+The resistance is used to calculate the strength of the line-doublet at the collocation points.
+If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes
+non-linear with respect to the hydraulic head and iteration is required to solve the model.
 
 For the special case that \code{resistance = Inf}, the line-doublet models an impermeable wall.
+
+Three collocation points are defined per line-doublet: one at each vertex of the line-doublet and one in
+the center of the line. A single line-doublet therefore adds three equations to the system of equations.
+The strength distribution is defined at these collocation points and is approximated by a parabolically varying
+strength distribution in between.
 }
 \examples{
 linedoublet(-75, 50, 100, 50, res = 500)

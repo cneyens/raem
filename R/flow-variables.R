@@ -267,6 +267,10 @@ velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1
 #' domega(w, c(50, 0), c(-25, 25))
 #'
 domega.element <- function(element, x, y, ...) {
-  wi <- element$parameter * domegainf(element, x, y, ...)
-  return(wi)
+  if(length(element$parameter) == 1) {
+    wi <- element$parameter * domegainf(element, x, y, ...)
+  } else { # sum of sn*domegainf_n, only for elements with more than 1 parameter
+    wi <- domegainf(element, x, y, ...) %*% element$parameter
+  }
+  return(c(wi))
 }
