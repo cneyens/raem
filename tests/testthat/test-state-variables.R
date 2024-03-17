@@ -9,7 +9,7 @@ test_that('state-variables dimensions are correct and names are preserved', {
   expect_length(heads(m, x, y = 0), length(x))
 
   y <- seq(-10, 10, by = 10)
-  expect_warning(heads(m, x, y))
+  expect_warning(expect_warning(heads(m, x, y)))
 
   h <- heads(m, x, y, as.grid = TRUE)
   expect_equal(dim(h), c(length(y), length(x)))

@@ -31,7 +31,8 @@ constant <- function(xc, yc, hc, ...) {
 #' @noRd
 #'
 omegainf.constant <- function(constant, x, y, ...) {
-  omi <- as.complex(x*0 + 1)
+  crds <- cbind(x, y)
+  omi <- complex(length = nrow(crds), real = 1, imaginary = 0)
   return(omi)
 }
 
@@ -42,5 +43,7 @@ omegainf.constant <- function(constant, x, y, ...) {
 #' @noRd
 #'
 domegainf.constant <- function(constant, x, y, ...) {
-  return(c(0 + 0i))
+  crds <- cbind(x, y)
+  wi <- complex(length = nrow(crds), real = 0, imaginary = 0)
+  return(wi)
 }

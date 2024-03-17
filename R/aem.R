@@ -245,7 +245,11 @@ equation <- function(element, aem, id, ...) {
       i <- aem$element[[e]]
       nun <- i$nunknowns
       if(nun > 0) {
-        resfelm <- ifelse(e == id, resf, 0)
+        if(e == id) {
+          resfelm = resf
+        } else {
+          resfelm = 0
+        }
         row <- c(row, potinf(i, xc, yc) - resfelm)
       } else {
         rhs <- rhs - potential(i, xc, yc)
