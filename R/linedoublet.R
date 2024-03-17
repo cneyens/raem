@@ -36,8 +36,8 @@ linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
   ld$z1 <- x1 + y1 * 1i
   ld$L <- abs(ld$z1 - ld$z0)
 
-  ld$xc <- c(x0, 0.5*(x0 + x1), x1)
-  ld$yc <- c(y0, 0.5*(y0 + y1), y1)
+  ld$xc <- c(x0, 0.5*(x1 - x0) + x0, x1)
+  ld$yc <- c(y0, 0.5*(y1 - y0) + y0, y1)
 
   # Chebyshev roots # TODO tests fail at collocation points except at center
   # cheby_root <- cos(pi * (seq(order-1) + 0.5) / order)
