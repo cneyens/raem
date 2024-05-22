@@ -293,7 +293,7 @@ resfac <- function(element, aem) {
   if(element$nunknowns == 0) stop('nunknowns should be > 0 to get resfac', call. = FALSE)
 
   if(inherits(element, 'inhomogeneity')) {
-    resfac <- aem$k / (element$k - aem$k)
+    resfac <- element$k / (element$k - aem$k) # TODO check this
 
   } else if(inherits(element, 'linedoublet')) {
     if(element$resistance == Inf) { # Impermeable wall

@@ -24,12 +24,17 @@
 #' @return Resistance-specified line-doublet analytic element which is an object of class `linedoublet` and inherits from `element`.
 #' @export
 #' @examples
-#' linedoublet(-75, 50, 100, 50, res = 500)
+#'
+#' # linedoublet(-75, 50, 100, 50, res = 500) # TODO uncomment when line-doublets are fixed
 #'
 #' # Impermeable wall
-#' linedoublet(-75, 50, 100, 50, resistance = Inf)
+#' # linedoublet(-75, 50, 100, 50, resistance = Inf) # TODO uncomment when line-doublets are fixed
 #'
 linedoublet <- function(x0, y0, x1, y1, resistance, ...) {
+
+  # TODO remove this when line-doublets are fixed
+  stop('Line-doublets not supported yet', call. = FALSE)
+
   order <- 2 # only parabolic strength allowed
   ld <- element(rep(0, order + 1), order + 1)
   ld$z0 <- x0 + y0 * 1i

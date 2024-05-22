@@ -38,9 +38,10 @@ The strength distribution is defined at these collocation points and is approxim
 strength distribution in between.
 }
 \examples{
-linedoublet(-75, 50, 100, 50, res = 500)
+
+# linedoublet(-75, 50, 100, 50, res = 500) # TODO uncomment when line-doublets are fixed
 
 # Impermeable wall
-linedoublet(-75, 50, 100, 50, resistance = Inf)
+# linedoublet(-75, 50, 100, 50, resistance = Inf) # TODO uncomment when line-doublets are fixed
 
 }
