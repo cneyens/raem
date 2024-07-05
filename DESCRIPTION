@@ -10,7 +10,7 @@ Description: Analytic element modeling of steady-state single-layer
     flow-variables, can be computed at any location in the field.
     Tracelines can be computed numerically in three dimensions.
 License: MIT + file LICENSE
-URL: https://github.com/cneyens/raem
+URL: https://github.com/cneyens/raem, https://cneyens.github.io/raem/
 BugReports: https://github.com/cneyens/raem/issues
 Imports: 
     deSolve,
