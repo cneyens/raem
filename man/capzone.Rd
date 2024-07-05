@@ -55,9 +55,9 @@ cp10 <- capzone(m, w2, time = 10*365)
 xg <- seq(-800, 800, length = 100)
 yg <- seq(-500, 500, length = 100)
 
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(cp5, add = TRUE)
-plot(cp10, add = TRUE, col = 'orange3')
+plot(cp10, add = TRUE, col = 'orange')
 
 # model with vertical flow components
 as <- areasink(0, 0, N = 0.001, R = 1500)
@@ -67,7 +67,7 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 cp5a <- capzone(m, w1, time = 5*365, zstart = base)
 cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
 
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(cp5a, add = TRUE)
 plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 

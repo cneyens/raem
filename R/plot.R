@@ -86,13 +86,13 @@ image_to_matrix <- function(m) {
 #' xg <- seq(-350, 200, length = 100)
 #' yg <- seq(-125, 125, length = 100)
 #'
-#' contours(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
-#' contours(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange3',
+#' contours(ml, xg, yg, nlevels = 20, col = 'dodgerblue', labcex = 1)
+#' contours(ml, xg, yg, 'streamfunction', nlevels = 20, col = 'orange',
 #'          drawlabels = FALSE, add = TRUE)
 #'
 #' # Not to be confused by contour()
 #' try(
-#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue3', labcex = 1)
+#' contour(ml, xg, yg, nlevels = 20, col = 'dodgerblue', labcex = 1)
 #' )
 #'
 #' # For image() or filled.contour()
@@ -220,7 +220,7 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
 #' xg <- seq(-500, 500, length = 200)
 #' yg <- seq(-250, 250, length = 100)
 #'
-#' contours(m, x = xg, y = yg, col = 'dodgerblue3', nlevels = 20)
+#' contours(m, x = xg, y = yg, col = 'dodgerblue', nlevels = 20)
 #' plot(m, add = TRUE)
 #'
 plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
@@ -263,12 +263,12 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ..
 #' @examples
 #'
 #' # plot arrows
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
+#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
 #'
 #' # plot point markers every 2.5 years
-#' contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange', marker = 2.5 * 365, pch = 20)
 #'
 #' # plot point markers every 600 days
 #' plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)

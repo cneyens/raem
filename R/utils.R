@@ -147,7 +147,7 @@ dirflow <- function(aem, x, y, angle,
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
 #'
 #' xg <- seq(-500, 500, l=100); yg <- seq(-300, 300, l=100)
-#' contours(m, xg, yg, col='dodgerblue3', nlevels=20)
+#' contours(m, xg, yg, col='dodgerblue', nlevels=20)
 #'
 #' x0 <- -200
 #' y0 <- -50
@@ -160,7 +160,7 @@ dirflow <- function(aem, x, y, angle,
 #'
 #' w <- well(125, 200, 150)
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w)
-#' contours(m, xg, yg, col='dodgerblue3', nlevels=20)
+#' contours(m, xg, yg, col='dodgerblue', nlevels=20)
 #' lines(matrix(c(x0, y0, x1, y1), ncol = 2, byrow = TRUE))
 #'
 #' flow_through_line(m, x0, y0, x1, y1, flow = 'darcy')

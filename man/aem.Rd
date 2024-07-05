@@ -157,7 +157,7 @@ plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 xg <- seq(-500, 500, length = 200)
 yg <- seq(-250, 250, length = 100)
 
-contours(m, x = xg, y = yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, x = xg, y = yg, col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)
 
 }

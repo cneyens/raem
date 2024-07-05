@@ -120,8 +120,8 @@ endp <- endpoints(paths)
 xg <- seq(-500, 500, length = 100)
 yg <- seq(-300, 300, length = 100)
 
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-plot(paths, add = TRUE, col = 'orange3')
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(paths, add = TRUE, col = 'orange')
 points(endp[, c('x', 'y')])
 
 # Backward tracking with retardation; plot point marker every 5 years
@@ -134,13 +134,13 @@ w2 <- well(-200, -100, Q = 450)
 ls <- headlinesink(x0 = -100, y0 = 100, x1 = 400, y1 = -300, hc = 7)
 
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)
 
 x0 <- seq(-400, 400, 50); y0 <- 200
 times <- seq(0, 5 * 365, 365 / 20)
 paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times)
-plot(paths, add = TRUE, col = 'orange3')
+plot(paths, add = TRUE, col = 'orange')
 
 # User-defined termination in rectangular zone
 tzone <- cbind(x = c(-300, -200, -200, -300), y = c(150, 150, 100, 100))
@@ -152,10 +152,10 @@ termf <- function(t, coords, parms) {
   return(in_poly)
 }
 paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)
 polygon(tzone)
-plot(paths, add = TRUE, col = 'orange3')
+plot(paths, add = TRUE, col = 'orange')
 
 # model with vertical flow due to area-sink
 as <- areasink(xc = 0, yc = 0, N = 0.001, R = 1500)
@@ -164,21 +164,21 @@ m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 # starting z0 locations are above aquifer top and will be reset to top with warning
 paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)
-plot(paths, add = TRUE, col = 'orange3')
+plot(paths, add = TRUE, col = 'orange')
 
 # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 plot(paths[[4]][,c('y', 'z')], type = 'l')
 
 
 # plot arrows
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-plot(paths, add = TRUE, col = 'orange3', arrows = TRUE, length = 0.05)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
 
 # plot point markers every 2.5 years
-contours(m, xg, yg, col = 'dodgerblue3', nlevels = 20)
-plot(paths, add = TRUE, col = 'orange3', marker = 2.5 * 365, pch = 20)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(paths, add = TRUE, col = 'orange', marker = 2.5 * 365, pch = 20)
 
 # plot point markers every 600 days
 plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
