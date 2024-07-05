@@ -27,7 +27,6 @@ Collate:
     'areasink.R'
     'constant.R'
     'flow-variables.R'
-    'linedoublet.R'
     'linesink.R'
     'tracelines.R'
     'plot.R'

@@ -337,8 +337,8 @@ endpoints <- function(tracelines, ...) {
 #' @param aem `aem` object
 #' @param well well analytic element of class `well` or inherits from it.
 #' @param time numeric, time of the capture zone
-#' @param npar integer, number of particles to use in the backward tracking. Defaults to 30.
-#' @param dt numeric, time step length used in the particle tracking. Defaults `time / 20`.
+#' @param npar integer, number of particles to use in the backward tracking. Defaults to 15.
+#' @param dt numeric, time step length used in the particle tracking. Defaults `time / 10`.
 #' @param zstart numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.
 #' @param ... additional arguments passed to [tracelines()].
 #'
@@ -396,8 +396,8 @@ endpoints <- function(tracelines, ...) {
 capzone <- function(aem,
                     well,
                     time,
-                    npar = 30,
-                    dt = time / 20,
+                    npar = 15,
+                    dt = time / 10,
                     zstart = aem$base,
                     ...) {
 

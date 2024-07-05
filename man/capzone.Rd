@@ -4,7 +4,7 @@
 \alias{capzone}
 \title{Calculate capture zone of a well element}
 \usage{
-capzone(aem, well, time, npar = 30, dt = time/20, zstart = aem$base, ...)
+capzone(aem, well, time, npar = 15, dt = time/10, zstart = aem$base, ...)
 }
 \arguments{
 \item{aem}{\code{aem} object}
@@ -13,9 +13,9 @@ capzone(aem, well, time, npar = 30, dt = time/20, zstart = aem$base, ...)
 
 \item{time}{numeric, time of the capture zone}
 
-\item{npar}{integer, number of particles to use in the backward tracking. Defaults to 30.}
+\item{npar}{integer, number of particles to use in the backward tracking. Defaults to 15.}
 
-\item{dt}{numeric, time step length used in the particle tracking. Defaults \code{time / 20}.}
+\item{dt}{numeric, time step length used in the particle tracking. Defaults \code{time / 10}.}
 
 \item{zstart}{numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.}
 

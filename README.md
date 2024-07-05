@@ -12,7 +12,7 @@ elements.
 
 ## Installation
 
-You can install the development version of raem from
+You can install the development version of `raem` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -58,6 +58,9 @@ this model:
 ``` r
 heads(m, x = c(-200, 100), y = 200)
 #> [1] 13.64573 13.33314
+```
+
+``` r
 
 discharge(m, c(-200, 100), 200, z = top) # [L^2 / T]
 #>              Qx         Qy Qz
@@ -76,7 +79,7 @@ yg = seq(-250, 250, length = 100)
 Now plot:
 
 ``` r
-contours(m, xg, yg, 'heads', col = 'dodgerblue3', nlevels = 20)
+contours(m, xg, yg, 'heads', col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)
 ```
 
@@ -87,7 +90,7 @@ year for 5 years and add to plot:
 
 ``` r
 paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
-plot(paths, add = TRUE, col = 'orange3')
+plot(paths, add = TRUE, col = 'orange')
 ```
 
 <img src="man/figures/README-plot-traces-1.png" width="100%" />
