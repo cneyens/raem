@@ -4,6 +4,8 @@
 # raem
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `raem` is an R package for modeling steady-state single-layer
