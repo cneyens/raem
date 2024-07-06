@@ -96,8 +96,8 @@ domegainf <- function(...) UseMethod('domegainf')
 #'
 #' domega(ml, c(50, 0), c(25, -25))
 #'
-#' xg <- seq(-100, 100, length = 500)
-#' yg <- seq(-75, 75, length = 100)
+#' xg <- seq(-100, 100, length = 5)
+#' yg <- seq(-75, 75, length = 3)
 #' domega(ml, xg, yg, as.grid = TRUE)
 #'
 domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {

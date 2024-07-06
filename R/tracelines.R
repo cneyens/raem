@@ -137,7 +137,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' Compute tracelines of particles
 #'
 #' [tracelines()] tracks particle locations moving forward or backward with the advective groundwater flow
-#' by numerically integrating the velocity vector. The resulting set of connected coordinates produce the
+#' by numerically integrating the velocity vector. The resulting set of connected coordinates produces the
 #' tracelines.
 #'
 #' @param aem `aem` object
@@ -145,7 +145,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @param y0 numeric vector, starting `y` locations of the particles
 #' @param z0 numeric vector, starting `z` locations of the particles
 #' @param times numeric vector with the times at which locations should be registered
-#' @param forward logical, should be forward (`TRUE`; default) or backward (`FALSE`) tracking be performed.
+#' @param forward logical, should forward (`TRUE`; default) or backward (`FALSE`) tracking be performed.
 #' @param R numeric, retardation coefficient passed to [velocity()]. Defaults to 1 (no retardation).
 #' @param tfunc function or list of functions with additional termination events for particles. See details. Defaults to `NULL`.
 #' @param tol numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.

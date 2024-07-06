@@ -79,7 +79,7 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose 
 
 #' Solve an `aem` model
 #'
-#' [solve.aem()] solves system of equations as constructed by the supplied  elements in the `aem` model
+#' [solve.aem()] solves the system of equations as constructed by the elements in the `aem` model
 #'
 #' @param a `aem` object
 #' @param b ignored

@@ -34,7 +34,7 @@ endpoints(tracelines, ...)
 
 \item{times}{numeric vector with the times at which locations should be registered}
 
-\item{forward}{logical, should be forward (\code{TRUE}; default) or backward (\code{FALSE}) tracking be performed.}
+\item{forward}{logical, should forward (\code{TRUE}; default) or backward (\code{FALSE}) tracking be performed.}
 
 \item{R}{numeric, retardation coefficient passed to \code{\link[=velocity]{velocity()}}. Defaults to 1 (no retardation).}
 
@@ -71,7 +71,7 @@ of the particles in the \code{tracelines} object.
 }
 \description{
 \code{\link[=tracelines]{tracelines()}} tracks particle locations moving forward or backward with the advective groundwater flow
-by numerically integrating the velocity vector. The resulting set of connected coordinates produce the
+by numerically integrating the velocity vector. The resulting set of connected coordinates produces the
 tracelines.
 
 \code{\link[=endpoints]{endpoints()}} obtains the final time and locations of tracked particles

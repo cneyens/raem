@@ -40,7 +40,7 @@ marginal vectors \code{x} and \code{y} containing the directed flow values at th
 \details{
 The x and y components of \code{flow} are used to calculate the directed value using \code{angle}.
 The \code{z} coordinate in \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}} is set at the aquifer base. Under Dupuit-Forchheimer,
-the x and y components of flow do not change along the vertical axis.
+the x and y components of the flow vector do not change along the vertical axis.
 }
 \examples{
 rf <- constant(-1000, 0, hc = 10)

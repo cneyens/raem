@@ -71,7 +71,7 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 #'
 #' @details The x and y components of `flow` are used to calculate the directed value using `angle`.
 #'    The `z` coordinate in [discharge()], [darcy()] or [velocity()] is set at the aquifer base. Under Dupuit-Forchheimer,
-#'    the x and y components of flow do not change along the vertical axis.
+#'    the x and y components of the flow vector do not change along the vertical axis.
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the flow values at `x` and `y` in the direction of `angle`.
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
@@ -194,7 +194,7 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
 #' Get the discharge in or out of the aquifer from an element
 #'
 #' [element_discharge()] obtains the computed discharge into or out of the aquifer
-#'    for a individual analytic elements or all elements of a given type.
+#'    for a individual analytic element or all elements of a given type.
 #'
 #' @param aem `aem` object
 #' @param name character vector with the name of the element(s) as available in `aem$elements`.

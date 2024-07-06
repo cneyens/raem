@@ -1,0 +1,71 @@
+---
+title: "An overview"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `raem` package provides a set of R functions to create an analytic element model of steady-state, single layer groundwater flow under the Dupuit-Forchheimer assumption. This vignette gives a short overview of the theory and basics behind analytic element modeling and how the `raem` package implements this in R.
+
+# Introduction to analytic element modeling
+
+First developed by Otto Strack and Henk Haitjema in the late 1970's, the analytic element modeling (AEM) approach solves a groundwater flow problem by superimposing solutions for features such as wells, streams and recharge. Each feature is called *an element*.
+
+The governing equation is:
+
+The main assumption is based on the Dupuit-Forchheimer approximation, which states that
+
+This reduces the governing equation to:
+
+which described steady-state, single-layer two-dimensional flow in the $x-y$ plane.
+
+When the aquifer is phreatic, the saturated thickness is variable, which renders equation X non-linear when solving for $h$. Therefore, the discharge potential $\Phi$ is introduced:
+
+so that equation X becomes:
+
+This linear equation can be solved for $\Phi$. The resulting hydraulic heads can then be computed as:
+
+In addition to the discharge potential $\Phi$, there exists a streamfunction $\Psi$ which is defined as:
+
+$\Psi$ is only defined for the Laplace equation. When areal recharge is applied using area-sinks (see paragraph [Area-sink] below), the equation follows a Poisson equation and $\Psi$ is no longer meaningful.
+
+$\Phi$ and $\Psi$ fulfill the Cauchy-Riemann conditions, so they can be combined into a complex discharge potential $\Omega$:
+
+whose real and imaginary terms are $\Phi$ and $\Psi$, respectively. The flow problem is solved in terms of $\Omega$, which then yields $\Phi$ and eventually $h$.
+
+Each element gives a solution for the governing flow equation in terms of $\Omega$, which are superimposed in space. Since the solution for a given element depends on the results of all other elements, the complete system of equations needs to be solved simultaneously. This is done by setting up a matrix formulation of equation X in the form of $Ax=b$, which is then solved.
+
+For a more complete overview of analytic element modeling, the reader is referred to
+
+# Elements
+
+## Well
+
+```{r setup}
+library(raem)
+```
+
+## Line-sink
+
+## Area-sink
+
+## Reference point
+
+## Uniform flow
+
+# Setting up a model
+
+# Output
+
+# Particle traces
+
+# Additional functionality

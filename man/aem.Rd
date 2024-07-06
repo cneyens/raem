@@ -86,7 +86,7 @@ to the system of equations as constructed by the contained elements.
 \description{
 \code{\link[=aem]{aem()}} creates an analytic element model to which elements can be added
 
-\code{\link[=solve.aem]{solve.aem()}} solves system of equations as constructed by the supplied  elements in the \code{aem} model
+\code{\link[=solve.aem]{solve.aem()}} solves the system of equations as constructed by the elements in the \code{aem} model
 
 \code{\link[=plot.element]{plot.element()}} plots the location of an analytic element with point or line geometry.
 

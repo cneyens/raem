@@ -22,7 +22,7 @@ out of (positive) the aquifer which is the sum of all individual elements of cla
 }
 \description{
 \code{\link[=element_discharge]{element_discharge()}} obtains the computed discharge into or out of the aquifer
-for a individual analytic elements or all elements of a given type.
+for a individual analytic element or all elements of a given type.
 }
 \details{
 Either \code{name} or \code{type} should be specified. If \code{type} is specified, only one type is allowed.
