@@ -21,6 +21,12 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/overview.html">An overview</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -101,7 +107,7 @@ marginal vectors <code>x</code> and <code>y</code> containing the directed flow 
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The x and y components of <code>flow</code> are used to calculate the directed value using <code>angle</code>.
 The <code>z</code> coordinate in <code><a href="flow.html">discharge()</a></code>, <code><a href="flow.html">darcy()</a></code> or <code><a href="flow.html">velocity()</a></code> is set at the aquifer base. Under Dupuit-Forchheimer,
-the x and y components of flow do not change along the vertical axis.</p>
+the x and y components of the flow vector do not change along the vertical axis.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
