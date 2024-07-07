@@ -113,7 +113,7 @@ is of interest.
 }
 \examples{
 
-w <- well(xw = 50, yw = 0, Q = 200)
+w <- well(xw = 52, yw = 0, Q = 200)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
 ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)

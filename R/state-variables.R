@@ -79,9 +79,9 @@ omegainf <- function(...) UseMethod('omegainf')
 #' @rdname state-variables
 #' @examples
 #'
-#' w <- well(xw = 50, yw = 0, Q = 200)
+#' w <- well(xw = 55, yw = 0, Q = 200)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf)
+#' ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf)
 #'
 #' omega(ml, c(50, 0), c(25, -25))
 #'
