@@ -28,10 +28,12 @@ aem(
   cex = 0.75,
   use.widths = TRUE,
   col = "black",
+  xlim,
+  ylim,
   ...
 )
 
-\method{plot}{aem}(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...)
+\method{plot}{aem}(x, y = NULL, add = FALSE, xlim, ylim, ...)
 }
 \arguments{
 \item{k}{numeric, hydraulic conductivity of aquifer}
@@ -60,7 +62,7 @@ aem(
 
 \item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 
-\item{pch}{numeric point symbol value, defaults to \code{16}.}
+\item{pch}{numeric point symbol value, defaults to \code{16}. For a reference point, a value of 4 is used.}
 
 \item{cex}{numeric symbol size value, defaults to \code{0.75}.}
 
@@ -72,8 +74,6 @@ the width (\code{TRUE}; default) or as infinitesimally thin lines (\code{FALSE})
 \item{xlim}{numeric, plot limits along the x-axis. Required if \code{add = FALSE}.}
 
 \item{ylim}{numeric, plot limits along the y-axis. Required if \code{add = FALSE}.}
-
-\item{frame.plot}{logical, should a border be drawn around the plot. Defaults to \code{TRUE}.}
 }
 \value{
 \code{\link[=aem]{aem()}} returns an object of class \code{aem} which is a list consisting of \code{k}, \code{top}, \code{base}, \code{n},
@@ -112,11 +112,12 @@ solve a linear system of equations. The model parameters are then updated and th
 entered, until \code{maxiter} iterations are reached. For an linear model, \code{maxiter} is ignored.
 
 If the analytic element has a point geometry and has a collocation point
-(e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted.
+(e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted with \code{pch = 1}.
 
-A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted as it is not a hydraulic feature.
-Area-sinks (as created by \code{\link[=areasink]{areasink()}} or \code{\link[=headareasink]{headareasink()}}) are also never plotted as they would
-clutter the plot.
+A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted when plotting the model
+as it is not a hydraulic feature. Area-sinks (as created by \code{\link[=areasink]{areasink()}} or \code{\link[=headareasink]{headareasink()}})
+are also never plotted as they would clutter the plot. These elements can be plotted by
+calling \code{plot()} on them directly.
 }
 \examples{
 k <- 10

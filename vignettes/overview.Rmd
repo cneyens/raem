@@ -12,8 +12,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7, 
-  fig.height = 4, 
-  fig.align = "center"
+  fig.height = 5, 
+  fig.align = "left"
 )
 ```
 
@@ -21,7 +21,7 @@ The `raem` package provides a set of R functions to create an analytic element m
 
 # Introduction to analytic element modeling
 
-First developed by Otto Strack and Henk Haitjema in the late 1970's, the analytic element modeling (AEM) approach solves a groundwater flow problem by superposition of analytical solutions for features such as wells, streams and recharge. Each feature is called *an element*. By superimposing the individual solutions, the combined effect of all elements can be calculated at any point in space. An arbitrary number of elements can be placed at any location in the flow field. As such, the AEM method is more flexible than single analytical solutions and can be used to solve more complex field cases. Compared to numerical solutions of the groundwater flow problem, the AEM method does not require a spatial grid, is relatively fast and easy to use and does not suffer from numerical instability or mass balance errors.
+First developed by Otto Strack and Henk Haitjema in the late 1970's, the analytic element modeling (AEM) approach solves a groundwater flow problem by superposition of analytical solutions for features such as wells, streams and recharge. Each feature is called *an element*. By superimposing the individual solutions, the combined effect of all elements can be calculated at any point in space. An arbitrary number of elements can be placed at any location in the flow field. As such, the AEM method is more flexible than single analytical solutions and can be used to solve more complex field cases. Compared to numerical solutions of the groundwater flow problem, the AEM method is relatively fast and easy to use and does not suffer from numerical instability or mass balance errors. Furthermore, it does not require a spatial grid, making it relatively scale-insensitive as results can be obtained at any scale or zoom-level and feature geometries and level of detail are not dependent on a a priori chosen model resolution.
 
 Flow is governed by the Dupuit-Forchheimer approximation which states that the hydraulic head $h$ is hydrostatic at each point in the horizontal plane. In other words, there is no variation in $h$ along the vertical axis and horizontal flow is evenly distributed along the vertical axis. This reduces the dimensions of the problem, as the solution now only depends on the $x$ and $y$ coordinates. Although there are no vertical gradients, vertical flow can still be computed from mass balance considerations, i.e. areal recharge at the aquifer top or leakage through the aquifer bottom. Additionally for phreatic aquifers, the curvature of the water-table induces vertical flow components. Besides the Dupuit-Forchheimer assumption, the aquifer is assumed be of infinite lateral extent, have a horizontal top and base and is homogeneous at the scale of interest. In practice, these assumptions appear to be (approximately) valid for cases when the groundwater system under consideration is much wider than it is thick, which is the case for most regional aquifer systems where flow is predominantly horizontal. In areas where there is considerable vertical flow, such as near groundwater divides or near partially penetrating wells or streams, or when the flow system has a similar thickness and width ($width\lt~\approx 3*thickness$), the Dupuit-Forchheimer approximation is not valid and a different method should be used, e.g. a numerical model of the 3D groundwater flow equation.
 
@@ -60,13 +60,13 @@ The derivative of $\Omega$ with respect to $\zeta$ is the complex discharge $W$,
 
 Each element gives a solution for the governing flow equation in terms of $\Omega$, as well as for the complex discharge $W$. An element has one or more free parameters, e.g. the discharge for a well element. These parameters may be user-specified or need to be computed from other conditions, as is the case in head-specified elements. The parameters are specified at so called *collocation points* or *control points*. Since the solution for a given element depends on the results of all other elements, the complete system of equations needs to be solved simultaneously for the element parameters. This is done by setting up the flow equations at the collocation points in a matrix form of $Ax=b$, which is then solved for the parameter vector $x$. Once the element parameters are known, the contributions of each element to the complex potential $\Omega$ and the complex discharge $W$ at any point can be calculated and superimposed to form the resulting $\Omega$ and $W$ values, which then yield the variables of interest such as $h$ and $Q$.
 
-For a more complete overview of analytic element modeling, the reader is referred to [Haitjema (1995)](<https://www.haitjema.com/ModelingofGroundwaterFlow6312.pdf>), [Strack (1989)](<https://books.google.be/books/about/Groundwater_Mechanics.html?id=kfFOAQAAIAAJ&redir_esc=y>), [Strack (2003)](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002RG000111) and [Hunt (2006)](<https://www.researchgate.net/profile/Randall-Hunt/publication/7367473_Ground_Water_Modeling_Applications_Using_the_Analytic_Element_Method/links/5a2eae43a6fdcc17f91fa2e8/Ground-Water-Modeling-Applications-Using-the-Analytic-Element-Method.pdf>).
+For a more complete overview of analytic element modeling, the reader is referred to [Haitjema (1995)](https://www.haitjema.com/ModelingofGroundwaterFlow6312.pdf), [Strack (1989)](https://books.google.be/books/about/Groundwater_Mechanics.html?id=kfFOAQAAIAAJ&redir_esc=y), [Strack (2003)](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002RG000111) and [Hunt (2006)](https://www.researchgate.net/profile/Randall-Hunt/publication/7367473_Ground_Water_Modeling_Applications_Using_the_Analytic_Element_Method/links/5a2eae43a6fdcc17f91fa2e8/Ground-Water-Modeling-Applications-Using-the-Analytic-Element-Method.pdf).
 
 # Elements
 
 An overview of the elements available in `raem` is provided. You can specify as many elements as you like, but keep in mind that the solution matrix increases in size for every element parameter. Currently, every element in `raem` only supplied one parameter to the solution matrix.
 
-To create an AEM model with `raem`, first we need load `raem` and specify the aquifer parameters:
+To create an AEM model with `raem`, first we need load `raem` and specify the aquifer parameters. The porosity value is only required by the `tracelines()` function when tracking particle paths (see the [Particle traces] section below).
 
 ```{r setup}
 library(raem)
@@ -80,9 +80,9 @@ n = 0.2    # aquifer effective porosity, -
 
 ## Well
 
-The simplest element is a well with a specified discharge $Q$, which can be created with the `well()` function. It requires the $x$ and $y$ coordinate of the well and the pumping rate $Q$ (positive for withdrawal). The well radius $rw$ can also be specified (default is $0.3$ length units). Inside the well annulus as defined by $r_w$, the solution is undefined. When a output variable is requested inside this circle, its location is projected onto the nearest point on the outer annulus.
+The simplest element is a well with a specified discharge $Q$, which can be created with the `well()` function. It requires the $x$ and $y$ coordinate of the well and the pumping rate $Q$ (positive for withdrawal). The well radius $r_w$ can also be specified (default is $0.3$ length units). Inside the well annulus as defined by $r_w$, the solution is undefined. When a output variable is requested inside this circle, its location is projected onto the nearest point on the outer annulus.
 
-Here, we specify two extraions wells. We then create the model with a call to `aem()`. This function needs the aquifer parameters as well as the elements. You can supply the elements individually or put them into a single `list()`. The `aem()` function automatically solves the system of equations by calling `solve.aem()`. Not that by default, the flow system has a variable saturated thickness. You can change this by setting `type = 'confined'` to force the model to use a constant saturated thickness, set equal to the aquifer thickness. This may be useful when you want to force the system of equations to remain linear when elements with a hydraulic resistance are supplied (see below).
+Here, we specify two extrations wells. We then create the model with a call to `aem()`. This function needs the aquifer parameters as well as the elements. You can supply the elements individually or put them into a single `list()`. The `aem()` function automatically solves the system of equations by calling `solve.aem()`. Not that by default, the model has a variable saturated thickness. You can change this by setting `type = 'confined'` to force the model to use a constant saturated thickness, set equal to the aquifer thickness. This may be useful when you want to force the system of equations to remain linear when elements with a hydraulic resistance are supplied (see below).
 
 Finally, we set-up the contouring grid and plot the head contours in blue and the streamlines in orange using `contours()`. Note the ugly *branch cuts* (in AEM jargon) of the streamlines extending from the well centers towards the negative x-axis, which is an artifact of contouring the stream function.
 
@@ -104,17 +104,147 @@ contours(m, xg, yg, variable = 'streamfunction', col = 'orange', nlevels = 20, d
 
 ### Head-specified well
 
-## Line-sink
+The effect of a head-specified well can be simulated where instead of a supplied discharge rate, the hydraulic head remains fixed at the well location. By doing so, the element parameter of the well, which is its discharge $Q$, needs to be calculated by the matrix solution as described above under [Solution method]. Such an element can be created by `headwell()`. In addition to the well coordinates $x_w$ and $y_w$, a specified head $h_c$ at the control point needs to be supplied. By default, this control point coincides with the well's location. Alternatively, you could specify this location to be somewhere else by setting the $x_c$ and $y_c$ coordinates. This creates a well at location $x_w-y_w$ with a calculated discharge so that the head at location $x_c-y_c$ equals $h_c$. As was the case with the well element above, a well radius can be specified for both the well and the control point. Lastly, a hydraulic resistance at the control point location can also be supplied through the `resistance` argument.
 
-### Head-specified line-sink
+When solving for unknown element parameters, a *reference point* needs to be added to the model as created by the `constant()` function. This is explained in more detail below in the paragraph on [Reference point].
 
-## Area-sink
+In the example, two head-specified wells are created. The second well has its control point at a different location. We can get the computed discharge of the elements by accessing the `parameter` value of the element in the list of elements inside the model object. Alternatively (and easier) is to use `element_discharge()`.
 
-### Head-specified area-sink
+```{r headwell}
+
+hw1 = headwell(xw = 300, yw = 100, hc = 6)
+hw2 = headwell(xw = -200, yw = -100, xc = 0, yc = 0, hc = 7)
+
+rf = constant(x = -1000, y = 0, h = 8) # reference point
+
+m = aem(k, top, base, n, hw1, hw2, rf) # create model
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20) # plot head contours
+
+# computed discharge of hw1
+m$elements$hw1$parameter
+
+# computed discharge of hw2
+element_discharge(m, name = 'hw2')
+
+# check the head at the collocation points
+round(heads(m, x = c(300, 0), y = c(100, 0)), 2)
+```
 
 ## Reference point
 
+When solving for unknown element parameters, a so-called reference point (or reference head) needs to be added to the model in order to have enough equations in the matrix formulation to solve all unknowns. This is a constant value which is added to all hydraulic head values. It can be created by the `constant()` function which needs an $x$ and $y$ coordinate and the reference head $h$. It is of importance to understand that this reference point is not an actual aquifer feature, but a mathematical necessity. Therefore, its value and location should be chosen is such a way that it does not influence the results. In general, the reference point should be never be placed inside the zone of interest (called the *"near-field"* in AEM jargon). It should be placed in the far-field and given a "neutral" head value as to not induce unrealistic gradients towards the near-field.
+
+## Line-sink
+
+Line-sinks are elements with a line geometry which can be used to simulate groundwater flow to and from surface water features such as streams or canals. The parameter of a line-sink is its *strength* $\sigma$, which is defined as the total flow to/from the line-sink per unit length of the line $[L^2/T]$ (positive going into the line-sink). The parameter is defined at the center of the line-sink.
+
+Here, a single line-sinks is created using `linesink()`. In addition to the start- and endpoints of the line-sink $x_0-y_0 and x_1-y_1$, the strength parameters needs to be specified. Optionally, a width can also be specified, which for a strength-specified line-sink is only in particle tracking to determine when the particles have reached the line.
+
+Note that the locations elements with line and point geometries (except the reference point) can be plotted using the `plot.aem()` method. Individual element locations can also be plotted by calling `plot.element()` on the respective element object.
+
+```{r line-sink}
+ls = linesink(x0 = -200, y0 = 200, x1 = 200, y1 = -200, sigma = 5)
+
+m = aem(k, top, base, n, ls)
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20, drawlabels = FALSE)
+plot(m, add = TRUE)
+```
+
+### Head-specified line-sink
+
+Although useful, strength-specified line-sinks are not often used in modeling applications. Head-specified line-sinks on the other hand are widely used in AEM studies, where they represent streams and other surface water features with known water levels. The absence of a numerical grid makes it straightforward to implement complex stream geometries.
+
+A head-specified line-sink can be created with `headlinesink()`. In addition to the start- and endpoints of the line, the hydraulic head at the collocation point needs to be given, which is the center of the line-sink. The line-sink strength is unknown in that case and is calculated by solving the system of equations. In `raem`, zeroth order line-sinks are used, which result in a constant strength along the line, and thus a varying head. As such, a single stream with a constant head should be approximated with many short line-sinks. Other AEM codes may use higher order line elements where the strength can vary along the line.
+
+A hydraulic resistance may be specified between the aquifer and the line-sink (default is no resistance) representing the effect of a low-permeability connection due to e.g. streambed sediments. Additionally, the `width` parameter is used in conjunction with the `resistance` parameter to calculate the hydraulic conductance. When the model has a variably-saturated thickness (`type = 'variable'` in `aem()`; default), this renders the system of equations non-linear. As such, an iteration-loop is entered, with a default of 10 iterations (see also `aem()` and `solve.aem()`). As discussed above, setting `type = 'confined'` keeps the system linear.
+
+As a general rule of thumb, line-sinks in the far-field should not have resistance or width values specified, so they act as constant-head boundaries which fix the head in the far-field. Line-sinks in the near-field on the other hand should have resistances and widths specified to give a more realistic presentation of the surface water features in that area.
+
+As an example, a single stream is modeled with several head-specified line-sinks. They are bundled in a `list()` element and supplied to the model. A reference point also needs to be added. Information on the iteration loop is printed by setting `verbose = TRUE` in the `aem()` call.
+
+```{r headlinesink}
+
+el = list(rf = rf)  # list of elements
+nls = 10      # number of line-sinks
+xls = seq(-700, 700, length = nls + 1) # x-coordinates of line-sinks
+yls = c(rep(c(-25, 25), nls), -25)     # y-coordinates of line-sinks
+hc = 7        # stream level, m
+res = 2       # hydraulic resistance of streambed, days
+width = 3     # stream width, m
+
+for(i in seq(nls)) {
+  hl = headlinesink(x0 = xls[i], 
+                    x1 = xls[i + 1], 
+                    y0 = yls[i],
+                    y1 = yls[i + 1],
+                    hc = hc,
+                    resistance = res,
+                    width = width)
+  el[[paste0('hls_', i)]] = hl
+}
+
+
+m = aem(k, top, base, n, el, verbose = TRUE)
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 10)
+plot(m, add = TRUE)
+
+```
+
+## Area-sink
+
+Area-sinks are circular elements that can be added at the top or bottom of the model. They provide a constant flux and can be used to simulate areal recharge or leakage through the aquifer base. The circular geometry is sufficient as long as the disc covers the entire area of interest and the heads inside are fixed by e.g. head-specified line-sinks. When area-sinks are provided, the stream function no longer gives reasonable values, as explained above. Supplying flow by using an area-sink introduces vertical flow components, besides the ones that occur due to the curvature of the water-table when variably-saturated thickness is used in the `aem()` model.
+
+The `areasink()` function requires the center coordinates of the circular area-sink, as well as the uniform flux value `N` $[L/T]$ (positive is into the aquifer, note that this differs from other elements) and a radius `R`. The value of `R` is not important as long as its large enough so that the disc covers the modeled region. By default, the area-sink is placed at the aquifer top, which can be overridden by setting `location = 'base'`.
+
+To illustrate to effect of the area-sink providing areal recharge at the aquifer top, areal recharge is added to the example of the head-specified line-sinks above by use of an area-sink. Note the increased head values compared to the case without recharge.
+
+```{r area-sink}
+el$as = areasink(x = 0, y = 0, N = 0.001, R = 1000) # add to list of elements
+
+m = aem(k, top, base, n, el)
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 10)
+plot(m, add = TRUE)
+```
+
+### Head-specified area-sink
+
+Similar to line-sinks and head-specified line-sinks, the area-sink can also be given a specified head. The constant flux then needs to be calculated by solving the system of equations. Since the head is specified at the center of the disc, the computed flux is calculated from the head gradient at this location and applied over the entire circular area. This is for example useful to simulate ponds or wetlands with limited areal extend. For large lakes on the other hand, a better representation would be by specifying a series of head-specified line-sinks along the lake boundary, as that is where the most of the groundwater interaction occurs for such type of surface water features.
+
+The `headareasink()` functions creates a head-specified area-sink element. Similar to `headlinesink()`, the `resistance` parameter determines the hydraulic resistance between the aquifer and the specified head. This also renders the system of equations non-linear with respect to hydraulic head when the aquifer has a variable saturated thickness (`type = 'variable'` in `aem()`).
+
+To illustrate it's use, leakage from a small, circular pond is simulated using a head-specified area-sink using the model with two extraction wells.
+
+```{r headareasink}
+has = headareasink(x = 0, 
+                   y = 200, 
+                   h = 5, 
+                   resistance = 1, 
+                   R = 100)
+
+m = aem(k, top, base, n, w1, w2, rf, has)
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(has, add = TRUE, col = adjustcolor('grey50', alpha = 0.5))
+
+```
+
 ## Uniform flow
+
+A uniform-flow element may be created which models a specified background flow in the aquifer. In general, the regional gradient should be modeled by including head-specified surface water features in the model which will induce a certain background flow in the model. For certain applications however, it may be useful to specify this uniform background flow explicitly, e.g. when the regional system is included fully in the model. This can be done by using `uniformflow()`. It requires a transmissivity value which remains constant in the entire domain (i.e. has a constant saturated thickness), a gradient which is positive in the direction of flow and an angle in degrees counterclockwise from the positive x-axis:
+
+```{r uniformflow}
+uf = uniformflow(TR = k * (top - base), gradient = 0.001, angle = -30)
+
+m = aem(k, top, base, n, uf, rf)
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+
+# add stream lines
+contours(m, xg, yg, variable = 'streamfunction', col = 'orange', nlevels = 20, add = TRUE)
+```
 
 # Setting up a model
 

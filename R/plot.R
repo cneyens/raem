@@ -120,18 +120,14 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' @param x `aem` object, or analytic element of class `element` to plot. If not a point or line geometry, nothing is plotted.
 #' @param y ignored
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
-#' @param pch numeric point symbol value, defaults to `16`.
+#' @param pch numeric point symbol value, defaults to `16`. For a reference point, a value of 4 is used.
 #' @param cex numeric symbol size value, defaults to `0.75`.
 #' @param use.widths logical, if line elements with non-zero width are plotted, should they be plotted as polygons including
 #'    the width (`TRUE`; default) or as infinitesimally thin lines (`FALSE`)?
 #' @param col color of element. Defaults to `'black'`.
 #'
 #' @details If the analytic element has a point geometry and has a collocation point
-#'    (e.g. [headwell()]), that point is also plotted.
-#'
-#' A reference point (as created by [constant()]) is never plotted as it is not a hydraulic feature.
-#' Area-sinks (as created by [areasink()] or [headareasink()]) are also never plotted as they would
-#'    clutter the plot.
+#'    (e.g. [headwell()]), that point is also plotted with `pch = 1`.
 #'
 #' @export
 #' @importFrom graphics points lines plot.new polygon frame plot.window axis box
@@ -143,7 +139,16 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' plot(w, add = TRUE)
 #' plot(uf) # empty
 #'
-plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.widths = TRUE, col = 'black', ...) {
+plot.element <- function(x,
+                         y = NULL,
+                         add = FALSE,
+                         pch = 16,
+                         cex = 0.75,
+                         use.widths = TRUE,
+                         col = 'black',
+                         xlim,
+                         ylim,
+                         ...) {
   element <- x
   if(inherits(element, 'well')) {
     x <- Re(element$zetaw)
@@ -151,6 +156,7 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
     if(inherits(element, 'headwell')) {
       x[2] <- element$xc
       y[2] <- element$yc
+      pch[2] <- 1
     }
     if(add) {
       return(points(x, y, pch = pch, cex = cex, col = col, ...))
@@ -192,6 +198,32 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
         return(plot(x, y, type = 'l', col = col, ...))
       }
     }
+  } else if(inherits(element, 'areasink')) {
+    alpha <- seq(0, 2 * pi, length = 100)
+    if(add) {
+      return(polygon(x = element$R * cos(alpha) + element$xc,
+              y = element$R * sin(alpha) + element$yc,
+              col = col,
+              border = NA))
+    } else {
+      frame()
+      plot.window(xlim, ylim)
+      polygon(x = element$R * cos(alpha) + element$xc,
+              y = element$R * sin(alpha) + element$yc,
+              col = col,
+              border = NA)
+      axis(1)
+      axis(2)
+      box()
+      invisible()
+    }
+  } else if(inherits(element, 'constant')) {
+    if(add) {
+      return(points(element$x, element$y, pch = 4, cex = cex, col = col, ...))
+    } else {
+      return(plot(element$x, element$y, pch = 4, cex = cex, col = col, ...))
+    }
+
   } else {
     if(add) {
       invisible()
@@ -207,7 +239,11 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
 #'
 #' @param xlim numeric, plot limits along the x-axis. Required if `add = FALSE`.
 #' @param ylim numeric, plot limits along the y-axis. Required if `add = FALSE`.
-#' @param frame.plot logical, should a border be drawn around the plot. Defaults to `TRUE`.
+#'
+#' @details A reference point (as created by [constant()]) is never plotted when plotting the model
+#'    as it is not a hydraulic feature. Area-sinks (as created by [areasink()] or [headareasink()])
+#'    are also never plotted as they would clutter the plot. These elements can be plotted by
+#'    calling `plot()` on them directly.
 #'
 #' @export
 #' @importFrom graphics frame plot.window axis box
@@ -223,18 +259,20 @@ plot.element <- function(x, y = NULL, add = FALSE, pch = 16, cex = 0.75, use.wid
 #' contours(m, x = xg, y = yg, col = 'dodgerblue', nlevels = 20)
 #' plot(m, add = TRUE)
 #'
-plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, frame.plot = TRUE, ...) {
+plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, ...) {
   aem <- x
+  # drop areasinks and reference point
+  el <- aem$elements[vapply(aem$elements, function(i) !(inherits(i, 'areasink') | inherits(i, 'constant')), TRUE)]
   if(add) {
-    pl <- lapply(aem$elements, plot, add = add, ...)
+    pl <- lapply(el, plot, add = add, ...)
     invisible(pl)
   } else {
-    ln <- length(aem$elements)
+    ln <- length(el)
 
     frame()
     plot.window(xlim, ylim)
     if(ln > 0) {
-      for(i in seq_along(aem$elements)) plot(aem$elements[[i]], add = TRUE, ...)
+      for(i in seq_along(el)) plot(el[[i]], add = TRUE, ...)
     }
     axis(1)
     axis(2)
