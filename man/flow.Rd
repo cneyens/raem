@@ -2,26 +2,24 @@
 % Please edit documentation in R/flow-variables.R
 \name{flow}
 \alias{flow}
-\alias{domega}
 \alias{discharge}
 \alias{darcy}
 \alias{velocity}
-\alias{domega.aem}
+\alias{domega}
 \alias{discharge.aem}
 \alias{darcy.aem}
 \alias{velocity.aem}
+\alias{domega.aem}
 \alias{domega.element}
 \title{Calculate flow variables}
 \usage{
-domega(...)
-
 discharge(...)
 
 darcy(...)
 
 velocity(...)
 
-\method{domega}{aem}(aem, x, y, as.grid = FALSE, ...)
+domega(...)
 
 \method{discharge}{aem}(
   aem,
@@ -38,6 +36,8 @@ velocity(...)
 
 \method{velocity}{aem}(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...)
 
+\method{domega}{aem}(aem, x, y, as.grid = FALSE, ...)
+
 \method{domega}{element}(element, x, y, ...)
 }
 \arguments{
@@ -49,9 +49,9 @@ velocity(...)
 
 \item{y}{numeric y coordinates to evaluate at}
 
-\item{as.grid}{logical, should a matrix be returned? Defaults to \code{FALSE}. See details.}
-
 \item{z}{numeric z coordinates to evaluate at}
+
+\item{as.grid}{logical, should a matrix be returned? Defaults to \code{FALSE}. See details.}
 
 \item{magnitude}{logical, should the magnitude of the flow vector be returned as well? Default to \code{FALSE}. See details.}
 
@@ -62,11 +62,6 @@ velocity(...)
 \item{element}{analytic element of class \code{element}}
 }
 \value{
-For \code{\link[=domega]{domega()}},  vector of \code{length(x)} (equal to \code{length(y)}) with the complex discharge values at \code{x} and \code{y},
-If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
-marginal vectors \code{x} and \code{y} containing the complex discharge values at the grid points.
-\code{\link[=domega]{domega()}} is the derivative of \code{\link[=omega]{omega()}} in the x and y directions.
-
 For \code{\link[=discharge]{discharge()}}, a matrix with the number of rows equal to the number of points to evaluate
 the discharge vector at, and with columns \code{Qx}, \code{Qy} and \code{Qz} corresponding to \verb{x, y} and \code{z} components
 of the discharge vector at coordinates \code{x}, \code{y} and \code{z}. If \code{as.grid = TRUE}, an array of dimensions
@@ -88,11 +83,13 @@ the saturated thickness at \code{x}, \code{y} and \code{z}.
 For \code{\link[=velocity]{velocity()}}, the same as for \code{\link[=discharge]{discharge()}} but with the \code{x}, \code{y} and \code{z} components of the
 average linear groundwater flow velocity vector (\code{vx}, \code{vy} and \code{vz}). The values are computed by dividing
 the \code{\link[=darcy]{darcy()}} values by the effective porosity (\code{aem$n}) and the retardation coefficient \code{R}.
+
+For \code{\link[=domega]{domega()}},  vector of \code{length(x)} (equal to \code{length(y)}) with the complex discharge values at \code{x} and \code{y},
+If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
+marginal vectors \code{x} and \code{y} containing the complex discharge values at the grid points.
+\code{\link[=domega]{domega()}} is the derivative of \code{\link[=omega]{omega()}} in the x and y directions.
 }
 \description{
-\code{\link[=domega]{domega()}} computes the complex discharge for an \code{aem} or \code{element} object
-at the given x and y coordinates.
-
 \code{\link[=discharge]{discharge()}} computes the \verb{x, y} and \code{z} components of the discharge vector for an \code{aem} object
 at the given x, y and z coordinates.
 
@@ -101,6 +98,9 @@ for an \code{aem} object at the given x, y and z coordinates.
 
 \code{\link[=velocity]{velocity()}} computes the \verb{x, y} and \code{z} components of the average linear groundwater flow velocity vector
 for an \code{aem} object at the given x, y and z coordinates.
+
+\code{\link[=domega]{domega()}} computes the complex discharge for an \code{aem} or \code{element} object
+at the given x and y coordinates.
 }
 \details{
 There is no \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}} method for an object of class \code{element} because an \code{aem} object is required
@@ -113,30 +113,33 @@ is of interest.
 }
 \examples{
 
-w <- well(xw = 52, yw = 0, Q = 200)
+w <- well(xw = 55, yw = 0, Q = 200)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
-ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)
+rf <- constant(xc = -1000, yc = 1000, hc = 10)
+ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, as, rf)
 
-domega(ml, c(50, 0), c(25, -25))
 
 xg <- seq(-100, 100, length = 5)
 yg <- seq(-75, 75, length = 3)
-domega(ml, xg, yg, as.grid = TRUE)
 
-discharge(ml, c(50, 0), c(25, -25), z = ml$top)
-discharge(ml, c(50, 0), c(25, -25), z = c(ml$top, 5), magnitude = TRUE)
-discharge(ml, xg, yg, z = ml$top, as.grid = TRUE)
-discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
+# Discharge vector
+discharge(ml, c(150, 0), c(80, -80), z = -10)
+discharge(ml, c(150, 0), c(80, -80), z = c(2, 5), magnitude = TRUE)
+discharge(ml, xg, yg, z = 2, as.grid = TRUE)
+discharge(ml, c(150, 0), c(80, -80), z = ml$top + c(-5, 0.5)) # NA for z > water-table
 
-darcy(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE)
-darcy(ml, xg, yg, 10, as.grid = TRUE)
+# Darcy flux
+darcy(ml, c(150, 0), c(80, -80), c(0, 5), magnitude = TRUE)
 
-velocity(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE, R = 5)
-velocity(ml, xg, yg, 5, as.grid = TRUE, R = 5)
+# Velocity
+velocity(ml, c(150, 0), c(80, -80), c(0, 5), magnitude = TRUE, R = 5)
 
-# For elements
-domega(w, c(50, 0), c(-25, 25))
+# Complex discharge
+domega(ml, c(150, 0), c(80, -80))
+
+# Complex discharge for elements
+domega(w, c(150, 0), c(80, -80))
 
 }
 \seealso{

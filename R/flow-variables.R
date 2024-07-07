@@ -1,21 +1,6 @@
 
 #' @title Calculate flow variables
 #'
-#' @description [domega()] computes the complex discharge for an `aem` or `element` object
-#'     at the given x and y coordinates.
-#'
-#' @return For [domega()],  vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
-#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
-#'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
-#'     [domega()] is the derivative of [omega()] in the x and y directions.
-#' @rdname flow
-#' @name flow
-#' @export
-#' @seealso [state-variables()], [satthick()], [dirflow()], [flow_through_line()]
-#'
-domega <- function(...) UseMethod('domega')
-
-#'
 #' @description [discharge()] computes the `x, y` and `z` components of the discharge vector for an `aem` object
 #'     at the given x, y and z coordinates.
 #'
@@ -36,7 +21,9 @@ domega <- function(...) UseMethod('domega')
 #'     the magnitude of the discharge/darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
 #'     (or `sqrt(qx^2 + qy^2 + qz^2)` or `sqrt(vx^2 + vy^2 + vz^2)`, respectively).
 #' @rdname flow
+#' @name flow
 #' @export
+#' @seealso [state-variables()], [satthick()], [dirflow()], [flow_through_line()]
 #'
 discharge <- function(...) UseMethod('discharge')
 
@@ -63,6 +50,20 @@ darcy <- function(...) UseMethod('darcy')
 #'
 velocity <- function(...) UseMethod('velocity')
 
+#'
+#' @description [domega()] computes the complex discharge for an `aem` or `element` object
+#'     at the given x and y coordinates.
+#'
+#' @return For [domega()],  vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
+#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
+#'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
+#'     [domega()] is the derivative of [omega()] in the x and y directions.
+#' @rdname flow
+#' @export
+#'
+domega <- function(...) UseMethod('domega')
+
+
 #' Calculate the complex discharge influence
 #'
 #' [domegainf()] computes the complex discharge influence at the given x and y coordinates.
@@ -79,49 +80,6 @@ velocity <- function(...) UseMethod('velocity')
 domegainf <- function(...) UseMethod('domegainf')
 
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
-#' @param ... ignored or arguments passed from [velocity()] or [darcy()] to [discharge()].
-#'
-#' @rdname flow
-#' @export
-#' @examples
-#'
-#' w <- well(xw = 52, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
-#' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, uf, as)
-#'
-#' domega(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 5)
-#' yg <- seq(-75, 75, length = 3)
-#' domega(ml, xg, yg, as.grid = TRUE)
-#'
-domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
-  if(as.grid) {
-    df <- expand.grid(x = x, y = y)
-    gx <- df$x
-    gy <- df$y
-  } else {
-    gx <- x
-    gy <- y
-  }
-  w <- lapply(aem$elements, domega, x = gx, y = gy)
-  w <- colSums(do.call(rbind, w))
-  # w <- 0 + 0i
-  # for(i in aem$elements) w <- w + domega(i, gx, gy)
-
-  if(as.grid) {
-    w <- matrix(w, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
-    w <- image_to_matrix(w)
-  }
-  return(w)
-}
-
-#'
 #' @param z numeric z coordinates to evaluate at
 #' @param magnitude logical, should the magnitude of the flow vector be returned as well? Default to `FALSE`. See details.
 #' @param verbose logical, if `TRUE` (default), warnings with regards to setting `Qz` to NA are printed. See details.
@@ -133,10 +91,22 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @export
 #' @rdname flow
 #' @examples
-#' discharge(ml, c(50, 0), c(25, -25), z = ml$top)
-#' discharge(ml, c(50, 0), c(25, -25), z = c(ml$top, 5), magnitude = TRUE)
-#' discharge(ml, xg, yg, z = ml$top, as.grid = TRUE)
-#' discharge(ml, c(50, 0), c(25, -25), z = ml$top + c(0, 0.5)) # NA for z > top
+#'
+#' w <- well(xw = 55, yw = 0, Q = 200)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
+#' rf <- constant(xc = -1000, yc = 1000, hc = 10)
+#' ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, as, rf)
+#'
+#'
+#' xg <- seq(-100, 100, length = 5)
+#' yg <- seq(-75, 75, length = 3)
+#'
+#' # Discharge vector
+#' discharge(ml, c(150, 0), c(80, -80), z = -10)
+#' discharge(ml, c(150, 0), c(80, -80), z = c(2, 5), magnitude = TRUE)
+#' discharge(ml, xg, yg, z = 2, as.grid = TRUE)
+#' discharge(ml, c(150, 0), c(80, -80), z = ml$top + c(-5, 0.5)) # NA for z > water-table
 #'
 discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verbose = TRUE, ...) {
   if(as.grid) {
@@ -202,8 +172,8 @@ discharge.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, verb
 #' @rdname flow
 #' @export
 #' @examples
-#' darcy(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE)
-#' darcy(ml, xg, yg, 10, as.grid = TRUE)
+#' # Darcy flux
+#' darcy(ml, c(150, 0), c(80, -80), c(0, 5), magnitude = TRUE)
 #'
 darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
   Q <- discharge(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
@@ -219,8 +189,8 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
 #' @rdname flow
 #' @export
 #' @examples
-#' velocity(ml, c(50, 0), c(25, -25), c(10, 5), magnitude = TRUE, R = 5)
-#' velocity(ml, xg, yg, 5, as.grid = TRUE, R = 5)
+#' # Velocity
+#' velocity(ml, c(150, 0), c(80, -80), c(0, 5), magnitude = TRUE, R = 5)
 #'
 velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1, ...) {
   q <- darcy(aem, x, y, z, as.grid = as.grid, magnitude = magnitude, ...)
@@ -258,13 +228,47 @@ velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1
 }
 
 #'
+#' @param aem `aem` object
+#' @param x numeric x coordinates to evaluate at
+#' @param y numeric y coordinates to evaluate at
+#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
+#' @param ... ignored or arguments passed from [velocity()] or [darcy()] to [discharge()].
+#'
+#' @rdname flow
+#' @export
+#' @examples
+#' # Complex discharge
+#' domega(ml, c(150, 0), c(80, -80))
+#'
+domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
+  if(as.grid) {
+    df <- expand.grid(x = x, y = y)
+    gx <- df$x
+    gy <- df$y
+  } else {
+    gx <- x
+    gy <- y
+  }
+  w <- lapply(aem$elements, domega, x = gx, y = gy)
+  w <- colSums(do.call(rbind, w))
+  # w <- 0 + 0i
+  # for(i in aem$elements) w <- w + domega(i, gx, gy)
+
+  if(as.grid) {
+    w <- matrix(w, nrow = length(x), ncol = length(y))  # as used by {image} or {contour}. NROW and NCOL are switched
+    w <- image_to_matrix(w)
+  }
+  return(w)
+}
+
+#'
 #' @param element analytic element of class `element`
 #'
 #' @export
 #' @rdname flow
 #' @examples
-#' # For elements
-#' domega(w, c(50, 0), c(-25, 25))
+#' # Complex discharge for elements
+#' domega(w, c(150, 0), c(80, -80))
 #'
 domega.element <- function(element, x, y, ...) {
   if(length(element$parameter) == 1) {

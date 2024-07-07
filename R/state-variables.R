@@ -1,6 +1,41 @@
 
 #' @title Calculate state-variables
 #'
+#' @description [heads()] computes the hydraulic head at the given x and y coordinates for an `aem` object.
+#'
+#' @param na.below logical indicating if calculated head values below the aquifer base should be set to `NA`. Defaults to `TRUE`. See [potential_to_head()].
+#' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
+#' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
+#'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
+#' @export
+#' @rdname state-variables
+#' @name state-variables
+#' @seealso [flow()], [satthick()], [head_to_potential()]
+#' @examples
+#' w <- well(xw = 55, yw = 0, Q = 200)
+#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
+#' rf <- constant(xc = -1000, yc = 1000, hc = 10)
+#' ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, rf)
+#'
+#' xg <- seq(-100, 100, length = 5)
+#' yg <- seq(-75, 75, length = 3)
+#'
+#' # Hydraulic heads
+#' heads(ml, c(50, 0), c(25, -25))
+#' heads(ml, xg, yg, as.grid = TRUE)
+#'
+#' # do not confuse heads() with utils::head, which will give an error
+#' try(
+#' head(ml, c(50, 0), c(25, -25))
+#' )
+#'
+heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
+  phi <- potential(aem, x, y, as.grid = as.grid, ...)
+  hd <- potential_to_head(aem, phi, na.below = na.below)
+  return(hd)
+}
+
+#'
 #' @description [omega()] computes the complex potential for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
@@ -9,8 +44,6 @@
 #'     marginal vectors `x` and `y` containing the complex potential values at the grid points.
 #' @export
 #' @rdname state-variables
-#' @name state-variables
-#' @seealso [flow()], [satthick()], [head_to_potential()]
 #'
 omega <- function(...) UseMethod('omega')
 
@@ -26,10 +59,10 @@ omega <- function(...) UseMethod('omega')
 potential <- function(...) UseMethod('potential')
 
 #'
-#' @description [streamfunction()] computes the streamfunction for an `aem` or `element` object
+#' @description [streamfunction()] computes the stream function for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @return For [streamfunction()], the same as for [omega()] but containing the streamfunction values
+#' @return For [streamfunction()], the same as for [omega()] but containing the stream function values
 #'    evaluated at `x` and `y`, which are the imaginary components of [omega()].
 #' @export
 #' @rdname state-variables
@@ -78,16 +111,8 @@ omegainf <- function(...) UseMethod('omegainf')
 #' @export
 #' @rdname state-variables
 #' @examples
-#'
-#' w <- well(xw = 55, yw = 0, Q = 200)
-#' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-#' ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf)
-#'
+#' # Complex potential
 #' omega(ml, c(50, 0), c(25, -25))
-#'
-#' xg <- seq(-100, 100, length = 5)
-#' yg <- seq(-75, 75, length = 3)
-#' omega(ml, xg, yg, as.grid = TRUE)
 #'
 omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   if(as.grid) {
@@ -114,8 +139,8 @@ omega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @export
 #' @rdname state-variables
 #' @examples
+#' # Discharge potential
 #' potential(ml, c(50, 0), c(25, -25))
-#' potential(ml, xg, yg, as.grid = TRUE)
 #'
 potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   pt <- Re(omega(aem, x, y, as.grid = as.grid, ...))
@@ -126,8 +151,8 @@ potential.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 #' @export
 #' @rdname state-variables
 #' @examples
+#' # Stream function
 #' streamfunction(ml, c(50, 0), c(25, -25))
-#' streamfunction(ml, xg, yg, as.grid = TRUE)
 #'
 streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
   sf <- Im(omega(aem, x, y, as.grid = as.grid, ...))
@@ -183,30 +208,6 @@ streamfunction.element <- function(element, x, y, ...) {
 potinf.element <- function(element, x, y, ...) {
   pti <- Re(omegainf(element, x, y, ...))
   return(pti)
-}
-
-#'
-#' @description [heads()] computes the hydraulic head at the given x and y coordinates.
-#'
-#' @param na.below logical indicating if calculated head values below the aquifer base should be set to `NA`. Defaults to `TRUE`. See [potential_to_head()].
-#' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
-#' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
-#'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
-#' @export
-#' @rdname state-variables
-#' @examples
-#' heads(ml, c(50, 0), c(25, -25))
-#' heads(ml, xg, yg, as.grid = TRUE)
-#'
-#' # do not confuse heads() with utils::head, which will give an error
-#' try(
-#' head(ml, c(50, 0), c(25, -25))
-#' )
-#'
-heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
-  phi <- potential(aem, x, y, as.grid = as.grid, ...)
-  hd <- potential_to_head(aem, phi, na.below = na.below)
-  return(hd)
 }
 
 #' Convert hydraulic head to potential and vice versa

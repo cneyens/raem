@@ -2,6 +2,7 @@
 % Please edit documentation in R/state-variables.R
 \name{state-variables}
 \alias{state-variables}
+\alias{heads}
 \alias{omega}
 \alias{potential}
 \alias{streamfunction}
@@ -11,9 +12,10 @@
 \alias{omega.element}
 \alias{potential.element}
 \alias{streamfunction.element}
-\alias{heads}
 \title{Calculate state-variables}
 \usage{
+heads(aem, x, y, as.grid = FALSE, na.below = TRUE, ...)
+
 omega(...)
 
 potential(...)
@@ -31,12 +33,8 @@ streamfunction(...)
 \method{potential}{element}(element, x, y, ...)
 
 \method{streamfunction}{element}(element, x, y, ...)
-
-heads(aem, x, y, as.grid = FALSE, na.below = TRUE, ...)
 }
 \arguments{
-\item{...}{ignored}
-
 \item{aem}{\code{aem} object}
 
 \item{x}{numeric x coordinates to evaluate at}
@@ -45,11 +43,16 @@ heads(aem, x, y, as.grid = FALSE, na.below = TRUE, ...)
 
 \item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
 
-\item{element}{analytic element of class \code{element}}
-
 \item{na.below}{logical indicating if calculated head values below the aquifer base should be set to \code{NA}. Defaults to \code{TRUE}. See \code{\link[=potential_to_head]{potential_to_head()}}.}
+
+\item{...}{ignored}
+
+\item{element}{analytic element of class \code{element}}
 }
 \value{
+For \code{\link[=heads]{heads()}}, the same as for \code{\link[=omega]{omega()}} but containing the hydraulic head values
+evaluated at \code{x} and \code{y}, which are computed from \code{\link[=potential]{potential()}} and the aquifer parameters using \code{\link[=potential_to_head]{potential_to_head()}}.
+
 For \code{\link[=omega]{omega()}}, a vector of \code{length(x)} (equal to \code{length(y)}) with the complex potential values at \code{x} and \code{y}.
 If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
 marginal vectors \code{x} and \code{y} containing the complex potential values at the grid points.
@@ -57,52 +60,34 @@ marginal vectors \code{x} and \code{y} containing the complex potential values a
 For \code{\link[=potential]{potential()}}, the same as for \code{\link[=omega]{omega()}} but containing the discharge potential values
 evaluated at \code{x} and \code{y}, which are the real components of \code{\link[=omega]{omega()}}.
 
-For \code{\link[=streamfunction]{streamfunction()}}, the same as for \code{\link[=omega]{omega()}} but containing the streamfunction values
+For \code{\link[=streamfunction]{streamfunction()}}, the same as for \code{\link[=omega]{omega()}} but containing the stream function values
 evaluated at \code{x} and \code{y}, which are the imaginary components of \code{\link[=omega]{omega()}}.
-
-For \code{\link[=heads]{heads()}}, the same as for \code{\link[=omega]{omega()}} but containing the hydraulic head values
-evaluated at \code{x} and \code{y}, which are computed from \code{\link[=potential]{potential()}} and the aquifer parameters using \code{\link[=potential_to_head]{potential_to_head()}}.
 }
 \description{
+\code{\link[=heads]{heads()}} computes the hydraulic head at the given x and y coordinates for an \code{aem} object.
+
 \code{\link[=omega]{omega()}} computes the complex potential for an \code{aem} or \code{element} object
 at the given x and y coordinates.
 
 \code{\link[=potential]{potential()}} computes the discharge potential for an \code{aem} or \code{element} object
 at the given x and y coordinates.
 
-\code{\link[=streamfunction]{streamfunction()}} computes the streamfunction for an \code{aem} or \code{element} object
+\code{\link[=streamfunction]{streamfunction()}} computes the stream function for an \code{aem} or \code{element} object
 at the given x and y coordinates.
-
-\code{\link[=heads]{heads()}} computes the hydraulic head at the given x and y coordinates.
 }
 \details{
 \code{\link[=heads]{heads()}} should not to be confused with \code{\link[utils:head]{utils::head()}}, which returns the first part of an object.
 }
 \examples{
-
 w <- well(xw = 55, yw = 0, Q = 200)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
-ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf)
-
-omega(ml, c(50, 0), c(25, -25))
+rf <- constant(xc = -1000, yc = 1000, hc = 10)
+ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, rf)
 
 xg <- seq(-100, 100, length = 5)
 yg <- seq(-75, 75, length = 3)
-omega(ml, xg, yg, as.grid = TRUE)
 
-potential(ml, c(50, 0), c(25, -25))
-potential(ml, xg, yg, as.grid = TRUE)
-
-streamfunction(ml, c(50, 0), c(25, -25))
-streamfunction(ml, xg, yg, as.grid = TRUE)
-
-# For elements
-omega(w, c(50, 0), c(-25, 25))
-
-potential(w, c(50, 0), c(-25, 25))
-
-streamfunction(w, c(50, 0), c(-25, 25))
-
+# Hydraulic heads
 heads(ml, c(50, 0), c(25, -25))
 heads(ml, xg, yg, as.grid = TRUE)
 
@@ -110,6 +95,22 @@ heads(ml, xg, yg, as.grid = TRUE)
 try(
 head(ml, c(50, 0), c(25, -25))
 )
+
+# Complex potential
+omega(ml, c(50, 0), c(25, -25))
+
+# Discharge potential
+potential(ml, c(50, 0), c(25, -25))
+
+# Stream function
+streamfunction(ml, c(50, 0), c(25, -25))
+
+# For elements
+omega(w, c(50, 0), c(-25, 25))
+
+potential(w, c(50, 0), c(-25, 25))
+
+streamfunction(w, c(50, 0), c(-25, 25))
 
 }
 \seealso{
