@@ -80,13 +80,16 @@ By superimposing the individual solutions, the combined effect of all
 elements can be calculated at any point in space. An arbitrary number of
 elements can be placed at any location in the flow field. As such, the
 AEM method is more flexible than single analytical solutions and can be
-used to solve more complex field cases. Compared to numerical solutions
-of the groundwater flow problem, the AEM method is relatively fast and
-easy to use and does not suffer from numerical instability or mass
-balance errors. Furthermore, it does not require a spatial grid, making
-it relatively scale-insensitive as results can be obtained at any scale
-or zoom-level and feature geometries and level of detail are not
-dependent on a a priori chosen model resolution.</p>
+used to solve more complex cases. Compared to numerical solutions of the
+groundwater flow problem, the AEM method is relatively fast and easy to
+use and does not suffer from numerical instability or mass balance
+errors. Furthermore, it does not require a spatial grid, making it
+relatively scale-insensitive as results can be obtained at any scale or
+zoom-level and feature geometries and level of detail are not dependent
+on a a priori chosen model resolution. The AEM method is therefore often
+used for screening studies, (a first step in) regional groundwater flow
+modeling, as a “computational laboratory” for checking hypotheses, and
+as an educational tool.</p>
 <p>Flow is governed by the Dupuit-Forchheimer approximation which states
 that the hydraulic head
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
@@ -326,7 +329,8 @@ length units). Inside the well annulus as defined by
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>r</mi><mi>w</mi></msub><annotation encoding="application/x-tex">r_w</annotation></semantics></math>,
 the solution is undefined. When a output variable is requested inside
 this circle, its location is projected onto the nearest point on the
-outer annulus.</p>
+outer annulus. It is assumed that the well is screened across the full
+(saturated) aquifer.</p>
 <p>Here, we specify two extrations wells. We then create the model with
 a call to <code><a href="../reference/aem.html">aem()</a></code>. This function needs the aquifer parameters
 as well as the elements. You can supply the elements individually or put
@@ -414,15 +418,13 @@ Alternatively (and easier) is to use
 <code class="sourceCode R"><span></span>
 <span><span class="co"># computed discharge of hw1</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">elements</span><span class="op">$</span><span class="va">hw1</span><span class="op">$</span><span class="va">parameter</span></span>
-<span><span class="co">#&gt; [1] 292.5061</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; [1] 292.5061</span></span>
+<span></span>
 <span><span class="co"># computed discharge of hw2</span></span>
 <span><span class="fu"><a href="../reference/element_discharge.html">element_discharge</a></span><span class="op">(</span><span class="va">m</span>, name <span class="op">=</span> <span class="st">'hw2'</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      hw2 </span></span>
-<span><span class="co">#&gt; 779.7601</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; 779.7601</span></span>
+<span></span>
 <span><span class="co"># check the head at the collocation points</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">0</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6 7</span></span></code></pre></div>
@@ -474,7 +476,7 @@ line.</p>
 <code><a href="../reference/aem.html">plot.aem()</a></code> method. Individual element locations can also be
 plotted by calling <code><a href="../reference/aem.html">plot.element()</a></code> on the respective element
 object.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ls</span> <span class="op">=</span> <span class="fu"><a href="../reference/linesink.html">linesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, y0 <span class="op">=</span> <span class="fl">200</span>, x1 <span class="op">=</span> <span class="fl">200</span>, y1 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, sigma <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">ls</span><span class="op">)</span></span>
@@ -501,7 +503,9 @@ constant strength along the line, and thus a varying head. As such, a
 single stream with a constant head should be approximated with many
 short line-sinks. Other AEM codes may use higher order line elements
 where the strength can vary along the line.</p>
-<p>A hydraulic resistance may be specified between the aquifer and the
+<p>The line-sink is assumed to be in full hydraulic contact with the
+aquifer and fully penetrates the entire saturated depth. Alternatively,
+a hydraulic resistance may be specified between the aquifer and the
 line-sink (default is no resistance) representing the effect of a
 low-permeability connection due to e.g. streambed sediments.
 Additionally, the <code>width</code> parameter is used in conjunction
@@ -523,7 +527,7 @@ line-sinks. They are bundled in a <code><a href="https://rdrr.io/r/base/list.htm
 supplied to the model. A reference point also needs to be added.
 Information on the iteration loop is printed by setting
 <code>verbose = TRUE</code> in the <code><a href="../reference/aem.html">aem()</a></code> call.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">el</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rf <span class="op">=</span> <span class="va">rf</span><span class="op">)</span>  <span class="co"># list of elements</span></span>
 <span><span class="va">nls</span> <span class="op">=</span> <span class="fl">10</span>      <span class="co"># number of line-sinks</span></span>
@@ -559,9 +563,8 @@ Information on the iteration loop is printed by setting
 <span><span class="co">#&gt;   Iteration 8 </span></span>
 <span><span class="co">#&gt;   Iteration 9 </span></span>
 <span><span class="co">#&gt;   Iteration 10 </span></span>
-<span><span class="co">#&gt; Model solved</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; Model solved</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/headlinesink-1.png" width="672" style="display: block; margin: auto auto auto 0;"></p>
@@ -593,7 +596,7 @@ which can be overridden by setting <code>location = 'base'</code>.</p>
 the aquifer top, areal recharge is added to the example of the
 head-specified line-sinks above by use of an area-sink. Note the
 increased head values compared to the case without recharge.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el</span><span class="op">$</span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># add to list of elements</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">el</span><span class="op">)</span></span>
@@ -625,7 +628,7 @@ has a variable saturated thickness (<code>type = 'variable'</code> in
 <p>To illustrate it’s use, leakage from a small, circular pond is
 simulated using a head-specified area-sink using the model with two
 extraction wells.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">has</span> <span class="op">=</span> <span class="fu"><a href="../reference/headareasink.html">headareasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>                   y <span class="op">=</span> <span class="fl">200</span>, </span>
 <span>                   h <span class="op">=</span> <span class="fl">5</span>, </span>
@@ -652,7 +655,7 @@ fully in the model. This can be done by using
 remains constant in the entire domain (i.e. has a constant saturated
 thickness), a gradient which is positive in the direction of flow and an
 angle in degrees counterclockwise from the positive x-axis:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uf</span> <span class="op">=</span> <span class="fu"><a href="../reference/uniformflow.html">uniformflow</a></span><span class="op">(</span>TR <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span>, gradient <span class="op">=</span> <span class="fl">0.001</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">uf</span>, <span class="va">rf</span><span class="op">)</span></span>
@@ -667,6 +670,103 @@ angle in degrees counterclockwise from the positive x-axis:</p>
 <div class="section level2">
 <h2 id="setting-up-a-model">Setting up a model<a class="anchor" aria-label="anchor" href="#setting-up-a-model"></a>
 </h2>
+<p>As an example, an analytic element model is created for a phreatic
+system with two wells near a stream which is not in full hydraulic
+contact with the aquifer. The stream is approximately straight and
+flowing from south to north along
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x=0</annotation></semantics></math>,
+with the stream level elevation decreasing in the direction of flow. The
+stream is divided into segments which are shorter near well A. The sandy
+aquifer has an approximately horizontal bottom elevation, and can be
+considered homogeneous for the scale and purpose of the modeling
+exercise. Areal recharge is simulated using an area-sink.</p>
+<p>The use of <code><a href="../reference/add_element.html">add_element()</a></code> to set-up the model, which can
+be used to add elements to an initially empty model. After all the
+elements are added, the model needs to be solved with an explicit call
+to <code><a href="../reference/aem.html">solve.aem()</a></code>. This is useful for setting-up elements in a
+loop or pipeline.</p>
+<p>A major benefit of the AEM approach is that no numerical grid of the
+domain is needed. This allows to zoom in on an area of interest without
+altering or rerunning the model, as illustrated by the plot of the inset
+area around well A.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># aquifer parameters ----</span></span>
+<span><span class="va">k</span> <span class="op">=</span> <span class="fl">15</span>          <span class="co"># hydraulic conductivity, m/d</span></span>
+<span><span class="va">top</span> <span class="op">=</span> <span class="fl">20</span>        <span class="co"># aquifer top elevation, m</span></span>
+<span><span class="va">base</span> <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>      <span class="co"># aquifer base elevation, m</span></span>
+<span><span class="va">n</span> <span class="op">=</span> <span class="fl">0.2</span>         <span class="co"># aquifer effective porosity, -</span></span>
+<span></span>
+<span><span class="va">N</span> <span class="op">=</span> <span class="fl">0.2</span> <span class="op">/</span> <span class="fl">365</span>   <span class="co"># areal recharge rate, m/d</span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fl">2</span>         <span class="co"># streambed resistance, d</span></span>
+<span><span class="va">width</span> <span class="op">=</span> <span class="fl">5</span>       <span class="co"># stream width, m</span></span>
+<span><span class="va">hr</span> <span class="op">=</span> <span class="fl">17.5</span>       <span class="co"># stream level at head of stream, m</span></span>
+<span><span class="va">hrg</span> <span class="op">=</span> <span class="fl">0.0005</span>    <span class="co"># gradient of stream level, -</span></span>
+<span><span class="va">href</span> <span class="op">=</span> <span class="fl">18.5</span>     <span class="co"># head at reference point, m</span></span>
+<span></span>
+<span><span class="co"># stream coordinates and water level</span></span>
+<span><span class="va">yriv</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1000</span>, <span class="op">-</span><span class="fl">300</span>, by <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">200</span>, by <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>         <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">1000</span>, by <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">hriv</span> <span class="op">=</span> <span class="va">hr</span> <span class="op">-</span> <span class="op">(</span><span class="va">yriv</span> <span class="op">-</span> <span class="va">yriv</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="va">hrg</span></span>
+<span><span class="va">nls</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">yriv</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create elements ----</span></span>
+<span><span class="va">wA</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">350</span><span class="op">)</span></span>
+<span><span class="va">wB</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, Q <span class="op">=</span> <span class="fl">450</span><span class="op">)</span></span>
+<span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="va">N</span>, R <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="va">rf</span> <span class="op">=</span> <span class="fu"><a href="../reference/constant.html">constant</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1000</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, h <span class="op">=</span> <span class="fl">18.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create model ----</span></span>
+<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># first, create model with no elements</span></span>
+<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">wA</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">wB</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">as</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">nls</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">hls</span> <span class="op">=</span> <span class="fu"><a href="../reference/headlinesink.html">headlinesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                     x1 <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                     y0 <span class="op">=</span> <span class="va">yriv</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
+<span>                     y1 <span class="op">=</span> <span class="va">yriv</span><span class="op">[</span><span class="va">i</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>,</span>
+<span>                     h <span class="op">=</span> <span class="va">hriv</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
+<span>                     resistance <span class="op">=</span> <span class="va">res</span>,</span>
+<span>                     width <span class="op">=</span> <span class="va">width</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">hls</span>, name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'stream'</span>, <span class="va">i</span>, sep <span class="op">=</span> <span class="st">'_'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># solve</span></span>
+<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># view contours ----</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">.3</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">18.5</span>, <span class="fl">0.1</span><span class="op">)</span>, labcex <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>         xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'y (m)'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="op">-</span><span class="fl">500</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, <span class="fl">150</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'forestgreen'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># add gridlines to plot</span></span>
+<span></span>
+<span><span class="co"># view inset near well 1</span></span>
+<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">18</span>, <span class="fl">0.05</span><span class="op">)</span>, labcex <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>         xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'y (m)'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add control points of line-sinks</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">m</span><span class="op">$</span><span class="va">elements</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">'linesink'</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">i</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, use.widths <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">i</span><span class="op">$</span><span class="va">xc</span>, <span class="va">i</span><span class="op">$</span><span class="va">yc</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> </span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="overview_files/figure-html/example-model-1.png" width="50%" style="display: block; margin: auto auto auto 0;"><img src="overview_files/figure-html/example-model-2.png" width="50%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
 <div class="section level2">
 <h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
