@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r set-up, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -21,7 +21,7 @@ The `raem` package provides a set of R functions to create an analytic element m
 
 # Introduction to analytic element modeling
 
-First developed by Otto Strack and Henk Haitjema in the late 1970's, the analytic element modeling (AEM) approach solves a groundwater flow problem by superposition of analytical solutions for features such as wells, streams and recharge. Each feature is called *an element*. By superimposing the individual solutions, the combined effect of all elements can be calculated at any point in space. An arbitrary number of elements can be placed at any location in the flow field. As such, the AEM method is more flexible than single analytical solutions and can be used to solve more complex field cases. Compared to numerical solutions of the groundwater flow problem, the AEM method is relatively fast and easy to use and does not suffer from numerical instability or mass balance errors. Furthermore, it does not require a spatial grid, making it relatively scale-insensitive as results can be obtained at any scale or zoom-level and feature geometries and level of detail are not dependent on a a priori chosen model resolution.
+First developed by Otto Strack and Henk Haitjema in the late 1970's, the analytic element modeling (AEM) approach solves a groundwater flow problem by superposition of analytical solutions for features such as wells, streams and recharge. Each feature is called *an element*. By superimposing the individual solutions, the combined effect of all elements can be calculated at any point in space. An arbitrary number of elements can be placed at any location in the flow field. As such, the AEM method is more flexible than single analytical solutions and can be used to solve more complex cases. Compared to numerical solutions of the groundwater flow problem, the AEM method is relatively fast and easy to use and does not suffer from numerical instability or mass balance errors. Furthermore, it does not require a spatial grid, making it relatively scale-insensitive as results can be obtained at any scale or zoom-level and feature geometries and level of detail are not dependent on a a priori chosen model resolution. The AEM method is therefore often used for screening studies, (a first step in) regional groundwater flow modeling, as a "computational laboratory" for checking hypotheses, and as an educational tool.
 
 Flow is governed by the Dupuit-Forchheimer approximation which states that the hydraulic head $h$ is hydrostatic at each point in the horizontal plane. In other words, there is no variation in $h$ along the vertical axis and horizontal flow is evenly distributed along the vertical axis. This reduces the dimensions of the problem, as the solution now only depends on the $x$ and $y$ coordinates. Although there are no vertical gradients, vertical flow can still be computed from mass balance considerations, i.e. areal recharge at the aquifer top or leakage through the aquifer bottom. Additionally for phreatic aquifers, the curvature of the water-table induces vertical flow components. Besides the Dupuit-Forchheimer assumption, the aquifer is assumed be of infinite lateral extent, have a horizontal top and base and is homogeneous at the scale of interest. In practice, these assumptions appear to be (approximately) valid for cases when the groundwater system under consideration is much wider than it is thick, which is the case for most regional aquifer systems where flow is predominantly horizontal. In areas where there is considerable vertical flow, such as near groundwater divides or near partially penetrating wells or streams, or when the flow system has a similar thickness and width ($width\lt~\approx 3*thickness$), the Dupuit-Forchheimer approximation is not valid and a different method should be used, e.g. a numerical model of the 3D groundwater flow equation.
 
@@ -68,7 +68,7 @@ An overview of the elements available in `raem` is provided. You can specify as 
 
 To create an AEM model with `raem`, first we need load `raem` and specify the aquifer parameters. The porosity value is only required by the `tracelines()` function when tracking particle paths (see the [Particle traces] section below).
 
-```{r setup}
+```{r aq-params}
 library(raem)
 
 k = 10     # hydraulic conductivity, m/d
@@ -80,7 +80,7 @@ n = 0.2    # aquifer effective porosity, -
 
 ## Well
 
-The simplest element is a well with a specified discharge $Q$, which can be created with the `well()` function. It requires the $x$ and $y$ coordinate of the well and the pumping rate $Q$ (positive for withdrawal). The well radius $r_w$ can also be specified (default is $0.3$ length units). Inside the well annulus as defined by $r_w$, the solution is undefined. When a output variable is requested inside this circle, its location is projected onto the nearest point on the outer annulus.
+The simplest element is a well with a specified discharge $Q$, which can be created with the `well()` function. It requires the $x$ and $y$ coordinate of the well and the pumping rate $Q$ (positive for withdrawal). The well radius $r_w$ can also be specified (default is $0.3$ length units). Inside the well annulus as defined by $r_w$, the solution is undefined. When a output variable is requested inside this circle, its location is projected onto the nearest point on the outer annulus. It is assumed that the well is screened across the full (saturated) aquifer.
 
 Here, we specify two extrations wells. We then create the model with a call to `aem()`. This function needs the aquifer parameters as well as the elements. You can supply the elements individually or put them into a single `list()`. The `aem()` function automatically solves the system of equations by calling `solve.aem()`. Not that by default, the model has a variable saturated thickness. You can change this by setting `type = 'confined'` to force the model to use a constant saturated thickness, set equal to the aquifer thickness. This may be useful when you want to force the system of equations to remain linear when elements with a hydraulic resistance are supplied (see below).
 
@@ -158,7 +158,7 @@ Although useful, strength-specified line-sinks are not often used in modeling ap
 
 A head-specified line-sink can be created with `headlinesink()`. In addition to the start- and endpoints of the line, the hydraulic head at the collocation point needs to be given, which is the center of the line-sink. The line-sink strength is unknown in that case and is calculated by solving the system of equations. In `raem`, zeroth order line-sinks are used, which result in a constant strength along the line, and thus a varying head. As such, a single stream with a constant head should be approximated with many short line-sinks. Other AEM codes may use higher order line elements where the strength can vary along the line.
 
-A hydraulic resistance may be specified between the aquifer and the line-sink (default is no resistance) representing the effect of a low-permeability connection due to e.g. streambed sediments. Additionally, the `width` parameter is used in conjunction with the `resistance` parameter to calculate the hydraulic conductance. When the model has a variably-saturated thickness (`type = 'variable'` in `aem()`; default), this renders the system of equations non-linear. As such, an iteration-loop is entered, with a default of 10 iterations (see also `aem()` and `solve.aem()`). As discussed above, setting `type = 'confined'` keeps the system linear.
+The line-sink is assumed to be in full hydraulic contact with the aquifer and fully penetrates the entire saturated depth. Alternatively, a hydraulic resistance may be specified between the aquifer and the line-sink (default is no resistance) representing the effect of a low-permeability connection due to e.g. streambed sediments. Additionally, the `width` parameter is used in conjunction with the `resistance` parameter to calculate the hydraulic conductance. When the model has a variably-saturated thickness (`type = 'variable'` in `aem()`; default), this renders the system of equations non-linear. As such, an iteration-loop is entered, with a default of 10 iterations (see also `aem()` and `solve.aem()`). As discussed above, setting `type = 'confined'` keeps the system linear.
 
 As a general rule of thumb, line-sinks in the far-field should not have resistance or width values specified, so they act as constant-head boundaries which fix the head in the far-field. Line-sinks in the near-field on the other hand should have resistances and widths specified to give a more realistic presentation of the surface water features in that area.
 
@@ -247,6 +247,92 @@ contours(m, xg, yg, variable = 'streamfunction', col = 'orange', nlevels = 20, a
 ```
 
 # Setting up a model
+
+As an example, an analytic element model is created for a phreatic system with two wells near a stream which is not in full hydraulic contact with the aquifer. The stream is approximately straight and flowing from south to north along $x=0$, with the stream level elevation decreasing in the direction of flow. The stream is divided into segments which are shorter near well A. The sandy aquifer has an approximately horizontal bottom elevation, and can be considered homogeneous for the scale and purpose of the modeling exercise. Areal recharge is simulated using an area-sink.
+
+The use of `add_element()` to set-up the model, which can be used to add elements to an initially empty model. After all the elements are added, the model needs to be solved with an explicit call to `solve.aem()`. This is useful for setting-up elements in a loop or pipeline.
+
+A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A.
+
+```{r example-model, fig.show="hold", out.width='50%'}
+
+# aquifer parameters ----
+k = 15          # hydraulic conductivity, m/d
+top = 20        # aquifer top elevation, m
+base = -10      # aquifer base elevation, m
+n = 0.2         # aquifer effective porosity, -
+
+N = 0.2 / 365   # areal recharge rate, m/d
+res = 2         # streambed resistance, d
+width = 5       # stream width, m
+hr = 17.5       # stream level at head of stream, m
+hrg = 0.0005    # gradient of stream level, -
+href = 18.5     # head at reference point, m
+
+# stream coordinates and water level
+yriv = c(seq(-1000, -300, by = 200),
+         seq(-200, 200, by = 20),
+         seq(300, 1000, by = 200))
+hriv = hr - (yriv - yriv[1]) * hrg
+nls = length(yriv)
+
+# create elements ----
+wA = well(x = -300, y = 0, Q = 350)
+wB = well(x = -500, y = -300, Q = 450)
+as = areasink(x = -50, y = 0, N = N, R = 2000)
+rf = constant(x = 1000, y = -1000, h = 18.5)
+
+# create model ----
+m = aem(k, top, base, n) |> # first, create model with no elements
+  add_element(wA) |>
+  add_element(wB) |>
+  add_element(as) |> 
+  add_element(rf)
+
+for(i in seq(nls - 1)) {
+  hls = headlinesink(x0 = 0, 
+                     x1 = 0, 
+                     y0 = yriv[i],
+                     y1 = yriv[i + 1],
+                     h = hriv[i],
+                     resistance = res,
+                     width = width
+  )
+  m = add_element(m, hls, name = paste('stream', i, sep = '_'))
+}
+
+# solve
+m = solve(m)
+
+# view contours ----
+par(mar = c(4, 4, .3, .3))
+
+xg = seq(-800, 300, length = 100)
+yg = seq(-600, 300, length = 100)
+
+contours(m, xg, yg, col = 'dodgerblue', levels = seq(16, 18.5, 0.1), labcex = 0.8,
+         xlab = 'x (m)', ylab = 'y (m)')
+plot(m, add = TRUE)
+polygon(x = c(-500, 50, 50, -500), y = c(-200, -200, 150, 150), border = 'forestgreen')
+grid() # add gridlines to plot
+
+# view inset near well 1
+xg = seq(-500, 50, length = 100)
+yg = seq(-200, 150, length = 100)
+
+contours(m, xg, yg, col = 'dodgerblue', levels = seq(16, 18, 0.05), labcex = 0.8,
+         xlab = 'x (m)', ylab = 'y (m)')
+grid()
+
+# add control points of line-sinks
+for(i in m$elements) {
+  if(inherits(i, 'linesink')) {
+    plot(i, add = TRUE, use.widths = FALSE)
+    points(i$xc, i$yc, pch = 16, cex = 0.8) 
+  }
+}
+
+```
 
 # Output
 

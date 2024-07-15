@@ -16,6 +16,7 @@
 #'
 #' @return Circular area-sink analytic element which is an object of class `areasink` and inherits from `element`.
 #' @export
+#' @seealso [headareasink()]
 #'
 #' @examples
 #' areasink(xc = -500, yc = 0, N = 0.001, R = 500)

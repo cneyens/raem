@@ -39,3 +39,6 @@ res <- 10 / 0.0001
 areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 
 }
+\seealso{
+\code{\link[=headareasink]{headareasink()}}
+}

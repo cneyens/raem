@@ -42,6 +42,16 @@ test_that('aem keeps names of element list', {
     add_element(w, name = 'well') |>
     add_element(uniformflow(gradient = 0.002, angle = -45, TR = TR), solve = TRUE)
   expect_named(m$elements, c('rf', 'well', paste('element', length(m$elements), sep = '_')))
+
+  m <- m |>
+    add_element(w, name = 'well2') |>
+    remove_element(name = 'rf')
+  expect_named(m$elements, c('well', 'element_3', 'well2'))
+
+  m <- m |>
+    remove_element(type = 'well')
+  expect_named(m$elements, 'element_3')
+
 })
 
 test_that('when solving aem, matrix is not singular', {

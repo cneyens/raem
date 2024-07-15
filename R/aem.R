@@ -365,32 +365,34 @@ resfac <- function(element, aem) {
   return(resfac)
 }
 
-#' Add element to existing `aem` object
+#' Add or remove an element to existing `aem` object
+#'
+#' [add_element()] adds a new element to the `aem` object.
 #'
 #' @param aem `aem` object
 #' @param element analytic element of class `element`
 #' @param name optional name of the element as character. Duplicate names in `aem` are not allowed.
-#' @param solve logical, should the model be solved after adding the new element? Defaults to `FALSE`.
+#' @param solve logical, should the model be solved after adding or removing the element? Defaults to `FALSE`.
 #' @param ... ignored
 #'
-#' @return The `aem` model with the addition of `element`. If `solve = TRUE`, the model is solved using
-#'    [solve.aem()]. The name of the element is taken from the `name` argument, the object name or set
-#'    to `element_1` with `1` being the index of the new element in the element list. See examples.
+#' @return The `aem` model with the addition of `element` or with the removal of an element. If `solve = TRUE`,
+#'    the model is solved using [solve.aem()]. The name of the new element is taken from the `name` argument,
+#'    the object name or set to `element_1` with `1` being the index of the new element in the element list. See examples.
 #' @export
 #' @seealso [aem()]
 #' @examples
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2)
-#' add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
+#' mnew <- add_element(m, constant(xc = 0, yc = 1000, hc = 12), name = 'rf')
 #'
 #' # if name not supplied, tries to obtain it from object name
 #' rf <- constant(xc = 0, yc = 1000, hc = 12)
-#' add_element(m, rf)
+#' mnew <- add_element(m, rf)
 #'
 #' # or else sets it sequentially from number of elements
-#' add_element(m, constant(xc = 0, yc = 1000, hc = 12))
+#' mnew <- add_element(m, constant(xc = 0, yc = 1000, hc = 12))
 #' @examplesIf getRversion() >= '4.1.0'
 #' # add_element() is pipe-friendly
-#' aem(k = 10, top = 10, base = 0, n = 0.2) |>
+#' mnew <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'     add_element(rf, name = 'rf') |>
 #'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
 #'                 name = 'headwell', solve = TRUE)
@@ -405,11 +407,56 @@ add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
     if(length(name) > 1) name <- NULL # weak test ...
   }
   if(!is.null(name)) {
-    if(name %in% names(aem$elements)) stop('element ', '\'', name, '\'', ' already exists', call. = FALSE)
+    if(name %in% names(aem$elements)) stop('Element ', '\'', name, '\'', ' already exists', call. = FALSE)
     names(aem$elements)[length(aem$elements)] <- name
   } else {
     names(aem$elements)[length(aem$element)] <- paste('element', length(aem$elements), sep = '_')
   }
+  if(solve) {
+    aem <- solve(aem)
+  } else if(aem$solved) {
+    aem$solved <- FALSE
+  }
+  return(aem)
+}
+
+#'
+#' @description [remove_element()] removes an element from the `aem` object based on its name or type.
+#'
+#' @param type class of the element(s) to remove. Either `name` or `type` should be specified in [remove_element()].
+#'
+#' @export
+#' @rdname add_element
+#'
+#' @examples
+#' # removing elements
+#' mnew <- remove_element(mnew, name = 'rf')
+#' mnew <- remove_element(mnew, type = 'headwell')
+#'
+remove_element <- function(aem, name = NULL, type = NULL, solve = FALSE, ...) {
+  if(!inherits(aem, 'aem')) stop('\'aem\' object should be of class aem', call. = FALSE)
+  if((is.null(name) && is.null(type)) || (!is.null(name) && !is.null(type))) stop('Either "name" or "type" should be specified', call. = FALSE)
+
+  if(is.null(aem$elements)) return(aem)
+
+  if(is.null(name)) {
+    istype <- vapply(aem$elements, function(i) inherits(i, type, which = TRUE), 0)
+    id <- which(istype == 1)
+    if(length(id) == 0) {
+      warning('No elements of type ', type, ' found', call. = FALSE)
+      return(aem)
+    }
+    aem$elements <- aem$elements[-id]
+  } else {
+    elnames <- names(aem$elements)
+    id <- which(elnames %in% name)
+    if(any(length(id) == 0)) {
+      warning('Element with name "', name[which(length(id) == 0)], '" not found', call. = FALSE)
+      return(aem)
+    }
+    aem$elements <- aem$elements[-id]
+  }
+
   if(solve) {
     aem <- solve(aem)
   } else if(aem$solved) {
