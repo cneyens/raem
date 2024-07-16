@@ -61,6 +61,7 @@ tracelines.</p>
 <span>  R <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  tfunc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  ncores <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -108,6 +109,10 @@ tracelines.</p>
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
 <dd><p>numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.</p></dd>
+
+
+<dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
+<dd><p>integer, number of cores to use when running in parallel. Defaults to 0 (no parallel computing). See details.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -168,6 +173,8 @@ Initial particle locations below the aquifer base are reset at the aquifer base 
 perturbation is added to these elevations to avoid the particle tracking algorithm to get stuck at these locations.
 If the algorithm does get stuck (i.e. excessive run-times), try resetting the <code>z0</code> values to elevations well inside the saturated domain.</p>
 <p>Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with <code>-1</code>).</p>
+<p>Traceline computation is embarrassingly parallel. When <code>ncores &gt; 0</code>, the <code>parallel</code> package is used to set up the cluster with the requested nodes and
+the tracelines are computed using <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapplyLB()</a></code>. <code>ncores</code> should not exceed the number of available cores as returned by <code><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">parallel::detectCores()</a></code>.</p>
 <p>The <code>marker</code> value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
 The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.</p>
     </div>
@@ -254,6 +261,12 @@ The x and y locations of each particle at the marked times are obtained by linea
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'y'</span>, <span class="st">'z'</span><span class="op">)</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="tracelines-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># parallel computing</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, n <span class="op">=</span> <span class="va">n</span>, <span class="va">uf</span>, <span class="va">rf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x0</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">200</span>; <span class="va">y0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">25</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu">tracelines</span><span class="op">(</span><span class="va">m</span>, x0 <span class="op">=</span> <span class="va">x0</span>, y0 <span class="op">=</span> <span class="va">y0</span>, z <span class="op">=</span> <span class="va">top</span>, times <span class="op">=</span> <span class="va">times</span>, ncores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot arrows</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
