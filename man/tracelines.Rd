@@ -178,12 +178,12 @@ plot(paths, add = TRUE, col = 'orange')
 plot(paths[[4]][,c('y', 'z')], type = 'l')
 
 \dontshow{if (parallel::detectCores() > 1) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# parallel computing
-m <- aem(k, top, base, n = n, uf, rf)
+# parallel computing by setting ncores > 0
+mp <- aem(k, top, base, n = n, uf, rf)
 
 x0 <- -200; y0 <- seq(-200, 200, 50)
 times <- seq(0, 25 * 365, 365 / 4)
-paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
+pathsp <- tracelines(mp, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
 \dontshow{\}) # examplesIf}
 
 # plot arrows

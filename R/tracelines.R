@@ -257,12 +257,12 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' plot(paths[[4]][,c('y', 'z')], type = 'l')
 #'
 #' @examplesIf parallel::detectCores() > 1
-#' # parallel computing
-#' m <- aem(k, top, base, n = n, uf, rf)
+#' # parallel computing by setting ncores > 0
+#' mp <- aem(k, top, base, n = n, uf, rf)
 #'
 #' x0 <- -200; y0 <- seq(-200, 200, 50)
 #' times <- seq(0, 25 * 365, 365 / 4)
-#' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
+#' pathsp <- tracelines(mp, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
 #'
 tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ncores = 0, ...) {
 

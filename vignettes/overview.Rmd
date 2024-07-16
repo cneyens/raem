@@ -52,13 +52,13 @@ $$
 
 with $z_t$ and $z_b$ the aquifer top and base elevation $[L]$, respectively.
 
-In addition to the discharge potential $\Phi$, there exists a stream function $\Psi$ $[L^3/T]$ which is defined as a function that is constant along streamlines and whose difference in stream function values between two points is equal to the amount of water flowing between those two points. By convention, the stream function increases to the right when looking in the direction of flow. It can be used to visualize the amount of flow in a groundwater system. $\Psi$ is only defined for the Laplace equation, i.e. when $N$ is zero. In modeling terms, this means that no area-sinks are active in the model (see paragraph [Area-sink] below).
+In addition to the discharge potential $\Phi$, there exists a stream function $\Psi$ $[L^3/T]$ which is defined as a function that is constant along streamlines and whose difference between two points is equal to the amount of water flowing between those two points. By convention, the stream function increases to the right when looking in the direction of flow. It can be used to visualize the amount of flow in a groundwater system and is used in constructing flow nets. $\Psi$ is only defined for the Laplace equation, i.e. when $N$ is zero. In modeling terms, this means that it is only specified outside area-sinks (see paragraph [Area-sink] below).
 
 The discharge potential $\Phi$ and the stream function $\Psi$ fulfill the Cauchy-Riemann conditions and can therefore be combined into a complex potential $\Omega$ whose real and imaginary terms are $\Phi$ and $\Psi$, respectively. By solving the flow problem in terms of $\Omega$, $\Phi$ and $\Psi$ are solved simultaneously in the complex plane, which is described by the complex coordinate $\zeta=x+iy$. The solution in terms of $\Omega$ yields $\Phi$ and eventually $h$.
 
-The derivative of $\Omega$ with respect to $\zeta$ is the complex discharge $W$, whose real component is $Q_x$ and whose negative imaginary component is $Q_y$, i.e. the $x$ and $y$ components of the discharge vector $Q$ $[L^2/T]$, which represents the first derivate of $\Phi$ in the $x$ and $y$ directions. The vertical component $Q_z$ is determined from mass balance considerations as discussed above. The Darcy flux $q$ $[L/T]$ (also called *specific discharge*) is computed as $Q/H$. The average linear flow velocity $v$ $[L/T]$ is computed as $q/n$ with $n$ the aquifer porosity, which should represent the effective porosity.
+The negative derivative of $\Omega$ with respect to $\zeta$ is the complex discharge $W$, whose real component is $Q_x$ and whose negative imaginary component is $Q_y$, i.e. the $x$ and $y$ components of the discharge vector $Q$ $[L^2/T]$, which represent the amount of flow in the aquifer integrated along the vertical (or the first derivate of $\Phi$ in the $x$ and $y$ directions). The vertical component $Q_z$ is determined from mass balance considerations as discussed above. The Darcy flux $q$ $[L/T]$ (also called *specific discharge*) is computed as $Q/H$. The average linear flow velocity $v$ $[L/T]$ is computed as $q/n$ with $n$ the aquifer porosity, which should represent the effective porosity.
 
-Each element gives a solution for the governing flow equation in terms of $\Omega$, as well as for the complex discharge $W$. An element has one or more free parameters, e.g. the discharge for a well element. These parameters may be user-specified or need to be computed from other conditions, as is the case in head-specified elements. The parameters are specified at so called *collocation points* or *control points*. Since the solution for a given element depends on the results of all other elements, the complete system of equations needs to be solved simultaneously for the element parameters. This is done by setting up the flow equations at the collocation points in a matrix form of $Ax=b$, which is then solved for the parameter vector $x$. Once the element parameters are known, the contributions of each element to the complex potential $\Omega$ and the complex discharge $W$ at any point can be calculated and superimposed to form the resulting $\Omega$ and $W$ values, which then yield the variables of interest such as $h$ and $Q$.
+Each element gives a solution for the governing flow equation in terms of $\Omega$, as well as for the complex discharge $W$. An element has one or more free parameters, e.g. the discharge for a well element. These parameters may be user-specified or need to be computed from other conditions, as is the case in head-specified elements. The parameters are specified at so called *collocation points* or *control points*. Since the solution for a given unknown element parameter depends on the results of all other elements, the complete system of equations needs to be solved simultaneously for all unknown parameters. This is done by setting up the flow equations at the collocation points in a matrix form of $Ax=b$, which is then solved for the unknown parameter vector $x$. Once the element parameters are known, the contributions of each element to the complex potential $\Omega$ and the complex discharge $W$ at any point can be calculated and superimposed to form the resulting $\Omega$ and $W$ values, which then yield the variables of interest such as $h$ and $Q$.
 
 For a more complete overview of analytic element modeling, the reader is referred to [Haitjema (1995)](https://www.haitjema.com/ModelingofGroundwaterFlow6312.pdf), [Strack (1989)](https://books.google.be/books/about/Groundwater_Mechanics.html?id=kfFOAQAAIAAJ&redir_esc=y), [Strack (2003)](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2002RG000111) and [Hunt (2006)](https://www.researchgate.net/profile/Randall-Hunt/publication/7367473_Ground_Water_Modeling_Applications_Using_the_Analytic_Element_Method/links/5a2eae43a6fdcc17f91fa2e8/Ground-Water-Modeling-Applications-Using-the-Analytic-Element-Method.pdf).
 
@@ -156,7 +156,7 @@ plot(m, add = TRUE)
 
 Although useful, strength-specified line-sinks are not often used in modeling applications. Head-specified line-sinks on the other hand are widely used in AEM studies, where they represent streams and other surface water features with known water levels. The absence of a numerical grid makes it straightforward to implement complex stream geometries.
 
-A head-specified line-sink can be created with `headlinesink()`. In addition to the start- and endpoints of the line, the hydraulic head at the collocation point needs to be given, which is the center of the line-sink. The line-sink strength is unknown in that case and is calculated by solving the system of equations. In `raem`, zeroth order line-sinks are used, which result in a constant strength along the line, and thus a varying head. As such, a single stream with a constant head should be approximated with many short line-sinks. Other AEM codes may use higher order line elements where the strength can vary along the line.
+A head-specified line-sink can be created with `headlinesink()`. In addition to the start- and endpoints of the line, the hydraulic head at the collocation point needs to be given, which is the center of the line-sink. The line-sink strength is unknown in that case and is calculated by solving the system of equations. When the aquifer head is above the head of the line-sink, the line-sink is draining the aquifer (positive line-sink strength $\sigma$). If the aquifer head is below the line-sink head, the line-sink is discharging into the aquifer. In `raem`, zeroth order line-sinks are used, which result in a constant strength along the line, and thus a varying head. As such, a single stream with a constant head should be approximated with many short line-sinks. Other AEM codes may use higher order line elements where the strength can vary along the line.
 
 The line-sink is assumed to be in full hydraulic contact with the aquifer and fully penetrates the entire saturated depth. Alternatively, a hydraulic resistance may be specified between the aquifer and the line-sink (default is no resistance) representing the effect of a low-permeability connection due to e.g. streambed sediments. Additionally, the `width` parameter is used in conjunction with the `resistance` parameter to calculate the hydraulic conductance. When the model has a variably-saturated thickness (`type = 'variable'` in `aem()`; default), this renders the system of equations non-linear. As such, an iteration-loop is entered, with a default of 10 iterations (see also `aem()` and `solve.aem()`). As discussed above, setting `type = 'confined'` keeps the system linear.
 
@@ -254,7 +254,7 @@ The use of `add_element()` to set-up the model, which can be used to add element
 
 A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A.
 
-```{r example-model, fig.show="hold"}
+```{r example-model, fig.show="hold", out.width="75%"}
 
 # aquifer parameters ----
 k = 15          # hydraulic conductivity, m/d
@@ -277,7 +277,7 @@ hriv = hr - (yriv - yriv[1]) * hrg
 nls = length(yriv)
 
 # create elements ----
-wA = well(x = -300, y = 0, Q = 350)
+wA = well(x = -300, y = 0, Q = 550)
 wB = well(x = -500, y = -300, Q = 450)
 as = areasink(x = -50, y = 0, N = N, R = 2000)
 rf = constant(x = 1000, y = -1000, h = 18.5)
@@ -336,10 +336,113 @@ for(i in m$elements) {
 
 # Output
 
-We'll use the model created above to show the different types of output that are available in `raem`.
+Hydraulic heads from an `aem` object at any `x` and `y` location can be obtained with `heads()` (not to be confused by `utils::head()`). The `x` and `y` arguments are recycled. By setting `as.grid = TRUE`, a grid of head values are obtained using the `x` and `y` values are marginal grid vectors:
+
+```{r heads}
+heads(m, x = c(-350, -200), y = -100)
+
+# as a grid
+heads(m, x = seq(-500, -100, length = 10), y = seq(-200, 100, 60), as.grid = TRUE)
+```
+
+Similar functions exists for the discharge potential $\Phi$ (`potential()`), the complex potential $\Omega$ (`omega()`) and the stream function $\Psi$ (`streamfunction()`). The heads, potentials and stream function can all be contoured by setting the `variable` argument in `contours()` (defaults to `"heads"`).
+
+To plot a cross-section of the water-table, simply compute the head values at the points along the profile line and plot:
+
+```{r cross-section-plot, fig.height=3, out.width='75%'}
+xprofile = seq(-800, 400, length = 1000)
+hprofile = heads(m, x = xprofile, y = -100)
+
+par(mar=c(4, 4, 0.3, 0.3))
+plot(xprofile, hprofile, type = 'l', xlab = 'x (m)', ylab = 'head (m)')
+```
+
+The components of the discharge vector $Q$ are obtained from an `aem` object with the `discharge()` function at any `x`, `y` and `z` coordinate. Values are positive with increasing axis values. When the specified `z` coordinate is above the water-table or aquifer top, or below the aquifer base, `NA's` are returned for the `z` component with a warning. Similar to the state variables discussed above, `as.grid` can be set to `TRUE` to obtain an output grid for the given `x`, `y` and `z`vectors. Additionally, `magnitude = TRUE` will return an additional column with the vector's magnitude, defined as the Euclidean norm of the vector components.
+
+```{r discharge, warning=TRUE}
+discharge(m, x = c(-350, -200), y = -100, z = 15)
+
+# NA's for z-component
+discharge(m, x = c(-350, -200), y = -100, z = top) 
+
+# as.grid
+str(discharge(m, 
+              x = seq(-350, -200, length = 5), 
+              y = seq(-200, -100, length = 4),
+              z = c(10, 15, length = 3),
+              as.grid = TRUE))
+
+# magnitude
+discharge(m, x = c(-350, -200), y = -100, z = 15, magnitude = TRUE)
+
+```
+
+Similar functions exist for the Darcy flux $q$ (`darcy())` and the average linear flow velocity $v$ (`velocity()`). The latter uses the aquifer porosity value set in the `aem` object. Additionally, a linear retardation coefficient $R$ can be specified (defaults to 1, i.e. no retardation), in which case the apparent velocity $v^*=v/R$ is used instead of $v$.
 
 # Particle traces
 
+Tracelines of particles can be computed using `tracelines()`. It tracks particle locations through the velocity field as computed by `velocity()`. By connecting the locations of a particle in time, the traceline can be drawn. Besides the `aem` object, the initial `x`, `y` and `z` locations of each particle needs to be specified. When the initial `z` location is above the water-table or aquifer top, or below the aquifer base, it is reset the its nearest boundary with a warning. The `times` argument is a numeric vector with the requested tracking times. The output is a list of matrices (one for each particle) with columns `time`, `x`, `y` and `z` containing the tracking time and particle location. The final locations represents the particle's location at the final time or, when it terminated prematurely (e.g. by entering a draining element), at the time of termination. A single matrix of all final particle locations can be obtained from the output of `tracelines()` by using the `endpoints()` function. The output of `tracelines()` can be plotted using `plot.tracelines()`. The endpoints can simply be added by using `points()`.
+
+```{r tracelines}
+# calculate particle traces
+paths = tracelines(m, 
+                   x0 = -600, 
+                   y0 = seq(-600, 200, 100),
+                   z0 = top, 
+                   times = seq(0, 5 * 365, 365 / 10)) # 10 steps per year for 5 years
+
+# plot head contours
+xg = seq(-800, 300, length = 100)
+yg = seq(-600, 300, length = 100)
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(m, add = TRUE)
+
+# add tracelines
+plot(paths, add = TRUE, col = 'orange')
+
+# compute and plot endpoints
+endp = endpoints(paths)
+points(endp[,c('x', 'y')])
+```
+
+Backward particle tracking can be performed by setting `forward = FALSE`. A retardation coefficient `R` can be passed to `velocity()`. When plotting the tracelines with `plot.tracelines()` markers at a specified time interval can be placed by setting `marker` to the desired interval, e.g. every 180 days.
+
+```{r backward-tracking}
+backward = tracelines(m, 
+                      x0 = -100, 
+                      y0 = -180, 
+                      z = 10, 
+                      forward = FALSE, 
+                      R = 1.5, 
+                      times = seq(0, 15 * 365, 365 / 10))
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(m, add = TRUE)
+
+# plot backward particle trace with a marker every 3 years
+plot(backward, col = 'forestgreen', add = TRUE, marker = 3 * 365)
+```
+
+Lastly, particle tracking can be computationally expensive. Since the particles are independent of one another, the computations are [embarrassingly parallel](https://en.wikipedia.org/wiki/Embarrassingly_parallel) however. Therefore, when setting the `ncores` argument in `tracelines()` larger than zero, the computations are distributed among `ncores` cores using the `parallel` package, one of the base packages when installing R.
+
+For more examples of particle tracking, see the `tracelines()` documentation.
+
 ## Capture zone
 
+A special case of traceline computations is the capture zone delineation for a well. These can be computed using `capzone()`, which is a thin wrapper around `tracelines()` which places `npar` evenly distributed particles around the well radius and tracks them back in time using `dt` time-step lengths until the requested capture time is reached. By plotting the tracelines, the capture zone can be be delineated. Initial particle locations are placed at the aquifer base (`zstart` argument). Different results may be obtained in models with vertical flow components by placing initial particle locations at different `z` coordinates. By increasing the amount of particles or decreasing the time-step length.
+
+```{r capzone}
+# 5 year capture zone of well A
+cpA_5 = capzone(m, wA, time = 5 * 365, npar = 10) 
+
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+plot(m, add = TRUE)
+
+# plot capture zone output
+plot(cpA_5, add = TRUE)
+```
+
 # Additional functionality
+
+# Further reading
