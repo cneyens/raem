@@ -3,7 +3,7 @@
 \name{add_element}
 \alias{add_element}
 \alias{remove_element}
-\title{Add or remove an element to existing \code{aem} object}
+\title{Add or remove an element from an existing \code{aem} object}
 \usage{
 add_element(aem, element, name = NULL, solve = FALSE, ...)
 
@@ -28,7 +28,7 @@ the model is solved using \code{\link[=solve.aem]{solve.aem()}}. The name of the
 the object name or set to \code{element_1} with \code{1} being the index of the new element in the element list. See examples.
 }
 \description{
-\code{\link[=add_element]{add_element()}} adds a new element to the \code{aem} object.
+\code{\link[=add_element]{add_element()}} adds a new element to or from an \code{aem} object.
 
 \code{\link[=remove_element]{remove_element()}} removes an element from the \code{aem} object based on its name or type.
 }

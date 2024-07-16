@@ -16,6 +16,7 @@ tracelines(
   R = 1,
   tfunc = NULL,
   tol = 0.001,
+  ncores = 0,
   ...
 )
 
@@ -41,6 +42,8 @@ endpoints(tracelines, ...)
 \item{tfunc}{function or list of functions with additional termination events for particles. See details. Defaults to \code{NULL}.}
 
 \item{tol}{numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.}
+
+\item{ncores}{integer, number of cores to use when running in parallel. Defaults to 0 (no parallel computing). See details.}
 
 \item{...}{additional arguments passed to \code{\link[=plot]{plot()}} or \code{\link[=arrows]{arrows()}}.}
 
@@ -96,6 +99,9 @@ perturbation is added to these elevations to avoid the particle tracking algorit
 If the algorithm does get stuck (i.e. excessive run-times), try resetting the \code{z0} values to elevations well inside the saturated domain.
 
 Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with \code{-1}).
+
+Traceline computation is embarrassingly parallel. When \code{ncores > 0}, the \code{parallel} package is used to set up the cluster with the requested nodes and
+the tracelines are computed using \code{\link[parallel:clusterApply]{parallel::parLapplyLB()}}. \code{ncores} should not exceed the number of available cores as returned by \code{\link[parallel:detectCores]{parallel::detectCores()}}.
 
 The \code{marker} value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
 The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.
@@ -171,6 +177,14 @@ plot(paths, add = TRUE, col = 'orange')
 # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 plot(paths[[4]][,c('y', 'z')], type = 'l')
 
+\dontshow{if (parallel::detectCores() > 1) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# parallel computing
+m <- aem(k, top, base, n = n, uf, rf)
+
+x0 <- -200; y0 <- seq(-200, 200, 50)
+times <- seq(0, 25 * 365, 365 / 4)
+paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
+\dontshow{\}) # examplesIf}
 
 # plot arrows
 contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)

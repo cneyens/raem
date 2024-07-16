@@ -15,6 +15,7 @@ BugReports: https://github.com/cneyens/raem/issues
 Imports: 
     deSolve,
     graphics,
+    parallel,
     stats
 Suggests: 
     knitr,

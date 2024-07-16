@@ -211,3 +211,32 @@ test_that('initial particles are not stuck', {
   )
 
 })
+
+test_that("parallel tracelines work", {
+
+  ncores <- 2 # CRAN only allows 2 cores
+  if(parallel::detectCores() < ncores) skip(paste('ncores < ', ncores))
+
+  k <- 10
+  top <- 10; base <- 0
+  n <- 0.2
+  R <- 1.5
+  i <- 0.001
+  alpha <- -45
+  TR <- k * (top - base)
+  hc <- 15
+
+  uf <- uniformflow(TR = TR, gradient = i, angle = alpha)
+  rf <- constant(-1000, 0, hc = hc)
+  m <- aem(k, top, base, n = n, uf, rf)
+
+  x0 <- seq(-200, 200, length = 10)
+  y0 <- 0
+  times <- seq(0, 365, 365 / 20)
+
+  paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R)
+  pathsp <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R, ncores = ncores)
+
+  expect_equal(paths, pathsp)
+
+})

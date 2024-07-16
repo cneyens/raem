@@ -149,6 +149,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @param R numeric, retardation coefficient passed to [velocity()]. Defaults to 1 (no retardation).
 #' @param tfunc function or list of functions with additional termination events for particles. See details. Defaults to `NULL`.
 #' @param tol numeric tolerance used to define when particles have crossed a line element. Defaults to 0.001 length units.
+#' @param ncores integer, number of cores to use when running in parallel. Defaults to 0 (no parallel computing). See details.
 #' @param ... ignored
 #'
 #' @details [deSolve::lsoda()] is used to numerically integrate the velocity vector.
@@ -170,6 +171,9 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'    If the algorithm does get stuck (i.e. excessive run-times), try resetting the `z0` values to elevations well inside the saturated domain.
 #'
 #' Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with `-1`).
+#'
+#' Traceline computation is embarrassingly parallel. When `ncores > 0`, the `parallel` package is used to set up the cluster with the requested nodes and
+#'     the tracelines are computed using [parallel::parLapplyLB()]. `ncores` should not exceed the number of available cores as returned by [parallel::detectCores()].
 #'
 #' @return [tracelines()] returns an object of class `tracelines` which is a list with length equal to the number of particles where each list element contains
 #'    a matrix with columns `time`, `x`, `y` and `z` specifying the registered time and coordinates of the particle as is it tracked through the flow field.
@@ -252,7 +256,15 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 #' plot(paths[[4]][,c('y', 'z')], type = 'l')
 #'
-tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ...) {
+#' @examplesIf parallel::detectCores() > 1
+#' # parallel computing
+#' m <- aem(k, top, base, n = n, uf, rf)
+#'
+#' x0 <- -200; y0 <- seq(-200, 200, 50)
+#' times <- seq(0, 25 * 365, 365 / 4)
+#' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
+#'
+tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ncores = 0, ...) {
 
   if(!is.null(tfunc) & !is.list(tfunc)) tfunc <- list(tfunc)
   direction <- ifelse(forward, 1, -1)
@@ -305,8 +317,35 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
                    rootfun = rootfun)
   }, SIMPLIFY = FALSE)
 
-  # get paths and clean
-  paths <- get_paths(x0, y0, z0)
+
+  # get paths
+  if(ncores > 0) { # parallel
+    if(ncores > parallel::detectCores()) stop('ncores > available cores', call. = FALSE)
+
+    crds <- data.frame(x = x0, y = y0, z = z0)
+    crds_list <- unname(split(crds, seq(nrow(crds))))
+
+    # make cluster
+    clust <- parallel::makeCluster(ncores)
+
+    try({
+      load_raem <- parallel::clusterCall(clust, function(...) library(raem))
+
+      parallel::clusterExport(clust,
+                  list("aem", "R", "vxvy", "rootfun", "get_paths",
+                       "times", "direction", "outside_vertical", "tfunc"),
+                  envir = environment())
+
+      paths <- parallel::parLapplyLB(clust, crds_list, function(i) get_paths(i[[1]], i[[2]], i[[3]])[[1]])
+    })
+
+    parallel::stopCluster(clust)
+
+  } else { # sequential
+    paths <- get_paths(x0, y0, z0)
+  }
+
+  # clean
   paths.m <- lapply(paths, matrix, ncol = 4, dimnames = list(NULL, c('time', 'x', 'y', 'z')))
   names(paths.m) <- NULL
   # if(length(paths) == 1) paths.m <- paths.m[[1]] # return matrix instead of list of matrices when only one particle is tracked

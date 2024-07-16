@@ -254,7 +254,7 @@ The use of `add_element()` to set-up the model, which can be used to add element
 
 A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A.
 
-```{r example-model, fig.show="hold", out.width='50%'}
+```{r example-model, fig.show="hold"}
 
 # aquifer parameters ----
 k = 15          # hydraulic conductivity, m/d
@@ -336,6 +336,10 @@ for(i in m$elements) {
 
 # Output
 
+We'll use the model created above to show the different types of output that are available in `raem`.
+
 # Particle traces
+
+## Capture zone
 
 # Additional functionality

@@ -365,9 +365,9 @@ resfac <- function(element, aem) {
   return(resfac)
 }
 
-#' Add or remove an element to existing `aem` object
+#' Add or remove an element from an existing `aem` object
 #'
-#' [add_element()] adds a new element to the `aem` object.
+#' [add_element()] adds a new element to or from an `aem` object.
 #'
 #' @param aem `aem` object
 #' @param element analytic element of class `element`
