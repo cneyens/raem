@@ -180,16 +180,16 @@ respectively.</p>
 there exists a stream function
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>3</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^3/T]</annotation></semantics></math>
 which is defined as a function that is constant along streamlines and
-whose difference in stream function values between two points is equal
-to the amount of water flowing between those two points. By convention,
-the stream function increases to the right when looking in the direction
-of flow. It can be used to visualize the amount of flow in a groundwater
-system.
+whose difference between two points is equal to the amount of water
+flowing between those two points. By convention, the stream function
+increases to the right when looking in the direction of flow. It can be
+used to visualize the amount of flow in a groundwater system and is used
+in constructing flow nets.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>
 is only defined for the Laplace equation, i.e. when
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-is zero. In modeling terms, this means that no area-sinks are active in
-the model (see paragraph <a href="#area-sink">Area-sink</a> below).</p>
+is zero. In modeling terms, this means that it is only specified outside
+area-sinks (see paragraph <a href="#area-sink">Area-sink</a> below).</p>
 <p>The discharge potential
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 and the stream function
@@ -215,7 +215,7 @@ yields
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 and eventually
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>.</p>
-<p>The derivative of
+<p>The negative derivative of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
 with respect to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ζ</mi><annotation encoding="application/x-tex">\zeta</annotation></semantics></math>
@@ -231,13 +231,14 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 components of the discharge vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>2</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^2/T]</annotation></semantics></math>,
-which represents the first derivate of
+which represent the amount of flow in the aquifer integrated along the
+vertical (or the first derivate of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 in the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
-directions. The vertical component
+directions). The vertical component
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>z</mi></msub><annotation encoding="application/x-tex">Q_z</annotation></semantics></math>
 is determined from mass balance considerations as discussed above. The
 Darcy flux
@@ -261,12 +262,12 @@ well element. These parameters may be user-specified or need to be
 computed from other conditions, as is the case in head-specified
 elements. The parameters are specified at so called <em>collocation
 points</em> or <em>control points</em>. Since the solution for a given
-element depends on the results of all other elements, the complete
-system of equations needs to be solved simultaneously for the element
-parameters. This is done by setting up the flow equations at the
-collocation points in a matrix form of
+unknown element parameter depends on the results of all other elements,
+the complete system of equations needs to be solved simultaneously for
+all unknown parameters. This is done by setting up the flow equations at
+the collocation points in a matrix form of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>x</mi><mo>=</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">Ax=b</annotation></semantics></math>,
-which is then solved for the parameter vector
+which is then solved for the unknown parameter vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.
 Once the element parameters are known, the contributions of each element
 to the complex potential
@@ -497,12 +498,17 @@ geometries.</p>
 <code><a href="../reference/headlinesink.html">headlinesink()</a></code>. In addition to the start- and endpoints of
 the line, the hydraulic head at the collocation point needs to be given,
 which is the center of the line-sink. The line-sink strength is unknown
-in that case and is calculated by solving the system of equations. In
-<code>raem</code>, zeroth order line-sinks are used, which result in a
-constant strength along the line, and thus a varying head. As such, a
-single stream with a constant head should be approximated with many
-short line-sinks. Other AEM codes may use higher order line elements
-where the strength can vary along the line.</p>
+in that case and is calculated by solving the system of equations. When
+the aquifer head is above the head of the line-sink, the line-sink is
+draining the aquifer (positive line-sink strength
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>).
+If the aquifer head is below the line-sink head, the line-sink is
+discharging into the aquifer. In <code>raem</code>, zeroth order
+line-sinks are used, which result in a constant strength along the line,
+and thus a varying head. As such, a single stream with a constant head
+should be approximated with many short line-sinks. Other AEM codes may
+use higher order line elements where the strength can vary along the
+line.</p>
 <p>The line-sink is assumed to be in full hydraulic contact with the
 aquifer and fully penetrates the entire saturated depth. Alternatively,
 a hydraulic resistance may be specified between the aquifer and the
@@ -712,7 +718,7 @@ area around well A.</p>
 <span><span class="va">nls</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">yriv</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create elements ----</span></span>
-<span><span class="va">wA</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">350</span><span class="op">)</span></span>
+<span><span class="va">wA</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">550</span><span class="op">)</span></span>
 <span><span class="va">wB</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, Q <span class="op">=</span> <span class="fl">450</span><span class="op">)</span></span>
 <span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="va">N</span>, R <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span><span class="va">rf</span> <span class="op">=</span> <span class="fu"><a href="../reference/constant.html">constant</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1000</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, h <span class="op">=</span> <span class="fl">18.5</span><span class="op">)</span></span>
@@ -766,24 +772,227 @@ area around well A.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">i</span><span class="op">$</span><span class="va">xc</span>, <span class="va">i</span><span class="op">$</span><span class="va">yc</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> </span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="overview_files/figure-html/example-model-1.png" width="672" style="display: block; margin: auto auto auto 0;"><img src="overview_files/figure-html/example-model-2.png" width="672" style="display: block; margin: auto auto auto 0;"></p>
+<p><img src="overview_files/figure-html/example-model-1.png" width="75%" style="display: block; margin: auto auto auto 0;"><img src="overview_files/figure-html/example-model-2.png" width="75%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
 <div class="section level2">
 <h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
 </h2>
-<p>We’ll use the model created above to show the different types of
-output that are available in <code>raem</code>.</p>
+<p>Hydraulic heads from an <code>aem</code> object at any <code>x</code>
+and <code>y</code> location can be obtained with <code><a href="../reference/state-variables.html">heads()</a></code>
+(not to be confused by <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">utils::head()</a></code>). The <code>x</code>
+and <code>y</code> arguments are recycled. By setting
+<code>as.grid = TRUE</code>, a grid of head values are obtained using
+the <code>x</code> and <code>y</code> values are marginal grid
+vectors:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 17.46994 17.44073</span></span>
+<span></span>
+<span><span class="co"># as a grid</span></span>
+<span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="op">-</span><span class="fl">100</span>, length <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">100</span>, <span class="fl">60</span><span class="op">)</span>, as.grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]</span></span>
+<span><span class="co">#&gt; [1,] 17.78207 17.70940 17.63107 17.55047 17.48084 17.44350 17.43825 17.44333</span></span>
+<span><span class="co">#&gt; [2,] 17.74401 17.66212 17.56563 17.44512 17.29941 17.26533 17.34286 17.39425</span></span>
+<span><span class="co">#&gt; [3,] 17.71670 17.63429 17.53604 17.40516 17.19598 17.16617 17.31563 17.38514</span></span>
+<span><span class="co">#&gt; [4,] 17.69875 17.62685 17.55069 17.47016 17.39946 17.37545 17.39735 17.42647</span></span>
+<span><span class="co">#&gt; [5,] 17.67895 17.62224 17.57265 17.52943 17.49648 17.47968 17.47826 17.48408</span></span>
+<span><span class="co">#&gt; [6,] 17.63721 17.59972 17.58070 17.56684 17.55505 17.54664 17.54203 17.53953</span></span>
+<span><span class="co">#&gt;          [,9]    [,10]</span></span>
+<span><span class="co">#&gt; [1,] 17.44499 17.43943</span></span>
+<span><span class="co">#&gt; [2,] 17.41979 17.42836</span></span>
+<span><span class="co">#&gt; [3,] 17.41904 17.43322</span></span>
+<span><span class="co">#&gt; [4,] 17.44648 17.45568</span></span>
+<span><span class="co">#&gt; [5,] 17.48945 17.49047</span></span>
+<span><span class="co">#&gt; [6,] 17.53660 17.53121</span></span></code></pre></div>
+<p>Similar functions exists for the discharge potential
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
+(<code><a href="../reference/state-variables.html">potential()</a></code>), the complex potential
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+(<code><a href="../reference/state-variables.html">omega()</a></code>) and the stream function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>
+(<code><a href="../reference/state-variables.html">streamfunction()</a></code>). The heads, potentials and stream
+function can all be contoured by setting the <code>variable</code>
+argument in <code><a href="../reference/contours.html">contours()</a></code> (defaults to
+<code>"heads"</code>).</p>
+<p>To plot a cross-section of the water-table, simply compute the head
+values at the points along the profile line and plot:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xprofile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">400</span>, length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">hprofile</span> <span class="op">=</span> <span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="va">xprofile</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xprofile</span>, <span class="va">hprofile</span>, type <span class="op">=</span> <span class="st">'l'</span>, xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'head (m)'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="overview_files/figure-html/cross-section-plot-1.png" width="75%" style="display: block; margin: auto auto auto 0;"></p>
+<p>The components of the discharge vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+are obtained from an <code>aem</code> object with the
+<code><a href="../reference/flow.html">discharge()</a></code> function at any <code>x</code>, <code>y</code>
+and <code>z</code> coordinate. Values are positive with increasing axis
+values. When the specified <code>z</code> coordinate is above the
+water-table or aquifer top, or below the aquifer base, <code>NA's</code>
+are returned for the <code>z</code> component with a warning. Similar to
+the state variables discussed above, <code>as.grid</code> can be set to
+<code>TRUE</code> to obtain an output grid for the given <code>x</code>,
+<code>y</code> and <code>z</code>vectors. Additionally,
+<code>magnitude = TRUE</code> will return an additional column with the
+vector’s magnitude, defined as the Euclidean norm of the vector
+components.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, z <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              Qx        Qy          Qz</span></span>
+<span><span class="co">#&gt; [1,]  0.5337762 0.5528572 -0.01500301</span></span>
+<span><span class="co">#&gt; [2,] -0.1751007 0.4348954 -0.01418512</span></span>
+<span></span>
+<span><span class="co"># NA's for z-component</span></span>
+<span><span class="fu"><a href="../reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, z <span class="op">=</span> <span class="va">top</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; Warning: Setting Qz values to NA for z above saturated aquifer level or below</span></span>
+<span><span class="co">#&gt; aquifer base</span></span>
+<span><span class="co">#&gt;              Qx        Qy Qz</span></span>
+<span><span class="co">#&gt; [1,]  0.5337762 0.5528572 NA</span></span>
+<span><span class="co">#&gt; [2,] -0.1751007 0.4348954 NA</span></span>
+<span></span>
+<span><span class="co"># as.grid</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, </span>
+<span>              x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span>, length <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, </span>
+<span>              y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="op">-</span><span class="fl">100</span>, length <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
+<span>              z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">15</span>, length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>              as.grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  num [1:4, 1:5, 1:3, 1:3] 0.534 0.353 0.223 0.113 0.303 ...</span></span>
+<span><span class="co">#&gt;  - attr(*, "dimnames")=List of 4</span></span>
+<span><span class="co">#&gt;   ..$ : NULL</span></span>
+<span><span class="co">#&gt;   ..$ : NULL</span></span>
+<span><span class="co">#&gt;   ..$ : NULL</span></span>
+<span><span class="co">#&gt;   ..$ : chr [1:3] "Qx" "Qy" "Qz"</span></span>
+<span></span>
+<span><span class="co"># magnitude</span></span>
+<span><span class="fu"><a href="../reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, z <span class="op">=</span> <span class="fl">15</span>, magnitude <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              Qx        Qy          Qz         Q</span></span>
+<span><span class="co">#&gt; [1,]  0.5337762 0.5528572 -0.01500301 0.7686307</span></span>
+<span><span class="co">#&gt; [2,] -0.1751007 0.4348954 -0.01418512 0.4690367</span></span></code></pre></div>
+<p>Similar functions exist for the Darcy flux
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+(<code>darcy())</code> and the average linear flow velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+(<code><a href="../reference/flow.html">velocity()</a></code>). The latter uses the aquifer porosity value
+set in the <code>aem</code> object. Additionally, a linear retardation
+coefficient
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+can be specified (defaults to 1, i.e. no retardation), in which case the
+apparent velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>v</mi><mo>*</mo></msup><mo>=</mo><mi>v</mi><mi>/</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">v^*=v/R</annotation></semantics></math>
+is used instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="particle-traces">Particle traces<a class="anchor" aria-label="anchor" href="#particle-traces"></a>
 </h2>
+<p>Tracelines of particles can be computed using
+<code><a href="../reference/tracelines.html">tracelines()</a></code>. It tracks particle locations through the
+velocity field as computed by <code><a href="../reference/flow.html">velocity()</a></code>. By connecting the
+locations of a particle in time, the traceline can be drawn. Besides the
+<code>aem</code> object, the initial <code>x</code>, <code>y</code> and
+<code>z</code> locations of each particle needs to be specified. When
+the initial <code>z</code> location is above the water-table or aquifer
+top, or below the aquifer base, it is reset the its nearest boundary
+with a warning. The <code>times</code> argument is a numeric vector with
+the requested tracking times. The output is a list of matrices (one for
+each particle) with columns <code>time</code>, <code>x</code>,
+<code>y</code> and <code>z</code> containing the tracking time and
+particle location. The final locations represents the particle’s
+location at the final time or, when it terminated prematurely (e.g. by
+entering a draining element), at the time of termination. A single
+matrix of all final particle locations can be obtained from the output
+of <code><a href="../reference/tracelines.html">tracelines()</a></code> by using the <code><a href="../reference/tracelines.html">endpoints()</a></code>
+function. The output of <code><a href="../reference/tracelines.html">tracelines()</a></code> can be plotted using
+<code><a href="../reference/tracelines.html">plot.tracelines()</a></code>. The endpoints can simply be added by
+using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code>.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># calculate particle traces</span></span>
+<span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
+<span>                   x0 <span class="op">=</span> <span class="op">-</span><span class="fl">600</span>, </span>
+<span>                   y0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>                   z0 <span class="op">=</span> <span class="va">top</span>, </span>
+<span>                   times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="co"># 10 steps per year for 5 years</span></span>
+<span><span class="co">#&gt; Warning: Resetting z0 values above saturated aquifer level or below aquifer</span></span>
+<span><span class="co">#&gt; base</span></span>
+<span></span>
+<span><span class="co"># plot head contours</span></span>
+<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add tracelines</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># compute and plot endpoints</span></span>
+<span><span class="va">endp</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">endpoints</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">endp</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p><img src="overview_files/figure-html/tracelines-1.png" width="672" style="display: block; margin: auto auto auto 0;"></p>
+<p>Backward particle tracking can be performed by setting
+<code>forward = FALSE</code>. A retardation coefficient <code>R</code>
+can be passed to <code><a href="../reference/flow.html">velocity()</a></code>. When plotting the tracelines
+with <code><a href="../reference/tracelines.html">plot.tracelines()</a></code> markers at a specified time interval
+can be placed by setting <code>marker</code> to the desired interval,
+e.g. every 180 days.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">backward</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
+<span>                      x0 <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, </span>
+<span>                      y0 <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>, </span>
+<span>                      z <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                      forward <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                      R <span class="op">=</span> <span class="fl">1.5</span>, </span>
+<span>                      times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot backward particle trace with a marker every 3 years</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">backward</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, marker <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">365</span><span class="op">)</span></span></code></pre></div>
+<p><img src="overview_files/figure-html/backward-tracking-1.png" width="672" style="display: block; margin: auto auto auto 0;"></p>
+<p>Lastly, particle tracking can be computationally expensive. Since the
+particles are independent of one another, the computations are <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel" class="external-link">embarrassingly
+parallel</a> however. Therefore, when setting the <code>ncores</code>
+argument in <code><a href="../reference/tracelines.html">tracelines()</a></code> larger than zero, the computations
+are distributed among <code>ncores</code> cores using the
+<code>parallel</code> package, one of the base packages when installing
+R.</p>
+<p>For more examples of particle tracking, see the
+<code><a href="../reference/tracelines.html">tracelines()</a></code> documentation.</p>
 <div class="section level3">
 <h3 id="capture-zone">Capture zone<a class="anchor" aria-label="anchor" href="#capture-zone"></a>
 </h3>
+<p>A special case of traceline computations is the capture zone
+delineation for a well. These can be computed using
+<code><a href="../reference/capzone.html">capzone()</a></code>, which is a thin wrapper around
+<code><a href="../reference/tracelines.html">tracelines()</a></code> which places <code>npar</code> evenly
+distributed particles around the well radius and tracks them back in
+time using <code>dt</code> time-step lengths until the requested capture
+time is reached. By plotting the tracelines, the capture zone can be be
+delineated. Initial particle locations are placed at the aquifer base
+(<code>zstart</code> argument). Different results may be obtained in
+models with vertical flow components by placing initial particle
+locations at different <code>z</code> coordinates. By increasing the
+amount of particles or decreasing the time-step length.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 5 year capture zone of well A</span></span>
+<span><span class="va">cpA_5</span> <span class="op">=</span> <span class="fu"><a href="../reference/capzone.html">capzone</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wA</span>, time <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, npar <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot capture zone output</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cpA_5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="overview_files/figure-html/capzone-1.png" width="672" style="display: block; margin: auto auto auto 0;"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="additional-functionality">Additional functionality<a class="anchor" aria-label="anchor" href="#additional-functionality"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
