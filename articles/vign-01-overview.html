@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>An overview • raem</title>
+<title>Overview • raem</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="An overview">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Overview">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/vign-01-overview.html">An overview</a></li>
+<li><a class="dropdown-item" href="../articles/vign-01-overview.html">Overview</a></li>
     <li><a class="dropdown-item" href="../articles/vign-02-export-spatial.html">Exporting spatial data</a></li>
   </ul>
 </li>
@@ -56,7 +56,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>An overview</h1>
+      <h1>Overview</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/cneyens/raem/blob/main/vignettes/vign-01-overview.Rmd" class="external-link"><code>vignettes/vign-01-overview.Rmd</code></a></small>
@@ -86,11 +86,11 @@ groundwater flow problem, the AEM method is relatively fast and easy to
 use and does not suffer from numerical instability or mass balance
 errors. Furthermore, it does not require a spatial grid, making it
 relatively scale-insensitive as results can be obtained at any scale or
-zoom-level and feature geometries and level of detail are not dependent
-on a a priori chosen model resolution. The AEM method is therefore often
-used for screening studies, (a first step in) regional groundwater flow
-modeling, as a “computational laboratory” for checking hypotheses, and
-as an educational tool.</p>
+zoom-level and feature geometries do not depend on an a priori chosen
+model resolution. The AEM method is therefore often used for screening
+studies, regional groundwater flow modeling (often as a first step), as
+a “computational laboratory” for checking hypotheses, and as an
+educational tool.</p>
 <p>Flow is governed by the Dupuit-Forchheimer approximation which states
 that the hydraulic head
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
@@ -112,11 +112,11 @@ is assumed be of infinite lateral extent, have a horizontal top and base
 and is homogeneous at the scale of interest. In practice, these
 assumptions appear to be (approximately) valid for cases when the
 groundwater system under consideration is much wider than it is thick,
-which is the case for most regional aquifer systems where flow is
-predominantly horizontal. In areas where there is considerable vertical
-flow, such as near groundwater divides or near partially penetrating
-wells or streams, or when the flow system has a similar thickness and
-width
+which is the case for most regional aquifer systems. Groundwater flow in
+those systems is predominantly horizontal.</p>
+<p>In areas where there is considerable vertical flow, such as near
+groundwater divides or near partially penetrating wells or streams, or
+when the flow system has a similar thickness and width
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi><mo>&lt;</mo><mspace width="0.222em"></mspace><mo>≈</mo><mn>3</mn><mo>*</mo><mi>t</mi><mi>h</mi><mi>i</mi><mi>c</mi><mi>k</mi><mi>n</mi><mi>e</mi><mi>s</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">width\lt~\approx 3*thickness</annotation></semantics></math>),
 the Dupuit-Forchheimer approximation is not valid and a different method
 should be used, e.g. a numerical model of the 3D groundwater flow
@@ -124,7 +124,7 @@ equation.</p>
 <div class="section level3">
 <h3 id="solution-method">Solution method<a class="anchor" aria-label="anchor" href="#solution-method"></a>
 </h3>
-<p>For steady-state, single layer Dupuit-Forchheimer flow in the
+<p>For steady-state, single-layer Dupuit-Forchheimer flow in the
 horizontal plane, the governing equation is:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>h</mi></mrow><mrow><mi>∂</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac><mo>+</mo><mi>T</mi><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>h</mi></mrow><mrow><mi>∂</mi><msup><mi>y</mi><mn>2</mn></msup></mrow></mfrac><mo>+</mo><mi>N</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
 T\frac{\partial^2{h}}{\partial x^2} + T\frac{\partial^2{h}}{\partial y^2} + N = 0
@@ -152,15 +152,17 @@ a sink/source term
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L/T]</annotation></semantics></math>.</p>
 <p>When the aquifer is phreatic, the saturated thickness
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
-is variable, which renders the flow equation non-linear when solving for
+is variable and depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>,
+which renders the flow equation non-linear when solving for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>.
 Therefore, the discharge potential
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>3</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^3/T]</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Φ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>3</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\Phi~[L^3/T]</annotation></semantics></math>
 is introduced so that the governing flow equation becomes:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>Φ</mi></mrow><mrow><mi>∂</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac><mo>+</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>Φ</mi></mrow><mrow><mi>∂</mi><msup><mi>y</mi><mn>2</mn></msup></mrow></mfrac><mo>+</mo><mi>N</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
 \frac{\partial^2{\Phi}}{\partial x^2} + \frac{\partial^2{\Phi}}{\partial y^2} + N = 0
 </annotation></semantics></math></p>
-<p>which is a linear equation and can be solved for
+<p>which is a linear equation that can be solved for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>.
 The resulting hydraulic heads can then be computed from:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>Φ</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>k</mi><mi>H</mi><mi>h</mi><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>k</mi><msup><mi>H</mi><mn>2</mn></msup><mo>+</mo><mi>k</mi><mi>H</mi><msub><mi>z</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="right" style="text-align: right"><mspace width="2.0em"></mspace><mi>h</mi><mo>≥</mo><msub><mi>z</mi><mi>t</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>Φ</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>k</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>h</mi><mo>−</mo><msub><mi>z</mi><mi>b</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mtd><mtd columnalign="right" style="text-align: right"><mspace width="2.0em"></mspace><msub><mi>z</mi><mi>b</mi></msub><mo>&lt;</mo><mi>h</mi><mo>&lt;</mo><msub><mi>z</mi><mi>t</mi></msub></mtd></mtr></mtable><annotation encoding="application/x-tex">
@@ -173,19 +175,19 @@ The resulting hydraulic heads can then be computed from:</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>t</mi></msub><annotation encoding="application/x-tex">z_t</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>b</mi></msub><annotation encoding="application/x-tex">z_b</annotation></semantics></math>
-the aquifer top and base elevation
+the aquifer top and bottom elevation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L]</annotation></semantics></math>,
 respectively.</p>
 <p>In addition to the discharge potential
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>,
 there exists a stream function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>3</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^3/T]</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ψ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>3</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\Psi~[L^3/T]</annotation></semantics></math>
 which is defined as a function that is constant along streamlines and
 whose difference between two points is equal to the amount of water
 flowing between those two points. By convention, the stream function
 increases to the right when looking in the direction of flow. It can be
-used to visualize the amount of flow in a groundwater system and is used
-in constructing flow nets.
+used to visualize the amount of flow in a groundwater system, e.g. when
+constructing flow nets.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>
 is only defined for the Laplace equation, i.e. when
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
@@ -231,9 +233,10 @@ i.e. the
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 components of the discharge vector
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>2</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^2/T]</annotation></semantics></math>,
-which represent the amount of flow in the aquifer integrated along the
-vertical (or the first derivate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>2</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">Q~[L^2/T]</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+represent the amount of flow in the aquifer integrated along the
+vertical (or, alternatively, the first derivative of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 in the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
@@ -243,11 +246,12 @@ directions). The vertical component
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>z</mi></msub><annotation encoding="application/x-tex">Q_z</annotation></semantics></math>
 is determined from mass balance considerations as discussed above. The
 Darcy flux
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L/T]</annotation></semantics></math>
-(also called <em>specific discharge</em>) is computed as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">q~[L/T]</annotation></semantics></math>
+(also called <em>specific discharge</em> or <em>Darcy velocity</em>) is
+computed as
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mi>/</mi><mi>H</mi></mrow><annotation encoding="application/x-tex">Q/H</annotation></semantics></math>.
 The average linear flow velocity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L/T]</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">v~[L/T]</annotation></semantics></math>
 is computed as
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mi>/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">q/n</annotation></semantics></math>
 with
@@ -259,14 +263,14 @@ terms of
 as well as for the complex discharge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>.
 An element has one or more free parameters, e.g. the discharge for a
-well element. These parameters may be user-specified or need to be
-computed from other conditions, as is the case in head-specified
-elements. The parameters are specified at so called <em>collocation
-points</em> or <em>control points</em>. Since the solution for a given
-unknown element parameter depends on the results of all other elements,
-the complete system of equations needs to be solved simultaneously for
-all unknown parameters. This is done by setting up the flow equations at
-the collocation points in a matrix form of
+well element. These parameters may be user-specified or are a priori
+unknown, in which case they need to be computed from other conditions,
+e.g. a specified head. The parameters are specified at so called
+<em>collocation points</em> or <em>control points</em>. Since the
+solution for a given unknown element parameter depends on the results of
+all other elements, the complete system of equations needs to be solved
+simultaneously for all unknown parameters. This is done by setting up
+the flow equations at the collocation points in a matrix form of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>x</mi><mo>=</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">Ax=b</annotation></semantics></math>,
 which is then solved for the unknown parameter vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.
@@ -296,9 +300,10 @@ is referred to <a href="https://www.haitjema.com/ModelingofGroundwaterFlow6312.p
 </h2>
 <p>An overview of the elements available in <code>raem</code> is
 provided. You can specify as many elements as you like, but keep in mind
-that the solution matrix increases in size for every element parameter.
-Currently, every element in <code>raem</code> only supplied one
-parameter to the solution matrix.</p>
+that the solution matrix increases in size for every unkown element
+parameter. Currently, every head-specified element in <code>raem</code>
+supplies one unknown parameter to the solution matrix. Other elements
+only have user-specified parameters.</p>
 <p>To create an AEM model with <code>raem</code>, first we need load
 <code>raem</code> and specify the aquifer parameters. The porosity value
 is only required by the <code><a href="../reference/tracelines.html">tracelines()</a></code> function when tracking
@@ -328,23 +333,23 @@ coordinate of the well and the pumping rate
 can also be specified (default is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.3</mn><annotation encoding="application/x-tex">0.3</annotation></semantics></math>
 length units). Inside the well annulus as defined by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>r</mi><mi>w</mi></msub><annotation encoding="application/x-tex">r_w</annotation></semantics></math>,
-the solution is undefined. When a output variable is requested inside
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>w</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">r_w,</annotation></semantics></math>
+the solution is undefined. When an output variable is requested inside
 this circle, its location is projected onto the nearest point on the
 outer annulus. It is assumed that the well is screened across the full
 (saturated) aquifer.</p>
-<p>Here, we specify two extrations wells. We then create the model with
-a call to <code><a href="../reference/aem.html">aem()</a></code>. This function needs the aquifer parameters
-as well as the elements. You can supply the elements individually or put
-them into a single <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>. The <code><a href="../reference/aem.html">aem()</a></code> function
-automatically solves the system of equations by calling
-<code><a href="../reference/aem.html">solve.aem()</a></code>. Not that by default, the model has a variable
-saturated thickness. You can change this by setting
+<p>As an example, we specify two extraction wells. We then create the
+model with a call to <code><a href="../reference/aem.html">aem()</a></code>. This function needs the aquifer
+parameters as well as the elements. You can supply the elements
+individually or put them into a single <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>. The
+<code><a href="../reference/aem.html">aem()</a></code> function automatically solves the system of equations
+by calling <code><a href="../reference/aem.html">solve.aem()</a></code>. Not that by default, the model has
+a variable saturated thickness. You can change this by setting
 <code>type = 'confined'</code> to force the model to use a constant
 saturated thickness, set equal to the aquifer thickness. This may be
 useful when you want to force the system of equations to remain linear
 when elements with a hydraulic resistance are supplied (see below).</p>
-<p>Finally, we set-up the contouring grid and plot the head contours in
+<p>Finally, we create the contouring grid and plot the head contours in
 blue and the streamlines in orange using <code><a href="../reference/contours.html">contours()</a></code>. Note
 the ugly <em>branch cuts</em> (in AEM jargon) of the streamlines
 extending from the well centers towards the negative x-axis, which is an
@@ -353,15 +358,17 @@ artifact of contouring the stream function.</p>
 <code class="sourceCode R"><span><span class="va">w1</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">200</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>   </span>
 <span><span class="va">w2</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create the model. This automatically solves the system of equations</span></span>
+<span><span class="co"># create the model. This automatically solves the system of equations.</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span>k <span class="op">=</span> <span class="va">k</span>, top <span class="op">=</span> <span class="va">top</span>, base <span class="op">=</span> <span class="va">base</span>, n <span class="op">=</span> <span class="va">n</span>, <span class="va">w1</span>, <span class="va">w2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># set-up the contouring grid and plot head contours and streamline </span></span>
+<span><span class="co"># set-up the contouring grid </span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">600</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">300</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot head contours and streamlines</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, drawlabels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, variable <span class="op">=</span> <span class="st">'streamfunction'</span>, col <span class="op">=</span> <span class="st">'orange'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, drawlabels <span class="op">=</span> <span class="cn">TRUE</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, variable <span class="op">=</span> <span class="st">'streamfunction'</span>, col <span class="op">=</span> <span class="st">'orange'</span>,</span>
+<span>         nlevels <span class="op">=</span> <span class="fl">20</span>, drawlabels <span class="op">=</span> <span class="cn">TRUE</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/well-1.png" width="672"></p>
 <div class="section level4">
 <h4 id="head-specified-well">Head-specified well<a class="anchor" aria-label="anchor" href="#head-specified-well"></a>
@@ -371,8 +378,7 @@ a supplied discharge rate, the hydraulic head remains fixed at the well
 location. By doing so, the element parameter of the well, which is its
 discharge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>,
-needs to be calculated by the matrix solution as described above under
-<a href="#solution-method">Solution method</a>. Such an element can be
+needs to be calculated by the solution procedure described above (<a href="#solution-method">Solution method</a>). Such an element can be
 created by <code><a href="../reference/headwell.html">headwell()</a></code>. In addition to the well coordinates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>w</mi></msub><annotation encoding="application/x-tex">x_w</annotation></semantics></math>
 and
@@ -398,27 +404,29 @@ the <code>resistance</code> argument.</p>
 <p>When solving for unknown element parameters, a <em>reference
 point</em> needs to be added to the model as created by the
 <code><a href="../reference/constant.html">constant()</a></code> function. This is explained in more detail below
-in the paragraph on <a href="#reference-point">Reference point</a>.</p>
+(<a href="#reference-point">Reference point</a>).</p>
 <p>In the example, two head-specified wells are created. The second well
-has its control point at a different location. We can get the computed
-discharge of the elements by accessing the <code>parameter</code> value
-of the element in the list of elements inside the model object.
-Alternatively (and easier) is to use
+has its control point at a different location than the well location. We
+can get the computed discharge of the elements by accessing the
+<code>parameter</code> value of the element in the list of elements
+inside the model object. An alternative (and easier) method is to use
 <code><a href="../reference/element_discharge.html">element_discharge()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<code class="sourceCode R"><span><span class="co"># create head-specified wells</span></span>
 <span><span class="va">hw1</span> <span class="op">=</span> <span class="fu"><a href="../reference/headwell.html">headwell</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">300</span>, yw <span class="op">=</span> <span class="fl">100</span>, hc <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="va">hw2</span> <span class="op">=</span> <span class="fu"><a href="../reference/headwell.html">headwell</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, yw <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, xc <span class="op">=</span> <span class="fl">0</span>, yc <span class="op">=</span> <span class="fl">0</span>, hc <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rf</span> <span class="op">=</span> <span class="fu"><a href="../reference/constant.html">constant</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, y <span class="op">=</span> <span class="fl">0</span>, h <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="co"># reference point</span></span>
+<span><span class="co"># create reference point element</span></span>
+<span><span class="va">rf</span> <span class="op">=</span> <span class="fu"><a href="../reference/constant.html">constant</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, y <span class="op">=</span> <span class="fl">0</span>, h <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">hw1</span>, <span class="va">hw2</span>, <span class="va">rf</span><span class="op">)</span> <span class="co"># create model</span></span>
+<span><span class="co"># create and solve model</span></span>
+<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">hw1</span>, <span class="va">hw2</span>, <span class="va">rf</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="co"># plot head contours</span></span></code></pre></div>
+<span><span class="co"># plot head contours</span></span>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/headwell-1.png" width="672"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># computed discharge of hw1</span></span>
+<code class="sourceCode R"><span><span class="co"># computed discharge of hw1</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">elements</span><span class="op">$</span><span class="va">hw1</span><span class="op">$</span><span class="va">parameter</span></span>
 <span><span class="co">#&gt; [1] 292.5061</span></span>
 <span></span>
@@ -435,23 +443,24 @@ Alternatively (and easier) is to use
 <div class="section level3">
 <h3 id="reference-point">Reference point<a class="anchor" aria-label="anchor" href="#reference-point"></a>
 </h3>
-<p>When solving for unknown element parameters, a so-called reference
-point (or reference head) needs to be added to the model in order to
-have enough equations in the matrix formulation to solve all unknowns.
-This is a constant value which is added to all hydraulic head values. It
-can be created by the <code><a href="../reference/constant.html">constant()</a></code> function which needs an
+<p>When solving for unknown element parameters, a so-called
+<em>reference point</em> (or <em>reference head</em>) needs to be added
+to the model in order to have enough equations in the matrix formulation
+to solve for all unknowns. This is a constant value which is added to
+all hydraulic head values. It can be created by the
+<code><a href="../reference/constant.html">constant()</a></code> function which needs an
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 coordinate and the reference head
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>.
-It is of importance to understand that this reference point is not an
-actual aquifer feature, but a mathematical necessity. Therefore, its
-value and location should be chosen is such a way that it does not
-influence the results. In general, the reference point should be never
-be placed inside the zone of interest (called the <em>“near-field”</em>
-in AEM jargon). It should be placed in the far-field and given a
-“neutral” head value as to not induce unrealistic gradients towards the
+It is important to understand that this reference point is not an actual
+aquifer feature, but a mathematical necessity. Therefore, its value and
+location should be chosen is such a way that it does not influence the
+results too much. In general, the reference point should be never be
+placed inside the zone of interest (called the <em>“near-field”</em> in
+AEM jargon). It should be placed in the far-field and given a “neutral”
+head value as to not induce unrealistic gradients towards the
 near-field.</p>
 </div>
 <div class="section level3">
@@ -464,25 +473,30 @@ streams or canals. The parameter of a line-sink is its <em>strength</em>
 which is defined as the total flow to/from the line-sink per unit length
 of the line
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>L</mi><mn>2</mn></msup><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L^2/T]</annotation></semantics></math>
-(positive going into the line-sink). The parameter is defined at the
-center of the line-sink.</p>
-<p>Here, a single line-sinks is created using <code><a href="../reference/linesink.html">linesink()</a></code>.
-In addition to the start- and endpoints of the line-sink
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>−</mo><msub><mi>y</mi><mn>0</mn></msub><mi>a</mi><mi>n</mi><mi>d</mi><msub><mi>x</mi><mn>1</mn></msub><mo>−</mo><msub><mi>y</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_0-y_0 and x_1-y_1</annotation></semantics></math>,
-the strength parameters needs to be specified. Optionally, a width can
-also be specified, which for a strength-specified line-sink is only in
-particle tracking to determine when the particles have reached the
+(positive going into the line-sink). The parameter is defined at a
+collocation point at the center of the line-sink.</p>
+<p>Here, a single line-sink is created using <code><a href="../reference/linesink.html">linesink()</a></code>. In
+addition to the start- and endpoints of the line-sink
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>−</mo><msub><mi>y</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">x_0-y_0</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>−</mo><msub><mi>y</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_1-y_1</annotation></semantics></math>,
+the strength parameter needs to be specified. Optionally, a width can
+also be specified, which for a strength-specified line-sink is only used
+in particle tracking to determine when the particles have reached the
 line.</p>
-<p>Note that the locations elements with line and point geometries
-(except the reference point) can be plotted using the
-<code><a href="../reference/aem.html">plot.aem()</a></code> method. Individual element locations can also be
-plotted by calling <code><a href="../reference/aem.html">plot.element()</a></code> on the respective element
-object.</p>
+<p>Note that the locations of all elements in an <code>aem</code> object
+with line and point geometries (except the reference point) can be
+plotted using the <code><a href="../reference/aem.html">plot.aem()</a></code> method. Individual element
+locations can always be plotted by calling <code><a href="../reference/aem.html">plot.element()</a></code>
+on the respective element object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ls</span> <span class="op">=</span> <span class="fu"><a href="../reference/linesink.html">linesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, y0 <span class="op">=</span> <span class="fl">200</span>, x1 <span class="op">=</span> <span class="fl">200</span>, y1 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, sigma <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># create line-sink</span></span>
+<span><span class="va">ls</span> <span class="op">=</span> <span class="fu"><a href="../reference/linesink.html">linesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, y0 <span class="op">=</span> <span class="fl">200</span>, x1 <span class="op">=</span> <span class="fl">200</span>, y1 <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, sigma <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># create and solve the model</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">ls</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot head contours and line-sink geometry</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, drawlabels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/line-sink-1.png" width="672"></p>
@@ -490,11 +504,11 @@ object.</p>
 <h4 id="head-specified-line-sink">Head-specified line-sink<a class="anchor" aria-label="anchor" href="#head-specified-line-sink"></a>
 </h4>
 <p>Although useful, strength-specified line-sinks are not often used in
-modeling applications. Head-specified line-sinks on the other hand are
-widely used in AEM studies, where they represent streams and other
-surface water features with known water levels. The absence of a
-numerical grid makes it straightforward to implement complex stream
-geometries.</p>
+modeling applications since the discharge into/from streams is often
+unknown. Head-specified line-sinks on the other hand are widely used in
+AEM studies, where they represent streams and other surface water
+features with known water levels. The absence of a numerical grid makes
+it straightforward to implement complex stream geometries.</p>
 <p>A head-specified line-sink can be created with
 <code><a href="../reference/headlinesink.html">headlinesink()</a></code>. In addition to the start- and endpoints of
 the line, the hydraulic head at the collocation point needs to be given,
@@ -510,24 +524,25 @@ and thus a varying head. As such, a single stream with a constant head
 should be approximated with many short line-sinks. Other AEM codes may
 use higher order line elements where the strength can vary along the
 line.</p>
-<p>The line-sink is assumed to be in full hydraulic contact with the
-aquifer and fully penetrates the entire saturated depth. Alternatively,
-a hydraulic resistance may be specified between the aquifer and the
-line-sink (default is no resistance) representing the effect of a
-low-permeability connection due to e.g. streambed sediments.
-Additionally, the <code>width</code> parameter is used in conjunction
-with the <code>resistance</code> parameter to calculate the hydraulic
+<p>By default, the line-sink is assumed to be in full hydraulic contact
+with the aquifer and fully penetrates the entire saturated depth.
+Alternatively, a hydraulic resistance may be specified between the
+aquifer and the line-sink representing the effect of a low-permeability
+connection due to e.g. fine-grained streambed sediments. Additionally,
+the <code>width</code> parameter is used in conjunction with the
+<code>resistance</code> parameter to calculate the hydraulic
 conductance. When the model has a variably-saturated thickness
 (<code>type = 'variable'</code> in <code><a href="../reference/aem.html">aem()</a></code>; default), this
-renders the system of equations non-linear. As such, an iteration-loop
-is entered, with a default of 10 iterations (see also <code><a href="../reference/aem.html">aem()</a></code>
-and <code><a href="../reference/aem.html">solve.aem()</a></code>). As discussed above, setting
-<code>type = 'confined'</code> keeps the system linear.</p>
+renders the system of equations non-linear. As such, an outer iteration
+loop is entered, with a default of 10 iterations (see also
+<code><a href="../reference/aem.html">aem()</a></code> and <code><a href="../reference/aem.html">solve.aem()</a></code>). As discussed above,
+setting <code>type = 'confined'</code> keeps the system linear and in
+which case no outer iteration is needed.</p>
 <p>As a general rule of thumb, line-sinks in the far-field should not
-have resistance or width values specified, so they act as constant-head
-boundaries which fix the head in the far-field. Line-sinks in the
-near-field on the other hand should have resistances and widths
-specified to give a more realistic presentation of the surface water
+have resistance or width values specified, so that they act as
+constant-head boundaries which fix the head in the far-field. Line-sinks
+in the near-field on the other hand should have resistances and widths
+specified to give a more realistic representation of the surface water
 features in that area.</p>
 <p>As an example, a single stream is modeled with several head-specified
 line-sinks. They are bundled in a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> element and
@@ -535,15 +550,15 @@ supplied to the model. A reference point also needs to be added.
 Information on the iteration loop is printed by setting
 <code>verbose = TRUE</code> in the <code><a href="../reference/aem.html">aem()</a></code> call.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">el</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rf <span class="op">=</span> <span class="va">rf</span><span class="op">)</span>  <span class="co"># list of elements</span></span>
-<span><span class="va">nls</span> <span class="op">=</span> <span class="fl">10</span>      <span class="co"># number of line-sinks</span></span>
+<code class="sourceCode R"><span><span class="va">el</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rf <span class="op">=</span> <span class="va">rf</span><span class="op">)</span> <span class="co"># list of elements</span></span>
+<span><span class="va">nls</span> <span class="op">=</span> <span class="fl">10</span>           <span class="co"># number of line-sinks</span></span>
 <span><span class="va">xls</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">700</span>, <span class="fl">700</span>, length <span class="op">=</span> <span class="va">nls</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># x-coordinates of line-sinks</span></span>
 <span><span class="va">yls</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">25</span>, <span class="fl">25</span><span class="op">)</span>, <span class="va">nls</span><span class="op">)</span>, <span class="op">-</span><span class="fl">25</span><span class="op">)</span>     <span class="co"># y-coordinates of line-sinks</span></span>
-<span><span class="va">hc</span> <span class="op">=</span> <span class="fl">7</span>        <span class="co"># stream level, m</span></span>
-<span><span class="va">res</span> <span class="op">=</span> <span class="fl">2</span>       <span class="co"># hydraulic resistance of streambed, days</span></span>
-<span><span class="va">width</span> <span class="op">=</span> <span class="fl">3</span>     <span class="co"># stream width, m</span></span>
+<span><span class="va">hc</span> <span class="op">=</span> <span class="fl">7</span>             <span class="co"># stream level, m</span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fl">2</span>            <span class="co"># hydraulic resistance of streambed, days</span></span>
+<span><span class="va">width</span> <span class="op">=</span> <span class="fl">3</span>          <span class="co"># stream width, m</span></span>
 <span></span>
+<span><span class="co"># create head-specified line-sinks</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">nls</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">hl</span> <span class="op">=</span> <span class="fu"><a href="../reference/headlinesink.html">headlinesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="va">xls</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, </span>
 <span>                    x1 <span class="op">=</span> <span class="va">xls</span><span class="op">[</span><span class="va">i</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>, </span>
@@ -555,7 +570,7 @@ Information on the iteration loop is printed by setting
 <span>  <span class="va">el</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'hls_'</span>, <span class="va">i</span><span class="op">)</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="va">hl</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span></span>
+<span><span class="co"># create and solve model</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">el</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Solving analytic element model ... </span></span>
 <span><span class="co">#&gt;  Non-linear model with 11 elements and 11 unknowns </span></span>
@@ -572,6 +587,7 @@ Information on the iteration loop is printed by setting
 <span><span class="co">#&gt;   Iteration 10 </span></span>
 <span><span class="co">#&gt; Model solved</span></span>
 <span></span>
+<span><span class="co"># plot head contours</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/headlinesink-1.png" width="672"></p>
@@ -584,30 +600,36 @@ Information on the iteration loop is printed by setting
 bottom of the model. They provide a constant flux and can be used to
 simulate areal recharge or leakage through the aquifer base. The
 circular geometry is sufficient as long as the disc covers the entire
-area of interest and the heads inside are fixed by e.g. head-specified
-line-sinks. When area-sinks are provided, the stream function no longer
-gives reasonable values, as explained above. Supplying flow by using an
-area-sink introduces vertical flow components, besides the ones that
-occur due to the curvature of the water-table when variably-saturated
-thickness is used in the <code><a href="../reference/aem.html">aem()</a></code> model.</p>
+area of interest and the heads inside are fixed by head-specified
+elements. The parameter is the specified flux value <code>N</code>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L/T]</annotation></semantics></math>,
+defined at the center of the area-sink and applied uniformly across the
+entire disc.</p>
+<p>Use of an area-sink introduces vertical flow components, besides the
+ones that occur due to the curvature of the water-table in a phreatic
+aquifer when variably saturated thickness is used in the
+<code><a href="../reference/aem.html">aem()</a></code> model. Note that the stream function does not give
+reasonable results inside the area covered by an area-sink, as discussed
+above.</p>
 <p>The <code><a href="../reference/areasink.html">areasink()</a></code> function requires the center coordinates
-of the circular area-sink, as well as the uniform flux value
-<code>N</code>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>L</mi><mi>/</mi><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[L/T]</annotation></semantics></math>
+of the circular area-sink, as well as the flux value <code>N</code>
 (positive is into the aquifer, note that this differs from other
 elements) and a radius <code>R</code>. The value of <code>R</code> is
 not important as long as its large enough so that the disc covers the
 modeled region. By default, the area-sink is placed at the aquifer top,
 which can be overridden by setting <code>location = 'base'</code>.</p>
 <p>To illustrate to effect of the area-sink providing areal recharge at
-the aquifer top, areal recharge is added to the example of the
-head-specified line-sinks above by use of an area-sink. Note the
-increased head values compared to the case without recharge.</p>
+the aquifer top, the example of the head-specified line-sinks above is
+used and an area-sink is added. Note the increased head values compared
+to the case without recharge.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">el</span><span class="op">$</span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># add to list of elements</span></span>
+<code class="sourceCode R"><span><span class="co"># add area-sink to list of elements</span></span>
+<span><span class="va">el</span><span class="op">$</span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> </span>
 <span></span>
+<span><span class="co"># create and solve the model</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">el</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot head contours</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/area-sink-1.png" width="672"></p>
@@ -620,29 +642,32 @@ calculated by solving the system of equations. Since the head is
 specified at the center of the disc, the computed flux is calculated
 from the head gradient at this location and applied over the entire
 circular area. This is for example useful to simulate ponds or wetlands
-with limited areal extend. For large lakes on the other hand, a better
+with limited areal extent. For large lakes on the other hand, a better
 representation would be by specifying a series of head-specified
-line-sinks along the lake boundary, as that is where the most of the
+line-sinks along the lake boundary, as that is where most of the
 groundwater interaction occurs for such type of surface water
 features.</p>
 <p>The <code><a href="../reference/headareasink.html">headareasink()</a></code> functions creates a head-specified
 area-sink element. Similar to <code><a href="../reference/headlinesink.html">headlinesink()</a></code>, the
 <code>resistance</code> parameter determines the hydraulic resistance
 between the aquifer and the specified head. This also renders the system
-of equations non-linear with respect to hydraulic head when the aquifer
-has a variable saturated thickness (<code>type = 'variable'</code> in
-<code><a href="../reference/aem.html">aem()</a></code>).</p>
+of equations non-linear when the aquifer has a variable saturated
+thickness (<code>type = 'variable'</code> in <code><a href="../reference/aem.html">aem()</a></code>).</p>
 <p>To illustrate it’s use, leakage from a small, circular pond is
-simulated using a head-specified area-sink using the model with two
+simulated using a head-specified area-sink applied to the model with two
 extraction wells.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">has</span> <span class="op">=</span> <span class="fu"><a href="../reference/headareasink.html">headareasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, </span>
+<code class="sourceCode R"><span><span class="co"># create head-specified area-sink</span></span>
+<span><span class="va">has</span> <span class="op">=</span> <span class="fu"><a href="../reference/headareasink.html">headareasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>                   y <span class="op">=</span> <span class="fl">200</span>, </span>
 <span>                   h <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>                   resistance <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                   R <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># create and solve model</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">w1</span>, <span class="va">w2</span>, <span class="va">rf</span>, <span class="va">has</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot head contours and area-sink geometry</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">has</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">'grey50'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/headareasink-1.png" width="672"></p>
@@ -653,24 +678,28 @@ extraction wells.</p>
 </h3>
 <p>A uniform-flow element may be created which models a specified
 background flow in the aquifer. In general, the regional gradient should
-be modeled by including head-specified surface water features in the
-model which will induce a certain background flow in the model. For
-certain applications however, it may be useful to specify this uniform
-background flow explicitly, e.g. when the regional system is included
-fully in the model. This can be done by using
-<code><a href="../reference/uniformflow.html">uniformflow()</a></code>. It requires a transmissivity value which
-remains constant in the entire domain (i.e. has a constant saturated
-thickness), a gradient which is positive in the direction of flow and an
-angle in degrees counterclockwise from the positive x-axis:</p>
+be modeled by including head-specified surface water elements which will
+induce a background flow in the model. For certain applications however,
+it may be useful to specify this uniform background flow explicitly,
+e.g. when the regional system is not fully included in the model. This
+can be done by using <code><a href="../reference/uniformflow.html">uniformflow()</a></code>. It requires a
+transmissivity value which remains constant in the entire domain
+(i.e. has a constant saturated thickness), a gradient which is positive
+in the direction of flow, and an angle in degrees counterclockwise from
+the positive x-axis:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">uf</span> <span class="op">=</span> <span class="fu"><a href="../reference/uniformflow.html">uniformflow</a></span><span class="op">(</span>TR <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span>, gradient <span class="op">=</span> <span class="fl">0.001</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># create uniform flow element</span></span>
+<span><span class="va">uf</span> <span class="op">=</span> <span class="fu"><a href="../reference/uniformflow.html">uniformflow</a></span><span class="op">(</span>TR <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span>, gradient <span class="op">=</span> <span class="fl">0.001</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># create model</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">uf</span>, <span class="va">rf</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot head contours</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add stream lines</span></span>
-<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, variable <span class="op">=</span> <span class="st">'streamfunction'</span>, col <span class="op">=</span> <span class="st">'orange'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, variable <span class="op">=</span> <span class="st">'streamfunction'</span>, </span>
+<span>         col <span class="op">=</span> <span class="st">'orange'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/uniformflow-1.png" width="672"></p>
 </div>
 </div>
@@ -687,21 +716,20 @@ stream is divided into segments which are shorter near well A. The sandy
 aquifer has an approximately horizontal bottom elevation, and can be
 considered homogeneous for the scale and purpose of the modeling
 exercise. Areal recharge is simulated using an area-sink.</p>
-<p>The use of <code><a href="../reference/add_element.html">add_element()</a></code> to set-up the model, which can
-be used to add elements to an initially empty model. After all the
-elements are added, the model needs to be solved with an explicit call
-to <code><a href="../reference/aem.html">solve.aem()</a></code>. This is useful for setting-up elements in a
-loop or pipeline.</p>
+<p>The use of <code><a href="../reference/add_element.html">add_element()</a></code> is shown, which can be used to
+add elements to an initially empty model. After all the elements are
+added, the model needs to be solved with an explicit call to
+<code><a href="../reference/aem.html">solve.aem()</a></code>. This is useful for adding elements to a model
+in a loop or pipeline.</p>
 <p>A major benefit of the AEM approach is that no numerical grid of the
 domain is needed. This allows to zoom in on an area of interest without
 altering or rerunning the model, as illustrated by the plot of the inset
-area around well A.</p>
+area around well A (green rectangular in the first plot).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># aquifer parameters ----</span></span>
+<code class="sourceCode R"><span><span class="co"># aquifer parameters ----</span></span>
 <span><span class="va">k</span> <span class="op">=</span> <span class="fl">15</span>          <span class="co"># hydraulic conductivity, m/d</span></span>
 <span><span class="va">top</span> <span class="op">=</span> <span class="fl">20</span>        <span class="co"># aquifer top elevation, m</span></span>
-<span><span class="va">base</span> <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>      <span class="co"># aquifer base elevation, m</span></span>
+<span><span class="va">base</span> <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>      <span class="co"># aquifer bottom elevation, m</span></span>
 <span><span class="va">n</span> <span class="op">=</span> <span class="fl">0.2</span>         <span class="co"># aquifer effective porosity, -</span></span>
 <span></span>
 <span><span class="va">N</span> <span class="op">=</span> <span class="fl">0.2</span> <span class="op">/</span> <span class="fl">365</span>   <span class="co"># areal recharge rate, m/d</span></span>
@@ -726,11 +754,12 @@ area around well A.</p>
 <span></span>
 <span><span class="co"># create model ----</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># first, create model with no elements</span></span>
-<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">wA</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">wA</span><span class="op">)</span> <span class="op">|&gt;</span>        <span class="co"># add elements</span></span>
 <span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">wB</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">as</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/add_element.html">add_element</a></span><span class="op">(</span><span class="va">rf</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># add head-specified line-sinks in a loop</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">nls</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">hls</span> <span class="op">=</span> <span class="fu"><a href="../reference/headlinesink.html">headlinesink</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>                     x1 <span class="op">=</span> <span class="fl">0</span>, </span>
@@ -746,7 +775,7 @@ area around well A.</p>
 <span><span class="co"># solve</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># view contours ----</span></span>
+<span><span class="co"># view head contours ----</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">.3</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -758,7 +787,7 @@ area around well A.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="op">-</span><span class="fl">500</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, <span class="fl">150</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'forestgreen'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># add gridlines to plot</span></span>
 <span></span>
-<span><span class="co"># view inset near well 1</span></span>
+<span><span class="co"># view inset near well A</span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
@@ -766,7 +795,7 @@ area around well A.</p>
 <span>         xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'y (m)'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># add control points of line-sinks</span></span>
+<span><span class="co"># plot control points of line-sinks</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">m</span><span class="op">$</span><span class="va">elements</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">'linesink'</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">i</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, use.widths <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -782,30 +811,23 @@ area around well A.</p>
 and <code>y</code> location can be obtained with <code><a href="../reference/state-variables.html">heads()</a></code>
 (not to be confused by <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">utils::head()</a></code>). The <code>x</code>
 and <code>y</code> arguments are recycled. By setting
-<code>as.grid = TRUE</code>, a grid of head values are obtained using
-the <code>x</code> and <code>y</code> values are marginal grid
+<code>as.grid = TRUE</code>, a grid of head values is obtained by using
+the <code>x</code> and <code>y</code> values as marginal grid
 vectors:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 17.46994 17.44073</span></span>
 <span></span>
 <span><span class="co"># as a grid</span></span>
-<span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="op">-</span><span class="fl">100</span>, length <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">100</span>, <span class="fl">60</span><span class="op">)</span>, as.grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="op">-</span><span class="fl">100</span>, length <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">100</span>, <span class="fl">60</span><span class="op">)</span>, as.grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]</span></span>
-<span><span class="co">#&gt; [1,] 17.78207 17.70940 17.63107 17.55047 17.48084 17.44350 17.43825 17.44333</span></span>
-<span><span class="co">#&gt; [2,] 17.74401 17.66212 17.56563 17.44512 17.29941 17.26533 17.34286 17.39425</span></span>
-<span><span class="co">#&gt; [3,] 17.71670 17.63429 17.53604 17.40516 17.19598 17.16617 17.31563 17.38514</span></span>
-<span><span class="co">#&gt; [4,] 17.69875 17.62685 17.55069 17.47016 17.39946 17.37545 17.39735 17.42647</span></span>
-<span><span class="co">#&gt; [5,] 17.67895 17.62224 17.57265 17.52943 17.49648 17.47968 17.47826 17.48408</span></span>
-<span><span class="co">#&gt; [6,] 17.63721 17.59972 17.58070 17.56684 17.55505 17.54664 17.54203 17.53953</span></span>
-<span><span class="co">#&gt;          [,9]    [,10]</span></span>
-<span><span class="co">#&gt; [1,] 17.44499 17.43943</span></span>
-<span><span class="co">#&gt; [2,] 17.41979 17.42836</span></span>
-<span><span class="co">#&gt; [3,] 17.41904 17.43322</span></span>
-<span><span class="co">#&gt; [4,] 17.44648 17.45568</span></span>
-<span><span class="co">#&gt; [5,] 17.48945 17.49047</span></span>
-<span><span class="co">#&gt; [6,] 17.53660 17.53121</span></span></code></pre></div>
-<p>Similar functions exists for the discharge potential
+<span><span class="co">#&gt; [1,] 17.78207 17.68756 17.58476 17.48926 17.44123 17.44028 17.44520 17.43943</span></span>
+<span><span class="co">#&gt; [2,] 17.74401 17.63636 17.50049 17.31946 17.27566 17.36877 17.41453 17.42836</span></span>
+<span><span class="co">#&gt; [3,] 17.71670 17.60830 17.46713 17.23316 17.19484 17.35159 17.41181 17.43322</span></span>
+<span><span class="co">#&gt; [4,] 17.69875 17.60562 17.50487 17.40761 17.37671 17.41047 17.44189 17.45568</span></span>
+<span><span class="co">#&gt; [5,] 17.67895 17.60743 17.54704 17.50030 17.47868 17.48040 17.48826 17.49047</span></span>
+<span><span class="co">#&gt; [6,] 17.63721 17.59317 17.57253 17.55656 17.54577 17.54085 17.53762 17.53121</span></span></code></pre></div>
+<p>Similar functions exist for the discharge potential
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 (<code><a href="../reference/state-variables.html">potential()</a></code>), the complex potential
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
@@ -823,18 +845,18 @@ values at the points along the profile line and plot:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xprofile</span>, <span class="va">hprofile</span>, type <span class="op">=</span> <span class="st">'l'</span>, xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'head (m)'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vign-01-overview_files/figure-html/cross-section-plot-1.png" width="75%"></p>
+<p><img src="vign-01-overview_files/figure-html/cross-section-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>The components of the discharge vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
 are obtained from an <code>aem</code> object with the
 <code><a href="../reference/flow.html">discharge()</a></code> function at any <code>x</code>, <code>y</code>
 and <code>z</code> coordinate. Values are positive with increasing axis
-values. When the specified <code>z</code> coordinate is above the
+value. When the specified <code>z</code> coordinate is above the
 water-table or aquifer top, or below the aquifer base, <code>NA's</code>
 are returned for the <code>z</code> component with a warning. Similar to
 the state variables discussed above, <code>as.grid</code> can be set to
 <code>TRUE</code> to obtain an output grid for the given <code>x</code>,
-<code>y</code> and <code>z</code>vectors. Additionally,
+<code>y</code> and <code>z</code>vectors. Furthermore, setting
 <code>magnitude = TRUE</code> will return an additional column with the
 vector’s magnitude, defined as the Euclidean norm of the vector
 components.</p>
@@ -889,22 +911,26 @@ is used instead of
 </h2>
 <p>Tracelines of particles can be computed using
 <code><a href="../reference/tracelines.html">tracelines()</a></code>. It tracks particle locations through the flow
-field by numerically integrating the velocity vector computed by
+field by numerically integrating the velocity vector calculated by
 <code><a href="../reference/flow.html">velocity()</a></code>. By connecting the locations of a particle in
 time, its traceline can be drawn. Besides the <code>aem</code> object,
 the initial <code>x</code>, <code>y</code> and <code>z</code> locations
-of each particle needs to be specified. When the initial <code>z</code>
+of each particle need to be specified. When the initial <code>z</code>
 location is above the water-table or aquifer top, or below the aquifer
-base, it is reset the its nearest boundary with a warning. The
+base, it is reset to its nearest boundary with a warning. The
 <code>times</code> argument is a numeric vector with the requested
-tracking times. The output is a list of matrices (one for each particle)
-with columns <code>time</code>, <code>x</code>, <code>y</code> and
-<code>z</code> containing the tracking time and particle location. The
-final locations represents the particle’s location at the final time or,
-when it terminated prematurely (e.g. by entering a draining element), at
-the time of termination. A single matrix of all final particle locations
-can be obtained from the output of <code><a href="../reference/tracelines.html">tracelines()</a></code> by using
-the <code><a href="../reference/tracelines.html">endpoints()</a></code> function. The output of
+tracking times.</p>
+<p>The output is a list of matrices (one for each particle) with columns
+<code>time</code>, <code>x</code>, <code>y</code> and <code>z</code>,
+containing the tracking time and particle location. The final row
+represents the particle’s location at the final time or, when it
+terminated prematurely, at the time of termination. Termination occurs
+when a particle enters a well’s inner radius, crosses a draining
+line-sink, or exits through leakage at the aquifer bottom or top, which
+is represented by the water-table in a phreatic aquifer.</p>
+<p>A single matrix of all final particle locations can be obtained from
+the output of <code><a href="../reference/tracelines.html">tracelines()</a></code> by using the
+<code><a href="../reference/tracelines.html">endpoints()</a></code> function. The output of
 <code><a href="../reference/tracelines.html">tracelines()</a></code> can be plotted using
 <code><a href="../reference/tracelines.html">plot.tracelines()</a></code>. The endpoints can simply be added by
 using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code>.</p>
@@ -918,14 +944,14 @@ using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-lin
 <span><span class="co">#&gt; Warning: Resetting z0 values above saturated aquifer level or below aquifer</span></span>
 <span><span class="co">#&gt; base</span></span>
 <span></span>
-<span><span class="co"># plot head contours</span></span>
+<span><span class="co"># plot head contours and element geometries</span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># add tracelines</span></span>
+<span><span class="co"># add tracelines to plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># compute and plot endpoints</span></span>
@@ -935,11 +961,12 @@ using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-lin
 <p>Backward particle tracking can be performed by setting
 <code>forward = FALSE</code>. A retardation coefficient <code>R</code>
 can be passed to <code><a href="../reference/flow.html">velocity()</a></code>. When plotting the tracelines
-with <code><a href="../reference/tracelines.html">plot.tracelines()</a></code> markers at a specified time interval
-can be placed by setting <code>marker</code> to the desired interval,
-e.g. every 180 days.</p>
+with <code><a href="../reference/tracelines.html">plot.tracelines()</a></code>, markers at a specified time
+interval can be placed by setting <code>marker</code> to the desired
+interval, e.g. every 180 days.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">backward</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
+<code class="sourceCode R"><span><span class="co"># compute backward particle tracking with retardation</span></span>
+<span><span class="va">backward</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
 <span>                      x0 <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, </span>
 <span>                      y0 <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>, </span>
 <span>                      z <span class="op">=</span> <span class="fl">10</span>, </span>
@@ -947,6 +974,7 @@ e.g. every 180 days.</p>
 <span>                      R <span class="op">=</span> <span class="fl">1.5</span>, </span>
 <span>                      times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot the head contours and element geometries</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -959,29 +987,29 @@ parallel</a> however. <code><a href="../reference/tracelines.html">tracelines()<
 computation of the particle traces by setting the <code>ncores</code>
 argument larger than zero. This distributes the calculations among
 <code>ncores</code> cores using the <code>parallel</code> package, one
-of the base packages when installing R.</p>
+of the base packages in R.</p>
 <p>For more examples of particle tracking, see the
 <code><a href="../reference/tracelines.html">tracelines()</a></code> documentation.</p>
 <div class="section level3">
 <h3 id="capture-zone">Capture zone<a class="anchor" aria-label="anchor" href="#capture-zone"></a>
 </h3>
-<p>A special case of traceline computations is the capture zone
-delineation for a well. These can be computed using
-<code><a href="../reference/capzone.html">capzone()</a></code>, which is a thin wrapper around
-<code><a href="../reference/tracelines.html">tracelines()</a></code> which places <code>npar</code> evenly
-distributed particles around the well radius and tracks them back in
-time using <code>dt</code> time-step lengths until the requested capture
-time is reached. By plotting the tracelines, the capture zone can be be
-delineated. Initial particle locations are placed at the aquifer base
-(<code>zstart</code> argument). Different results may be obtained in
-models with vertical flow components by placing initial particle
-locations at different <code>z</code> coordinates. By increasing the
-amount of particles or decreasing the time-step length, a sharper
-delineation of the capture zone envelop may be obtained.</p>
+<p>A special case of particle tracking is the capture zone delineation
+for a well. This can be done using <code><a href="../reference/capzone.html">capzone()</a></code>, a thin
+wrapper around <code><a href="../reference/tracelines.html">tracelines()</a></code> which places <code>npar</code>
+evenly distributed particles around the well radius and tracks them back
+in time using <code>dt</code> time-step lengths until the requested
+capture time is reached. By plotting the tracelines, the capture zone
+can be be delineated. Initial particle locations are placed at the
+aquifer base (<code>zstart</code> argument). Different results may be
+obtained in models with vertical flow components by placing initial
+particle locations at different <code>z</code> coordinates. By
+increasing the amount of particles or decreasing the time-step length, a
+sharper delineation of the capture zone envelope may be obtained.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 5 year capture zone of well A</span></span>
 <span><span class="va">cpA_5</span> <span class="op">=</span> <span class="fu"><a href="../reference/capzone.html">capzone</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wA</span>, time <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, npar <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span>
 <span></span>
+<span><span class="co"># plot head contours and element geometries</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -994,7 +1022,7 @@ delineation of the capture zone envelop may be obtained.</p>
 <h2 id="additional-functionality">Additional functionality<a class="anchor" aria-label="anchor" href="#additional-functionality"></a>
 </h2>
 <p><code>raem</code> contains some additional functionality which may be
-useful in some cases. These are listed below; examples are shown in the
+useful in some cases. These are listed below. Examples are shown in the
 respective documentation pages.</p>
 <ul>
 <li>
@@ -1014,8 +1042,8 @@ amount of flow is in a certain direction besides parallel to the
 <code>x</code>, <code>y</code> and <code>z</code> axes.</li>
 <li>
 <code><a href="../reference/flow_through_line.html">flow_through_line()</a></code> calculates the amount of flow
-passing through a specified straight line by numerically integrating the
-requested flow variable
+passing through a straight line by numerically integrating the requested
+flow variable
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
 or
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>).</li>
@@ -1038,7 +1066,7 @@ introduction to analytic element modeling, and analytical groundwater
 flow modeling in general. <code>raem</code> started out as an R
 implementation of some of the material in that book. Readers familiar
 with Bakker &amp; Post (2022), or with its author’s other work, will
-therefore see some familiarity with the naming conventions and general
+therefore find some familiarity with the naming conventions and general
 coding structure in <code>raem</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

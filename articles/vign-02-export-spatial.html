@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/vign-01-overview.html">An overview</a></li>
+<li><a class="dropdown-item" href="../articles/vign-01-overview.html">Overview</a></li>
     <li><a class="dropdown-item" href="../articles/vign-02-export-spatial.html">Exporting spatial data</a></li>
   </ul>
 </li>
@@ -66,9 +66,10 @@
     
     
 <p><code>raem</code> does not contain functions to export output to
-spatial data formats such as vector data or rasters. This vignette
-describes a way to create spatial data from <code>raem</code> output in
-R using other packages.</p>
+spatial data formats such as vector data or rasters. Other R packages do
+have this functionality however. This vignette describes a way to create
+spatial data from <code>raem</code> output using other,
+well-established, packages.</p>
 <div class="section level2">
 <h2 id="create-an-example-aem-model">Create an example AEM model<a class="anchor" aria-label="anchor" href="#create-an-example-aem-model"></a>
 </h2>
@@ -149,7 +150,7 @@ feature geometry column in a <code>sf</code> simple feature object.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">isolines_sf</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-02-export-spatial_files/figure-html/export-vector-1.png" width="672"></p>
 <p>To export the <code>sf</code> object to disk, the <code>sf</code>
-package provides the <code><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">write_sf()</a></code>:</p>
+package provides the <code><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">write_sf()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># export as shapefile</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">write_sf</a></span><span class="op">(</span><span class="va">isolines_sf</span>, <span class="st">'isolines.shp'</span><span class="op">)</span></span></code></pre></div>
@@ -158,13 +159,14 @@ package provides the <code><a href="https://r-spatial.github.io/sf/reference/st_
 <h2 id="exporting-as-spatial-raster">Exporting as spatial raster<a class="anchor" aria-label="anchor" href="#exporting-as-spatial-raster"></a>
 </h2>
 <p>To create and export output as a spatial raster object such as a
-GeoTIFF, the <a href="https://rspatial.github.io/terra/" class="external-link">terra</a> can
-be used. This package is the replacement of the older, widely popular <a href="https://github.com/rspatial/raster" class="external-link">raster</a> package. Similar to
-the creation of a spatial vector object, a grid of values for the
-variable of interest (here hydraulic head) needs to be specified.
-Optionally, the origin coordinates can be given to georeference the
-output. The extent of the raster needs to be specified explicitly from
-the range of the marginal grid vectors.</p>
+GeoTIFF, the <a href="https://rspatial.github.io/terra/" class="external-link">terra</a>
+package can be used. This package is the replacement of the older,
+widely popular <a href="https://github.com/rspatial/raster" class="external-link">raster</a>
+package. Similar to the creation of a spatial vector object, a grid of
+values for the variable of interest (here hydraulic head) needs to be
+specified. Optionally, the origin coordinates can be given to
+georeference the output. The extent of the raster needs to be specified
+explicitly from the range of the marginal grid vectors.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
