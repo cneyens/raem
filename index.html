@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Analytic Element Modeling of Steady Single-Layer Groundwater Flow">
-<meta name="description" content="Analytic element modeling of steady-state single-layer groundwater flow under the Dupuit-Forchheimer assumption. Elements such as wells, area-sinks and line-sinks can be placed arbitrarily. The hydraulic head and discharge vector, as well as other state- and flow-variables, can be computed at any location in the field. Tracelines can be computed numerically in three dimensions.">
-<meta property="og:description" content="Analytic element modeling of steady-state single-layer groundwater flow under the Dupuit-Forchheimer assumption. Elements such as wells, area-sinks and line-sinks can be placed arbitrarily. The hydraulic head and discharge vector, as well as other state- and flow-variables, can be computed at any location in the field. Tracelines can be computed numerically in three dimensions.">
+<meta name="description" content="Analytic element modeling of steady-state single-layer groundwater flow under the Dupuit-Forchheimer assumption. Elements such as wells, area-sinks and line-sinks can be placed at arbitrary locations. The hydraulic head and discharge vector, as well as other state- and flow-variables, can be computed at any location in the flow field. Tracelines can be computed numerically in three dimensions.">
+<meta property="og:description" content="Analytic element modeling of steady-state single-layer groundwater flow under the Dupuit-Forchheimer assumption. Elements such as wells, area-sinks and line-sinks can be placed at arbitrary locations. The hydraulic head and discharge vector, as well as other state- and flow-variables, can be computed at any location in the flow field. Tracelines can be computed numerically in three dimensions.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,8 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/export-spatial.html">Exporting spatial data</a></li>
-    <li><a class="dropdown-item" href="articles/overview.html">An overview</a></li>
+<li><a class="dropdown-item" href="articles/vign-01-overview.html">An overview</a></li>
+    <li><a class="dropdown-item" href="articles/vign-02-export-spatial.html">Exporting spatial data</a></li>
   </ul>
 </li>
       </ul>
@@ -74,14 +74,16 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cneyens/raem" class="external-link">raem</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">k</span> <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="va">top</span> <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="va">base</span> <span class="op">=</span> <span class="fl">0</span></span>
-<span><span class="va">n</span> <span class="op">=</span> <span class="fl">0.2</span></span>
+<span><span class="co"># aquifer parameters ----</span></span>
+<span><span class="va">k</span> <span class="op">=</span> <span class="fl">10</span>     <span class="co"># hydraulic conductivity, m/d</span></span>
+<span><span class="va">top</span> <span class="op">=</span> <span class="fl">10</span>   <span class="co"># aquifer top elevation, m</span></span>
+<span><span class="va">base</span> <span class="op">=</span> <span class="fl">0</span>   <span class="co"># aquifer base elevation, m</span></span>
+<span><span class="va">n</span> <span class="op">=</span> <span class="fl">0.2</span>    <span class="co"># aquifer porosity, -</span></span>
 <span></span>
-<span><span class="va">hr</span> <span class="op">=</span> <span class="fl">15</span> <span class="co"># head at reference point, above aquifer top</span></span>
-<span><span class="va">TR</span> <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span> <span class="co"># constant transmissivity of background flow</span></span>
+<span><span class="va">hr</span> <span class="op">=</span> <span class="fl">15</span>    <span class="co"># head at reference point, m</span></span>
+<span><span class="va">TR</span> <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span> <span class="co"># constant transmissivity of background flow, m2/d</span></span>
 <span></span>
+<span><span class="co"># create elements ----</span></span>
 <span><span class="va">uf</span> <span class="op">=</span> <span class="fu"><a href="reference/uniformflow.html">uniformflow</a></span><span class="op">(</span><span class="va">TR</span>, gradient <span class="op">=</span> <span class="fl">0.001</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">45</span><span class="op">)</span></span>
 <span><span class="va">rf</span> <span class="op">=</span> <span class="fu"><a href="reference/constant.html">constant</a></span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, yc <span class="op">=</span> <span class="fl">0</span>, hc <span class="op">=</span> <span class="va">hr</span><span class="op">)</span></span>
 <span><span class="va">w1</span> <span class="op">=</span> <span class="fu"><a href="reference/well.html">well</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">200</span>, yw <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
@@ -109,11 +111,16 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, <span class="st">'heads'</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-head-1.png" width="100%"></p>
-<p>Compute particle traces starting along <code>y = 200</code> at 20 intervals per year for 5 years and add to plot:</p>
+<p>Compute particle traces starting along <code>y = 200</code> at 20 intervals per year for 5 years and add to the plot:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, x0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">450</span>, <span class="fl">450</span>, <span class="fl">50</span><span class="op">)</span>, y0 <span class="op">=</span> <span class="fl">200</span>, z0 <span class="op">=</span> <span class="va">top</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">*</span><span class="fl">365</span>, <span class="fl">365</span><span class="op">/</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-traces-1.png" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>The package documentation can be found at <a href="https://cneyens.github.io/raem/" class="uri">https://cneyens.github.io/raem/</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -151,6 +158,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/cneyens/raem?branch=main" class="external-link"><img src="https://codecov.io/gh/cneyens/raem/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://CRAN.R-project.org/package=raem" class="external-link"><img src="https://www.r-pkg.org/badges/version/raem" alt="CRAN status"></a></li>
 </ul>
 </div>
 
