@@ -26,12 +26,17 @@ You can install the development version of `raem` from
 devtools::install_github("cneyens/raem")
 ```
 
+## Documentation
+
+The package documentation can be found at
+<https://cneyens.github.io/raem/>.
+
 ## Example
 
 Construct an analytic element model of an aquifer with uniform
 background flow, two extraction wells and a reference point.
 
-Specify the aquifer parameters and create elements:
+Specify the aquifer parameters and create the elements:
 
 ``` r
 library(raem)
@@ -39,11 +44,11 @@ library(raem)
 # aquifer parameters ----
 k = 10     # hydraulic conductivity, m/d
 top = 10   # aquifer top elevation, m
-base = 0   # aquifer base elevation, m
+base = 0   # aquifer bottom elevation, m
 n = 0.2    # aquifer porosity, -
 
 hr = 15    # head at reference point, m
-TR = k * (top - base) # constant transmissivity of background flow, m2/d
+TR = k * (top - base) # constant transmissivity of background flow, m^2/d
 
 # create elements ----
 uf = uniformflow(TR, gradient = 0.001, angle = -45)
@@ -55,11 +60,10 @@ w2 = well(xw = -200, yw = -150, Q = 400)
 Create the model. This automatically solves the system of equations.
 
 ``` r
-m = aem(k = k, top = top, base = base, n = n, 
-        uf, rf, w1, w2)
+m = aem(k = k, top = top, base = base, n = n, uf, rf, w1, w2)
 ```
 
-Find the head and discharge at two locations `x = -200, y = 200` and
+Find the head and discharge at two locations: `x = -200, y = 200` and
 `x = 100, y = 200`. Note that there are no vertical flow components in
 this model:
 
@@ -70,7 +74,7 @@ heads(m, x = c(-200, 100), y = 200)
 
 ``` r
 
-discharge(m, c(-200, 100), 200, z = top) # [L^2 / T]
+discharge(m, c(-200, 100), 200, z = top) # m^2/d
 #>              Qx         Qy Qz
 #> [1,] 0.15028815 -0.2923908  0
 #> [2,] 0.06041242 -0.3347206  0
@@ -97,13 +101,8 @@ Compute particle traces starting along `y = 200` at 20 intervals per
 year for 5 years and add to the plot:
 
 ``` r
-paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
+paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5 * 365, 365 / 20))
 plot(paths, add = TRUE, col = 'orange')
 ```
 
 <img src="man/figures/README-plot-traces-1.png" width="100%" />
-
-## Documentation
-
-The package documentation can be found at
-<https://cneyens.github.io/raem/>.
