@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>An Overview • raem</title>
+<title>An overview • raem</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="An Overview">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="An overview">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/overview.html">An Overview</a></li>
+<li><a class="dropdown-item" href="../articles/export-spatial.html">Exporting spatial data</a></li>
+    <li><a class="dropdown-item" href="../articles/overview.html">An overview</a></li>
   </ul>
 </li>
       </ul>
@@ -55,7 +56,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>An Overview</h1>
+      <h1>An overview</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/cneyens/raem/blob/main/vignettes/overview.Rmd" class="external-link"><code>vignettes/overview.Rmd</code></a></small>
@@ -427,7 +428,7 @@ Alternatively (and easier) is to use
 <span><span class="co">#&gt; 779.7601</span></span>
 <span></span>
 <span><span class="co"># check the head at the collocation points</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">0</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">0</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6 7</span></span></code></pre></div>
 </div>
 </div>
@@ -483,7 +484,7 @@ object.</p>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">ls</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span>, drawlabels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/line-sink-1.png" width="672"></p>
 <div class="section level4">
 <h4 id="head-specified-line-sink">Head-specified line-sink<a class="anchor" aria-label="anchor" href="#head-specified-line-sink"></a>
@@ -572,7 +573,7 @@ Information on the iteration loop is printed by setting
 <span><span class="co">#&gt; Model solved</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/headlinesink-1.png" width="672"></p>
 </div>
 </div>
@@ -608,7 +609,7 @@ increased head values compared to the case without recharge.</p>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">el</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/area-sink-1.png" width="672"></p>
 <div class="section level4">
 <h4 id="head-specified-area-sink">Head-specified area-sink<a class="anchor" aria-label="anchor" href="#head-specified-area-sink"></a>
@@ -643,7 +644,7 @@ extraction wells.</p>
 <span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span><span class="va">k</span>, <span class="va">top</span>, <span class="va">base</span>, <span class="va">n</span>, <span class="va">w1</span>, <span class="va">w2</span>, <span class="va">rf</span>, <span class="va">has</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">has</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">'grey50'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">has</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">'grey50'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/headareasink-1.png" width="672"></p>
 </div>
 </div>
@@ -753,7 +754,7 @@ area around well A.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">18.5</span>, <span class="fl">0.1</span><span class="op">)</span>, labcex <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>         xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'y (m)'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="op">-</span><span class="fl">500</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, <span class="fl">150</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'forestgreen'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># add gridlines to plot</span></span>
 <span></span>
@@ -768,8 +769,8 @@ area around well A.</p>
 <span><span class="co"># add control points of line-sinks</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">m</span><span class="op">$</span><span class="va">elements</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">i</span>, <span class="st">'linesink'</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">i</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, use.widths <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">i</span><span class="op">$</span><span class="va">xc</span>, <span class="va">i</span><span class="op">$</span><span class="va">yc</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> </span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">i</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, use.widths <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/lines.html" class="external-link">points</a></span><span class="op">(</span><span class="va">i</span><span class="op">$</span><span class="va">xc</span>, <span class="va">i</span><span class="op">$</span><span class="va">yc</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> </span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/example-model-1.png" width="75%"><img src="overview_files/figure-html/example-model-2.png" width="75%"></p>
@@ -821,7 +822,7 @@ values at the points along the profile line and plot:</p>
 <span><span class="va">hprofile</span> <span class="op">=</span> <span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="va">xprofile</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xprofile</span>, <span class="va">hprofile</span>, type <span class="op">=</span> <span class="st">'l'</span>, xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'head (m)'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xprofile</span>, <span class="va">hprofile</span>, type <span class="op">=</span> <span class="st">'l'</span>, xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'head (m)'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/cross-section-plot-1.png" width="75%"></p>
 <p>The components of the discharge vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
@@ -906,7 +907,7 @@ can be obtained from the output of <code><a href="../reference/tracelines.html">
 the <code><a href="../reference/tracelines.html">endpoints()</a></code> function. The output of
 <code><a href="../reference/tracelines.html">tracelines()</a></code> can be plotted using
 <code><a href="../reference/tracelines.html">plot.tracelines()</a></code>. The endpoints can simply be added by
-using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code>.</p>
+using <code><a href="https://rspatial.github.io/terra/reference/lines.html" class="external-link">points()</a></code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate particle traces</span></span>
 <span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
@@ -922,14 +923,14 @@ using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-lin
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add tracelines</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># compute and plot endpoints</span></span>
 <span><span class="va">endp</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">endpoints</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">endp</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/lines.html" class="external-link">points</a></span><span class="op">(</span><span class="va">endp</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/tracelines-1.png" width="672"></p>
 <p>Backward particle tracking can be performed by setting
 <code>forward = FALSE</code>. A retardation coefficient <code>R</code>
@@ -947,10 +948,10 @@ e.g. every 180 days.</p>
 <span>                      times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot backward particle trace with a marker every 3 years</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">backward</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, marker <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">365</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">backward</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, marker <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">365</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/backward-tracking-1.png" width="672"></p>
 <p>Lastly, particle tracking can be computationally expensive. Since the
 particles are independent of one another, the computations are <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel" class="external-link">embarrassingly
@@ -982,10 +983,10 @@ delineation of the capture zone envelop may be obtained.</p>
 <span><span class="va">cpA_5</span> <span class="op">=</span> <span class="fu"><a href="../reference/capzone.html">capzone</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wA</span>, time <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, npar <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot capture zone output</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cpA_5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cpA_5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="overview_files/figure-html/capzone-1.png" width="672"></p>
 </div>
 </div>
@@ -998,7 +999,7 @@ respective documentation pages.</p>
 <ul>
 <li>
 <code><a href="../reference/satthick.html">satthick()</a></code> calculates the saturated thickness of the
-aquifer at given <code>x</code> and <code>y</code> locations. For
+aquifer at given <code>x</code> and <code>y</code> locations. For a
 confined aquifer, the saturated thickness always equals the aquifer
 thickness.</li>
 <li>
