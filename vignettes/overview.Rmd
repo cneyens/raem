@@ -1,8 +1,8 @@
 ---
-title: "An Overview"
+title: "An overview"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{An Overview}
+  %\VignetteIndexEntry{An overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -447,11 +447,11 @@ plot(cpA_5, add = TRUE)
 
 `raem` contains some additional functionality which may be useful in some cases. These are listed below; examples are shown in the respective documentation pages.
 
--   `satthick()` calculates the saturated thickness of the aquifer at given `x` and `y` locations. For confined aquifer, the saturated thickness always equals the aquifer thickness.
+-   `satthick()` calculates the saturated thickness of the aquifer at given `x` and `y` locations. For a confined aquifer, the saturated thickness always equals the aquifer thickness.
 -   `dirflow()` computes a flow variable (discharge $Q$, Darcy flux $q$ or velocity $v$) in the direction of a given angle. This may be useful to see what the amount of flow is in a certain direction besides parallel to the `x`, `y` and `z` axes.
 -   `flow_through_line()` calculates the amount of flow passing through a specified straight line by numerically integrating the requested flow variable ($Q$ or $q$).
 -   As shown above, `element_discharge()` gets the computed discharge ($[L^3/T]$) for a given element or element type, positive discharge being out of the aquifer.
 
 # Further reading
 
-The references given at the end of [Introduction to analytic element modeling] are highly recommended for anyone wanting to learn more about analytic element modeling theory and its applications. [Bakker & Post (2022)](<https://www.routledge.com/Analytical-Groundwater-Modeling-Theory-and-Applications-using-Python/Bakker-Post/p/book/9781138029392>) is another book that serves as a great introduction to analytic element modeling, and analytical groundwater flow modeling in general. `raem` started out as an R implementation of some of the material in that book. Readers familiar with Bakker & Post (2022), or with its author's other work, will therefore see some familiarity with the naming conventions and general coding structure in `raem`.
+The references given at the end of [Introduction to analytic element modeling] are highly recommended for anyone wanting to learn more about analytic element modeling theory and its applications. [Bakker & Post (2022)](https://www.routledge.com/Analytical-Groundwater-Modeling-Theory-and-Applications-using-Python/Bakker-Post/p/book/9781138029392) is another book that serves as a great introduction to analytic element modeling, and analytical groundwater flow modeling in general. `raem` started out as an R implementation of some of the material in that book. Readers familiar with Bakker & Post (2022), or with its author's other work, will therefore see some familiarity with the naming conventions and general coding structure in `raem`.
