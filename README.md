@@ -6,6 +6,10 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cneyens/raem/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/cneyens/raem/branch/main/graph/badge.svg)](https://app.codecov.io/gh/cneyens/raem?branch=main)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/raem)](https://CRAN.R-project.org/package=raem)
 <!-- badges: end -->
 
 `raem` is an R package for modeling steady-state single-layer
@@ -32,14 +36,16 @@ Specify the aquifer parameters and create elements:
 ``` r
 library(raem)
 
-k = 10
-top = 10
-base = 0
-n = 0.2
+# aquifer parameters ----
+k = 10     # hydraulic conductivity, m/d
+top = 10   # aquifer top elevation, m
+base = 0   # aquifer base elevation, m
+n = 0.2    # aquifer porosity, -
 
-hr = 15 # head at reference point, above aquifer top
-TR = k * (top - base) # constant transmissivity of background flow
+hr = 15    # head at reference point, m
+TR = k * (top - base) # constant transmissivity of background flow, m2/d
 
+# create elements ----
 uf = uniformflow(TR, gradient = 0.001, angle = -45)
 rf = constant(xc = -1000, yc = 0, hc = hr)
 w1 = well(xw = 200, yw = 0, Q = 250)
@@ -88,7 +94,7 @@ plot(m, add = TRUE)
 <img src="man/figures/README-plot-head-1.png" width="100%" />
 
 Compute particle traces starting along `y = 200` at 20 intervals per
-year for 5 years and add to plot:
+year for 5 years and add to the plot:
 
 ``` r
 paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
@@ -96,3 +102,8 @@ plot(paths, add = TRUE, col = 'orange')
 ```
 
 <img src="man/figures/README-plot-traces-1.png" width="100%" />
+
+## Documentation
+
+The package documentation can be found at
+<https://cneyens.github.io/raem/>.

@@ -5,10 +5,10 @@ Authors@R:
     person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre"))
 Description: Analytic element modeling of steady-state single-layer
     groundwater flow under the Dupuit-Forchheimer assumption. Elements
-    such as wells, area-sinks and line-sinks can be placed arbitrarily.
-    The hydraulic head and discharge vector, as well as other state- and
-    flow-variables, can be computed at any location in the field.
-    Tracelines can be computed numerically in three dimensions.
+    such as wells, area-sinks and line-sinks can be placed at arbitrary 
+    locations. The hydraulic head and discharge vector, as well as other
+    state- and flow-variables, can be computed at any location in the
+    flow field. Tracelines can be computed numerically in three dimensions.
 License: MIT + file LICENSE
 URL: https://github.com/cneyens/raem, https://cneyens.github.io/raem/
 BugReports: https://github.com/cneyens/raem/issues

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The `raem` package provides a set of R functions to create an analytic element model of steady-state, single layer groundwater flow under the Dupuit-Forchheimer assumption. This vignette gives a short overview of the theory and basics behind analytic element modeling and how the `raem` package implements this in R.
+The `raem` package provides a set of R functions to create an analytic element model of steady-state, single-layer groundwater flow under the Dupuit-Forchheimer assumption. This vignette gives a short overview of the theory and basics behind analytic element modeling and how the `raem` package implements this in R.
 
 # Introduction to analytic element modeling
 
