@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-`raem` does not contain functions to export output to spatial data formats such as vector data or rasters. This vignette describes a way to create spatial data from `raem` output in R using other packages.
+`raem` does not contain functions to export output to spatial data formats such as vector data or rasters. Other R packages do have this functionality however. This vignette describes a way to create spatial data from `raem` output using other, well-established, packages.
 
 # Create an example AEM model
 
@@ -88,7 +88,7 @@ plot(isolines_sf)
 
 ```
 
-To export the `sf` object to disk, the `sf` package provides the `write_sf()`:
+To export the `sf` object to disk, the `sf` package provides the `write_sf()` function:
 
 ```{r export-shapefile, eval = FALSE}
 # export as shapefile
@@ -97,7 +97,7 @@ write_sf(isolines_sf, 'isolines.shp')
 
 # Exporting as spatial raster
 
-To create and export output as a spatial raster object such as a GeoTIFF, the [terra](https://rspatial.github.io/terra/) can be used. This package is the replacement of the older, widely popular [raster](https://github.com/rspatial/raster) package. Similar to the creation of a spatial vector object, a grid of values for the variable of interest (here hydraulic head) needs to be specified. Optionally, the origin coordinates can be given to georeference the output. The extent of the raster needs to be specified explicitly from the range of the marginal grid vectors.
+To create and export output as a spatial raster object such as a GeoTIFF, the [terra](https://rspatial.github.io/terra/) package can be used. This package is the replacement of the older, widely popular [raster](https://github.com/rspatial/raster) package. Similar to the creation of a spatial vector object, a grid of values for the variable of interest (here hydraulic head) needs to be specified. Optionally, the origin coordinates can be given to georeference the output. The extent of the raster needs to be specified explicitly from the range of the marginal grid vectors.
 
 ```{r terra, message = FALSE}
 library(terra)

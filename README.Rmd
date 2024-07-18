@@ -4,7 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r knitr-setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -76,11 +76,10 @@ Find the head and discharge at two locations: `x = -200, y = 200` and `x = 100, 
 
 ```{r find-head}
 heads(m, x = c(-200, 100), y = 200)
-
 discharge(m, c(-200, 100), 200, z = top) # m^2/d
 ```
 
-Plot head contours and element locations. First, specify the contouring grid:
+Plot the head contours and element locations. First, specify the contouring grid:
 
 ```{r set-grid}
 xg = seq(-500, 500, length = 100)
@@ -97,7 +96,12 @@ plot(m, add = TRUE)
 Compute particle traces starting along `y = 200` at 20 intervals per year for 5 years and add to the plot:
 
 ```{r plot-traces, dpi = 300}
-paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5 * 365, 365 / 20))
+paths = tracelines(m, 
+                   x0 = seq(-450, 450, 50), 
+                   y0 = 200, 
+                   z0 = top, 
+                   times = seq(0, 5 * 365, 365 / 20))
+
 plot(paths, add = TRUE, col = 'orange')
 ```
 

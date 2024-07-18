@@ -73,15 +73,14 @@ heads(m, x = c(-200, 100), y = 200)
 ```
 
 ``` r
-
 discharge(m, c(-200, 100), 200, z = top) # m^2/d
 #>              Qx         Qy Qz
 #> [1,] 0.15028815 -0.2923908  0
 #> [2,] 0.06041242 -0.3347206  0
 ```
 
-Plot head contours and element locations. First, specify the contouring
-grid:
+Plot the head contours and element locations. First, specify the
+contouring grid:
 
 ``` r
 xg = seq(-500, 500, length = 100)
@@ -101,7 +100,12 @@ Compute particle traces starting along `y = 200` at 20 intervals per
 year for 5 years and add to the plot:
 
 ``` r
-paths = tracelines(m, x0 = seq(-450, 450, 50), y0 = 200, z0 = top, times = seq(0, 5 * 365, 365 / 20))
+paths = tracelines(m, 
+                   x0 = seq(-450, 450, 50), 
+                   y0 = 200, 
+                   z0 = top, 
+                   times = seq(0, 5 * 365, 365 / 20))
+
 plot(paths, add = TRUE, col = 'orange')
 ```
 

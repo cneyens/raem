@@ -2,7 +2,7 @@ Package: raem
 Title: Analytic Element Modeling of Steady Single-Layer Groundwater Flow
 Version: 0.0.0.9000
 Authors@R: 
-    person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre"))
+    person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre", "cph"))
 Description: Analytic element modeling of steady-state single-layer
     groundwater flow under the Dupuit-Forchheimer assumption. Elements
     such as wells, area-sinks and line-sinks can be placed at arbitrary 
