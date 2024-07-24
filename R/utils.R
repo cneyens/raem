@@ -25,8 +25,9 @@
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'confined')
 #'
 #' satthick(m, x = c(-200, 0, 200), y = 0) # confined
-#' satthick(m, x = seq(-500, 500, length = 100),
-#'          y = seq(-250, 250, length = 100), as.grid = TRUE)
+#' s <- satthick(m, x = seq(-500, 500, length = 100),
+#'               y = seq(-250, 250, length = 100), as.grid = TRUE)
+#' str(s)
 #'
 #' mv <- aem(k = 10, top = 10, base = 0, n = 0.2, uf, rf, type = 'variable')
 #' satthick(mv, x = c(-200, 0, 200), y = 0) # variable

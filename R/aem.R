@@ -443,7 +443,7 @@ remove_element <- function(aem, name = NULL, type = NULL, solve = FALSE, ...) {
     istype <- vapply(aem$elements, function(i) inherits(i, type, which = TRUE), 0)
     id <- which(istype == 1)
     if(length(id) == 0) {
-      warning('No elements of type ', type, ' found', call. = FALSE)
+      warning('No elements of type "', type, '" found', call. = FALSE)
       return(aem)
     }
     aem$elements <- aem$elements[-id]

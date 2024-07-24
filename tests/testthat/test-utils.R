@@ -50,7 +50,11 @@ test_that('flow through line works', {
   l <- sqrt((x1-x0)^2 + (y1-y0)^2)
 
   expect_equal(-TR*i*l, flow_through_line(m, x0, y0, x1, y1)) # negative Q is to the SE in this case
+  expect_equal(setNames(c(0, -TR*i*l), c('positive', 'negative')),
+               flow_through_line(m, x0, y0, x1, y1, split = TRUE))
+
   expect_equal(flow_through_line(m, x0, y0, x1, y1), -flow_through_line(m, x1, y1, x0, y0))
+
 
 })
 
@@ -70,12 +74,24 @@ test_that('element_discharge works', {
   as <- areasink(xc = 0, yc = 0, N = 0.0005, R = 500)
   m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
 
-  expect_equal(element_discharge(m, type = 'well'), c('well' = w1$parameter + w2$parameter))
   expect_error(element_discharge(m)) # either name or type
   expect_error(element_discharge(m, name = 'hls', type = 'headlinesink')) # either name or type, not both
   expect_error(element_discharge(m, name = 'test')) # name not found
   expect_error(element_discharge(m, type = c('areasink', 'well'))) # only 1 type allowed
   expect_error(element_discharge(m, type = 'uniformflow')) # type should be allowed
-  expect_equal(element_discharge(m, name = 'uf'), c('uf' = 0))
+
+  expect_equal(element_discharge(m, name = 'uf'), c('uf' = 0)) # return zero for unsupported types
+
+  # area-sink
   expect_equal(element_discharge(m, type = 'areasink'), c('areasink' = -0.0005*pi*500^2))
+  expect_equal(element_discharge(m, name = 'as'), c('as' = -0.0005*pi*500^2))
+
+  # well
+  expect_equal(element_discharge(m, type = 'well'), c('well' = w1$parameter + w2$parameter))
+  expect_equal(element_discharge(m, 'w1'), c('w1' = w1$parameter))
+
+  # line-sink
+  expect_equal(element_discharge(m, type = 'headlinesink'), c('headlinesink' = m$elements$hls$parameter * hls$L))
+  expect_equal(element_discharge(m, 'hls'), c('hls' = m$elements$hls$parameter * hls$L))
+
 })

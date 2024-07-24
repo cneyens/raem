@@ -1,4 +1,32 @@
-test_that('aem keeps names of element list', {
+test_that('aem checks are working correctly', {
+
+  k <- 10
+  top <- 10; base <- 0
+  n <- 0.2
+
+  uf <- uniformflow(TR = 100, 0.001, 0)
+  w <- well(-100, 50, 250)
+  rf <- constant(-1000, 0, 10)
+  hw <- headwell(-50, 50, 9)
+  not_an_element <- list(x = 'A')
+
+  expect_error(aem(k, top, base, n, uf, w, rf, not_an_element), 'All supplied elements should be of class \'element\'')
+  expect_error(aem(k, top, base, n, list(uf, w, rf, not_an_element)), 'All supplied elements should be of class \'element\'')
+  expect_error(aem(k = uf, top, base, n, uf, w, rf), 'k should be numeric, not of class \'element\'')
+  expect_error(aem(k = "A", top, base, n, uf, w, rf), 'k should be numeric, not of class \'element\'')
+  expect_error(aem(k, top = uf, base, n, uf, w, rf), 'top should be numeric, not of class \'element\'')
+  expect_error(aem(k, top = 'A', base, n, uf, w, rf), 'top should be numeric, not of class \'element\'')
+  expect_error(aem(k, top , base = uf, n, uf, w, rf), 'base should be numeric, not of class \'element\'')
+  expect_error(aem(k, top, base = 'A', n, uf, w, rf), 'base should be numeric, not of class \'element\'')
+  expect_error(aem(k, top, base, n = uf, uf, w, rf), 'n should be numeric, not of class \'element\'')
+  expect_error(aem(k, top, base, n = 'A', uf, w, rf), 'n should be numeric, not of class \'element\'')
+
+  expect_error(aem(k, top, base, n, uf, w, rf, rf), 'Duplicate names in \'elements\' not allowed')
+  expect_error(aem(k, top, base, n, list('uf' = uf, 'well' = w, 'rf' = rf, 'rf' = rf)), 'Duplicate names in \'elements\' not allowed')
+
+})
+
+test_that('aem keeps names of element list and add_/remove_element works', {
 
   k <- 10
   top <- 10
@@ -25,8 +53,24 @@ test_that('aem keeps names of element list', {
   m <- aem(k, top, base, n, list(well = w, constant = rf, flow = uf))
   expect_named(m$elements, c('well', 'constant', 'flow'))
 
+  not_an_aem_or_element <- list(x = 'A')
+  m <- aem(k, top, base, n)
+  expect_error(add_element(not_an_aem_or_element, rf), "'aem' object should be of class aem")
+  expect_error(add_element(m, not_an_aem_or_element), "'element' object should be of class element")
+
+  m <- add_element(m, w) # add element to empty model
+  expect_named(m$elements, 'w')
+
+  expect_error(remove_element(not_an_aem_or_element, 'w'), "'aem' object should be of class aem")
+  expect_error(remove_element(m), 'Either "name" or "type" should be specified')
+
+  expect_warning(mnew <- remove_element(m, 'rfc'), 'Element with name "rfc" not found')
+  expect_warning(mnew2 <- remove_element(m, type = 'linesink'), 'No elements of type "linesink" found')
+  expect_equal(m, mnew)
+  expect_equal(m, mnew2)
+
   if(!(getRversion() >= '4.1.0')) {
-    skip('Skipping test because R version < 4.1.0 and does not have native pipe')
+    skip('Skipping test because R version < 4.1.0 does not have native pipe')
   }
 
   expect_warning(m <- aem(k, top, base, n, verbose = TRUE)) # empty aem model
@@ -44,7 +88,7 @@ test_that('aem keeps names of element list', {
   expect_named(m$elements, c('rf', 'well', paste('element', length(m$elements), sep = '_')))
 
   m <- m |>
-    add_element(w, name = 'well2') |>
+    add_element(w, name = 'well2', solve = TRUE) |>
     remove_element(name = 'rf')
   expect_named(m$elements, c('well', 'element_3', 'well2'))
 
@@ -75,8 +119,26 @@ test_that('when solving aem, matrix is not singular', {
   expect_error(aem(k, top, base, n, hls, hw, ls, uf, w))
   expect_no_error(aem(k, top, base, n, hls, hw, ls, uf, w, rf))
 
+  # error when duplicate unnamed elements are present
+  expect_error(aem(k, top, base, n, list(uf, w, rf, rf)))
+
 })
 
+test_that('setting verbose = TRUE works when solving model', {
+  k <- 10
+  top <- 10; base <- 0
+  n <- 0.2
+
+  uf <- uniformflow(TR = 100, 0.001, 0)
+  w <- well(-100, 50, 250)
+  rf <- constant(-1000, 0, 10)
+  hw <- headwell(-50, 50, 9)
+  ls <- linesink(20, -100, 20, 100, sigma = 5)
+  hls <- headlinesink(-20, -100, -20, 100, hc = 8, resistance = 2)
+
+  expect_output(aem(k, top, base, n, hls, rf, verbose = TRUE))
+
+})
 
 test_that('aem is exact for 2D flow with a well in uniform background flow', {
 

@@ -62,6 +62,14 @@ test_that('array names for flow are correct', {
   vg <- velocity(m, x, y, z, as.grid = TRUE, magnitude = TRUE)
   expect_equal(colnames(v), c('vx', 'vy', 'vz'))
   expect_equal(dimnames(vg)[[4]], c('vx', 'vy', 'vz', 'v'))
+
+  # discharge() never calls domega() with as.grid = TRUE
+  # and since darcy and velocity first call discharge(), they don't either
+  wg <- domega(m, x, y, as.grid = TRUE)
+  expect_null(dimnames(wg))
+  expect_equal(dim(wg), c(length(x), length(y)))
+
+
 })
 
 test_that('discharge from phreatic curvature is correct', {
