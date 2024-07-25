@@ -54,23 +54,23 @@ into the line-sink per unit length is computed by solving the corresponding <cod
 
 
 <dl><dt id="arg-x-">x0<a class="anchor" aria-label="anchor" href="#arg-x-"></a></dt>
-<dd><p>numeric, starting x location of line-sink</p></dd>
+<dd><p>numeric, starting x location of line-sink.</p></dd>
 
 
 <dt id="arg-y-">y0<a class="anchor" aria-label="anchor" href="#arg-y-"></a></dt>
-<dd><p>numeric, starting y location of line-sink</p></dd>
+<dd><p>numeric, starting y location of line-sink.</p></dd>
 
 
 <dt id="arg-x-">x1<a class="anchor" aria-label="anchor" href="#arg-x-"></a></dt>
-<dd><p>numeric, ending x location of line-sink</p></dd>
+<dd><p>numeric, ending x location of line-sink.</p></dd>
 
 
 <dt id="arg-y-">y1<a class="anchor" aria-label="anchor" href="#arg-y-"></a></dt>
-<dd><p>numeric, ending y location of line-sink</p></dd>
+<dd><p>numeric, ending y location of line-sink.</p></dd>
 
 
 <dt id="arg-hc">hc<a class="anchor" aria-label="anchor" href="#arg-hc"></a></dt>
-<dd><p>numeric, specified hydraulic head of the line-sink</p></dd>
+<dd><p>numeric, specified hydraulic head of the line-sink.</p></dd>
 
 
 <dt id="arg-resistance">resistance<a class="anchor" aria-label="anchor" href="#arg-resistance"></a></dt>
@@ -108,72 +108,8 @@ hydraulic head and iteration is required to solve the model.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">headlinesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, hc <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -75+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $resistance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "headlinesink" "linesink"     "element"     </span>
-<span class="r-in"><span><span class="fu">headlinesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, hc <span class="op">=</span> <span class="fl">10</span>, res <span class="op">=</span> <span class="fl">10</span>, width <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -75+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $resistance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "headlinesink" "linesink"     "element"     </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">hls</span> <span class="op">&lt;-</span> <span class="fu">headlinesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, hc <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hls</span> <span class="op">&lt;-</span> <span class="fu">headlinesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, hc <span class="op">=</span> <span class="fl">10</span>, resistance <span class="op">=</span> <span class="fl">10</span>, width <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -300,15 +300,13 @@ is referred to <a href="https://www.haitjema.com/ModelingofGroundwaterFlow6312.p
 </h2>
 <p>An overview of the elements available in <code>raem</code> is
 provided. You can specify as many elements as you like, but keep in mind
-that the solution matrix increases in size for every unkown element
+that the solution matrix increases in size for every unknown element
 parameter. Currently, every head-specified element in <code>raem</code>
 supplies one unknown parameter to the solution matrix. Other elements
-only have user-specified parameters.</p>
+only have user-specified (i.e. known) parameters.</p>
 <p>To create an AEM model with <code>raem</code>, first we need load
 <code>raem</code> and specify the aquifer parameters. The porosity value
-is only required by the <code><a href="../reference/tracelines.html">tracelines()</a></code> function when tracking
-particle paths (see the <a href="#particle-traces">Particle traces</a>
-section below).</p>
+is only required by <code><a href="../reference/flow.html">velocity()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cneyens/raem" class="external-link">raem</a></span><span class="op">)</span></span>
 <span></span>
@@ -340,28 +338,30 @@ outer annulus. It is assumed that the well is screened across the full
 (saturated) aquifer.</p>
 <p>As an example, we specify two extraction wells. We then create the
 model with a call to <code><a href="../reference/aem.html">aem()</a></code>. This function needs the aquifer
-parameters as well as the elements. You can supply the elements
-individually or put them into a single <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>. The
-<code><a href="../reference/aem.html">aem()</a></code> function automatically solves the system of equations
-by calling <code><a href="../reference/aem.html">solve.aem()</a></code>. Not that by default, the model has
-a variable saturated thickness. You can change this by setting
-<code>type = 'confined'</code> to force the model to use a constant
-saturated thickness, set equal to the aquifer thickness. This may be
-useful when you want to force the system of equations to remain linear
-when elements with a hydraulic resistance are supplied (see below).</p>
+parameters and the elements. You can supply the elements individually or
+put them into a single <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>. The <code><a href="../reference/aem.html">aem()</a></code>
+function automatically solves the system of equations by calling
+<code><a href="../reference/aem.html">solve.aem()</a></code>. By default, the model has a variable saturated
+thickness which depends on the calculated head. You can change this by
+setting <code>type = 'confined'</code> to force the model to use a
+constant saturated thickness, set equal to the aquifer thickness. This
+may be useful when you want to force the system of equations to remain
+linear when elements with a hydraulic resistance are supplied (see
+below).</p>
 <p>Finally, we create the contouring grid and plot the head contours in
 blue and the streamlines in orange using <code><a href="../reference/contours.html">contours()</a></code>. Note
 the ugly <em>branch cuts</em> (in AEM jargon) of the streamlines
 extending from the well centers towards the negative x-axis, which is an
 artifact of contouring the stream function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">w1</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">200</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>   </span>
+<code class="sourceCode R"><span><span class="co"># create well elements</span></span>
+<span><span class="va">w1</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">200</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>   </span>
 <span><span class="va">w2</span> <span class="op">=</span> <span class="fu"><a href="../reference/well.html">well</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, y <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create the model. This automatically solves the system of equations.</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/aem.html">aem</a></span><span class="op">(</span>k <span class="op">=</span> <span class="va">k</span>, top <span class="op">=</span> <span class="va">top</span>, base <span class="op">=</span> <span class="va">base</span>, n <span class="op">=</span> <span class="va">n</span>, <span class="va">w1</span>, <span class="va">w2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># set-up the contouring grid </span></span>
+<span><span class="co"># set up the contouring grid </span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">600</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">300</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
@@ -378,7 +378,7 @@ a supplied discharge rate, the hydraulic head remains fixed at the well
 location. By doing so, the element parameter of the well, which is its
 discharge
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>,
-needs to be calculated by the solution procedure described above (<a href="#solution-method">Solution method</a>). Such an element can be
+needs to be calculated by the solution procedure. Such an element can be
 created by <code><a href="../reference/headwell.html">headwell()</a></code>. In addition to the well coordinates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>w</mi></msub><annotation encoding="application/x-tex">x_w</annotation></semantics></math>
 and
@@ -400,7 +400,8 @@ equals
 As was the case with the well element above, a well radius can be
 specified for both the well and the control point. Lastly, a hydraulic
 resistance at the control point location can also be supplied through
-the <code>resistance</code> argument.</p>
+the <code>resistance</code> argument (see also the <a href="#head-specified-line-sink">Head-specified line-sink</a> section
+below).</p>
 <p>When solving for unknown element parameters, a <em>reference
 point</em> needs to be added to the model as created by the
 <code><a href="../reference/constant.html">constant()</a></code> function. This is explained in more detail below
@@ -433,11 +434,7 @@ inside the model object. An alternative (and easier) method is to use
 <span><span class="co"># computed discharge of hw2</span></span>
 <span><span class="fu"><a href="../reference/element_discharge.html">element_discharge</a></span><span class="op">(</span><span class="va">m</span>, name <span class="op">=</span> <span class="st">'hw2'</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      hw2 </span></span>
-<span><span class="co">#&gt; 779.7601</span></span>
-<span></span>
-<span><span class="co"># check the head at the collocation points</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">0</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 6 7</span></span></code></pre></div>
+<span><span class="co">#&gt; 779.7601</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -453,13 +450,13 @@ all hydraulic head values. It can be created by the
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
 coordinate and the reference head
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>h</mi><mi>c</mi></msub><annotation encoding="application/x-tex">h_c</annotation></semantics></math>.
 It is important to understand that this reference point is not an actual
 aquifer feature, but a mathematical necessity. Therefore, its value and
 location should be chosen is such a way that it does not influence the
 results too much. In general, the reference point should be never be
 placed inside the zone of interest (called the <em>“near-field”</em> in
-AEM jargon). It should be placed in the far-field and given a “neutral”
+AEM lingo). It should be placed in the far-field and given a “neutral”
 head value as to not induce unrealistic gradients towards the
 near-field.</p>
 </div>
@@ -481,8 +478,8 @@ addition to the start- and endpoints of the line-sink
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>−</mo><msub><mi>y</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_1-y_1</annotation></semantics></math>,
 the strength parameter needs to be specified. Optionally, a width can
-also be specified, which for a strength-specified line-sink is only used
-in particle tracking to determine when the particles have reached the
+also be given, which for a strength-specified line-sink is only used in
+particle tracking to determine when the particles have reached the
 line.</p>
 <p>Note that the locations of all elements in an <code>aem</code> object
 with line and point geometries (except the reference point) can be
@@ -512,8 +509,8 @@ it straightforward to implement complex stream geometries.</p>
 <p>A head-specified line-sink can be created with
 <code><a href="../reference/headlinesink.html">headlinesink()</a></code>. In addition to the start- and endpoints of
 the line, the hydraulic head at the collocation point needs to be given,
-which is the center of the line-sink. The line-sink strength is unknown
-in that case and is calculated by solving the system of equations. When
+which is located at the center of the line-sink. The line-sink strength
+is unknown and is calculated by solving the system of equations. When
 the aquifer head is above the head of the line-sink, the line-sink is
 draining the aquifer (positive line-sink strength
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>).
@@ -618,10 +615,10 @@ elements) and a radius <code>R</code>. The value of <code>R</code> is
 not important as long as its large enough so that the disc covers the
 modeled region. By default, the area-sink is placed at the aquifer top,
 which can be overridden by setting <code>location = 'base'</code>.</p>
-<p>To illustrate to effect of the area-sink providing areal recharge at
-the aquifer top, the example of the head-specified line-sinks above is
-used and an area-sink is added. Note the increased head values compared
-to the case without recharge.</p>
+<p>To illustrate to effect an area-sink providing areal recharge at the
+aquifer top, the example of the head-specified line-sinks above is used
+and an area-sink is added. Note the increased head values compared to
+the case without recharge.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add area-sink to list of elements</span></span>
 <span><span class="va">el</span><span class="op">$</span><span class="va">as</span> <span class="op">=</span> <span class="fu"><a href="../reference/areasink.html">areasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> </span>
@@ -643,19 +640,18 @@ specified at the center of the disc, the computed flux is calculated
 from the head gradient at this location and applied over the entire
 circular area. This is for example useful to simulate ponds or wetlands
 with limited areal extent. For large lakes on the other hand, a better
-representation would be by specifying a series of head-specified
-line-sinks along the lake boundary, as that is where most of the
-groundwater interaction occurs for such type of surface water
-features.</p>
-<p>The <code><a href="../reference/headareasink.html">headareasink()</a></code> functions creates a head-specified
+representation would be to create a series of head-specified line-sinks
+along the lake boundary, as that is where most of the groundwater
+interaction occurs for such type of surface water features.</p>
+<p>The <code><a href="../reference/headareasink.html">headareasink()</a></code> function creates a head-specified
 area-sink element. Similar to <code><a href="../reference/headlinesink.html">headlinesink()</a></code>, the
 <code>resistance</code> parameter determines the hydraulic resistance
-between the aquifer and the specified head. This also renders the system
-of equations non-linear when the aquifer has a variable saturated
-thickness (<code>type = 'variable'</code> in <code><a href="../reference/aem.html">aem()</a></code>).</p>
-<p>To illustrate it’s use, leakage from a small, circular pond is
+between the aquifer and the area-sink. This also renders the system of
+equations non-linear when the aquifer has a variable saturated thickness
+(<code>type = 'variable'</code> in <code><a href="../reference/aem.html">aem()</a></code>).</p>
+<p>To illustrate its use, leakage from a small, circular pond is
 simulated using a head-specified area-sink applied to the model with two
-extraction wells.</p>
+extraction wells created earlier.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create head-specified area-sink</span></span>
 <span><span class="va">has</span> <span class="op">=</span> <span class="fu"><a href="../reference/headareasink.html">headareasink</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, </span>
@@ -676,7 +672,7 @@ extraction wells.</p>
 <div class="section level3">
 <h3 id="uniform-flow">Uniform flow<a class="anchor" aria-label="anchor" href="#uniform-flow"></a>
 </h3>
-<p>A uniform-flow element may be created which models a specified
+<p>An element can be created which models a specified, uniform
 background flow in the aquifer. In general, the regional gradient should
 be modeled by including head-specified surface water elements which will
 induce a background flow in the model. For certain applications however,
@@ -684,9 +680,9 @@ it may be useful to specify this uniform background flow explicitly,
 e.g. when the regional system is not fully included in the model. This
 can be done by using <code><a href="../reference/uniformflow.html">uniformflow()</a></code>. It requires a
 transmissivity value which remains constant in the entire domain
-(i.e. has a constant saturated thickness), a gradient which is positive
-in the direction of flow, and an angle in degrees counterclockwise from
-the positive x-axis:</p>
+(i.e. has a constant saturated thickness independent of the simulated
+heads), a gradient which is positive in the direction of flow, and an
+angle in degrees counterclockwise from the positive x-axis:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create uniform flow element</span></span>
 <span><span class="va">uf</span> <span class="op">=</span> <span class="fu"><a href="../reference/uniformflow.html">uniformflow</a></span><span class="op">(</span>TR <span class="op">=</span> <span class="va">k</span> <span class="op">*</span> <span class="op">(</span><span class="va">top</span> <span class="op">-</span> <span class="va">base</span><span class="op">)</span>, gradient <span class="op">=</span> <span class="fl">0.001</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">30</span><span class="op">)</span></span>
@@ -711,16 +707,15 @@ system with two wells near a stream which is not in full hydraulic
 contact with the aquifer. The stream is approximately straight and
 flowing from south to north along
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x=0</annotation></semantics></math>,
-with the stream level elevation decreasing in the direction of flow. The
-stream is divided into segments which are shorter near well A. The sandy
-aquifer has an approximately horizontal bottom elevation, and can be
-considered homogeneous for the scale and purpose of the modeling
-exercise. Areal recharge is simulated using an area-sink.</p>
-<p>The use of <code><a href="../reference/add_element.html">add_element()</a></code> is shown, which can be used to
-add elements to an initially empty model. After all the elements are
-added, the model needs to be solved with an explicit call to
-<code><a href="../reference/aem.html">solve.aem()</a></code>. This is useful for adding elements to a model
-in a loop or pipeline.</p>
+with the stream level decreasing in the direction of flow. The stream is
+divided into segments which are shorter near well A. The sandy aquifer
+has an approximately horizontal bottom elevation, and can be considered
+homogeneous for the scale and purpose of the modeling exercise. Areal
+recharge is simulated using an area-sink.</p>
+<p>The <code><a href="../reference/add_element.html">add_element()</a></code> function is used to add elements to an
+initially empty model. After all the elements are added, the model needs
+to be solved with an explicit call to <code><a href="../reference/aem.html">solve.aem()</a></code>. This is
+useful for adding elements to a model in a loop or pipeline.</p>
 <p>A major benefit of the AEM approach is that no numerical grid of the
 domain is needed. This allows to zoom in on an area of interest without
 altering or rerunning the model, as illustrated by the plot of the inset
@@ -848,15 +843,15 @@ values at the points along the profile line and plot:</p>
 <p><img src="vign-01-overview_files/figure-html/cross-section-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>The components of the discharge vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
-are obtained from an <code>aem</code> object with the
-<code><a href="../reference/flow.html">discharge()</a></code> function at any <code>x</code>, <code>y</code>
-and <code>z</code> coordinate. Values are positive with increasing axis
-value. When the specified <code>z</code> coordinate is above the
+at any <code>x</code>, <code>y</code> and <code>z</code> coordinate are
+obtained from an <code>aem</code> object with the
+<code><a href="../reference/flow.html">discharge()</a></code> function. Values are positive with increasing
+axis value. When the specified <code>z</code> coordinate is above the
 water-table or aquifer top, or below the aquifer base, <code>NA's</code>
 are returned for the <code>z</code> component with a warning. Similar to
-the state variables discussed above, <code>as.grid</code> can be set to
+the state-variables discussed above, <code>as.grid</code> can be set to
 <code>TRUE</code> to obtain an output grid for the given <code>x</code>,
-<code>y</code> and <code>z</code>vectors. Furthermore, setting
+<code>y</code> and <code>z</code> vectors. Furthermore, setting
 <code>magnitude = TRUE</code> will return an additional column with the
 vector’s magnitude, defined as the Euclidean norm of the vector
 components.</p>
@@ -938,15 +933,15 @@ using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-lin
 <code class="sourceCode R"><span><span class="co"># calculate particle traces</span></span>
 <span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
 <span>                   x0 <span class="op">=</span> <span class="op">-</span><span class="fl">600</span>, </span>
-<span>                   y0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>                   y0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">50</span><span class="op">)</span>,</span>
 <span>                   z0 <span class="op">=</span> <span class="va">top</span>, </span>
 <span>                   times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="co"># 10 steps per year for 5 years</span></span>
 <span><span class="co">#&gt; Warning: Resetting z0 values above saturated aquifer level or below aquifer</span></span>
 <span><span class="co">#&gt; base</span></span>
 <span></span>
-<span><span class="co"># plot head contours and element geometries</span></span>
-<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co"># plot head contours and element geometries around well A</span></span>
+<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">100</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">200</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -967,19 +962,19 @@ interval, e.g. every 180 days.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute backward particle tracking with retardation</span></span>
 <span><span class="va">backward</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
-<span>                      x0 <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, </span>
-<span>                      y0 <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>, </span>
+<span>                      x0 <span class="op">=</span> <span class="op">-</span><span class="fl">250</span>, </span>
+<span>                      y0 <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>, </span>
 <span>                      z <span class="op">=</span> <span class="fl">10</span>, </span>
 <span>                      forward <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                      R <span class="op">=</span> <span class="fl">1.5</span>, </span>
-<span>                      times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span>                      times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, <span class="fl">365</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># plot the head contours and element geometries</span></span>
+<span><span class="co"># plot the head contours and element geometries around well A</span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># plot backward particle trace with a marker every 3 years</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">backward</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, marker <span class="op">=</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">365</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># plot backward particle trace with a marker every 1.5 years</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">backward</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, marker <span class="op">=</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="fl">365</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/backward-tracking-1.png" width="672"></p>
 <p>Lastly, particle tracking can be computationally expensive. Since the
 particles are independent of one another, the computations are <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel" class="external-link">embarrassingly
@@ -996,20 +991,23 @@ of the base packages in R.</p>
 <p>A special case of particle tracking is the capture zone delineation
 for a well. This can be done using <code><a href="../reference/capzone.html">capzone()</a></code>, a thin
 wrapper around <code><a href="../reference/tracelines.html">tracelines()</a></code> which places <code>npar</code>
-evenly distributed particles around the well radius and tracks them back
-in time using <code>dt</code> time-step lengths until the requested
-capture time is reached. By plotting the tracelines, the capture zone
-can be be delineated. Initial particle locations are placed at the
-aquifer base (<code>zstart</code> argument). Different results may be
-obtained in models with vertical flow components by placing initial
-particle locations at different <code>z</code> coordinates. By
-increasing the amount of particles or decreasing the time-step length, a
+evenly distributed particles around the well’s radius and tracks them
+back in time using time steps of length <code>dt</code> until the
+requested capture time is reached. By plotting the tracelines, the
+capture zone can be be delineated. Initial particle locations are placed
+at the aquifer base (<code>zstart</code> argument). Different results
+may be obtained in models with vertical flow components by placing
+initial particle locations at different <code>zstart</code> values. By
+increasing the amount of particles or decreasing the time step length, a
 sharper delineation of the capture zone envelope may be obtained.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 5 year capture zone of well A</span></span>
+<code class="sourceCode R"><span><span class="co"># 5-year capture zone of well A</span></span>
 <span><span class="va">cpA_5</span> <span class="op">=</span> <span class="fu"><a href="../reference/capzone.html">capzone</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wA</span>, time <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, npar <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># plot head contours and element geometries</span></span>
+<span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>

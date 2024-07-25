@@ -93,19 +93,19 @@ at the given x and y coordinates.</p>
 
 
 <dl><dt id="arg-aem">aem<a class="anchor" aria-label="anchor" href="#arg-aem"></a></dt>
-<dd><p><code>aem</code> object</p></dd>
+<dd><p><code>aem</code> object.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>numeric x coordinates to evaluate at</p></dd>
+<dd><p>numeric x coordinates to evaluate the variable at.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>numeric y coordinates to evaluate at</p></dd>
+<dd><p>numeric y coordinates to evaluate the variable at.</p></dd>
 
 
 <dt id="arg-as-grid">as.grid<a class="anchor" aria-label="anchor" href="#arg-as-grid"></a></dt>
-<dd><p>logical, should a matrix of dimensions c(<code>length(y), length(x)</code>) be returned? Defaults to <code>FALSE</code>.</p></dd>
+<dd><p>logical, should a matrix be returned? Defaults to <code>FALSE</code>. See details.</p></dd>
 
 
 <dt id="arg-na-below">na.below<a class="anchor" aria-label="anchor" href="#arg-na-below"></a></dt>
@@ -117,19 +117,20 @@ at the given x and y coordinates.</p>
 
 
 <dt id="arg-element">element<a class="anchor" aria-label="anchor" href="#arg-element"></a></dt>
-<dd><p>analytic element of class <code>element</code></p></dd>
+<dd><p>analytic element of class <code>element</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>For <code>heads()</code>, the same as for <code>omega()</code> but containing the hydraulic head values
-evaluated at <code>x</code> and <code>y</code>, which are computed from <code>potential()</code> and the aquifer parameters using <code><a href="head_to_potential.html">potential_to_head()</a></code>.</p>
-<p>For <code>omega()</code>, a vector of <code>length(x)</code> (equal to <code>length(y)</code>) with the complex potential values at <code>x</code> and <code>y</code>.
+    <p>For <code>heads()</code>, a vector of <code>length(x)</code> (equal to <code>length(y)</code>) with the hydraulic head values at <code>x</code> and <code>y</code>.
 If <code>as.grid = TRUE</code>, a matrix of dimensions <code>c(length(y), length(x))</code> described by
-marginal vectors <code>x</code> and <code>y</code> containing the complex potential values at the grid points.</p>
-<p>For <code>potential()</code>, the same as for <code>omega()</code> but containing the discharge potential values
+marginal vectors <code>x</code> and <code>y</code> containing the hydraulic head values at the grid points.
+The heads are computed from <code>potential()</code> and the aquifer parameters using <code><a href="head_to_potential.html">potential_to_head()</a></code>.</p>
+<p>For <code>omega()</code>, the same as for <code>heads()</code> but containing the complex potential values
+evaluated at <code>x</code> and <code>y</code>.</p>
+<p>For <code>potential()</code>, the same as for <code>heads()</code> but containing the discharge potential values
 evaluated at <code>x</code> and <code>y</code>, which are the real components of <code>omega()</code>.</p>
-<p>For <code>streamfunction()</code>, the same as for <code>omega()</code> but containing the stream function values
+<p>For <code>streamfunction()</code>, the same as for <code>heads()</code> but containing the stream function values
 evaluated at <code>x</code> and <code>y</code>, which are the imaginary components of <code>omega()</code>.</p>
     </div>
     <div class="section level2">

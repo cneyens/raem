@@ -51,11 +51,11 @@
 
 
 <dl><dt id="arg-xc">xc<a class="anchor" aria-label="anchor" href="#arg-xc"></a></dt>
-<dd><p>numeric, x location of the center of the area-sink</p></dd>
+<dd><p>numeric, x location of the center of the area-sink.</p></dd>
 
 
 <dt id="arg-yc">yc<a class="anchor" aria-label="anchor" href="#arg-yc"></a></dt>
-<dd><p>numeric, y location of the center of the area-sink</p></dd>
+<dd><p>numeric, y location of the center of the area-sink.</p></dd>
 
 
 <dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -63,7 +63,7 @@
 
 
 <dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
-<dd><p>numeric, radius of the circular area-sink</p></dd>
+<dd><p>numeric, radius of the circular area-sink.</p></dd>
 
 
 <dt id="arg-location">location<a class="anchor" aria-label="anchor" href="#arg-location"></a></dt>
@@ -91,52 +91,12 @@ component.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">areasink</span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $location</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "top"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "areasink" "element" </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">as</span> <span class="op">&lt;-</span> <span class="fu">areasink</span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># flux assuming a constant head difference over a confining unit</span></span></span>
 <span class="r-in"><span><span class="va">dh</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">/</span> <span class="fl">0.0001</span></span></span>
-<span class="r-in"><span><span class="fu">areasink</span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="op">-</span><span class="va">dh</span><span class="op">/</span><span class="va">res</span>, R <span class="op">=</span> <span class="fl">500</span>, location <span class="op">=</span> <span class="st">'base'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -3e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $location</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "base"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "areasink" "element" </span>
+<span class="r-in"><span><span class="va">as</span> <span class="op">&lt;-</span> <span class="fu">areasink</span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="op">-</span><span class="va">dh</span><span class="op">/</span><span class="va">res</span>, R <span class="op">=</span> <span class="fl">500</span>, location <span class="op">=</span> <span class="st">'base'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

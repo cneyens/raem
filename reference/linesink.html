@@ -51,27 +51,28 @@
 
 
 <dl><dt id="arg-x-">x0<a class="anchor" aria-label="anchor" href="#arg-x-"></a></dt>
-<dd><p>numeric, starting x location of line-sink</p></dd>
+<dd><p>numeric, starting x location of line-sink.</p></dd>
 
 
 <dt id="arg-y-">y0<a class="anchor" aria-label="anchor" href="#arg-y-"></a></dt>
-<dd><p>numeric, starting y location of line-sink</p></dd>
+<dd><p>numeric, starting y location of line-sink.</p></dd>
 
 
 <dt id="arg-x-">x1<a class="anchor" aria-label="anchor" href="#arg-x-"></a></dt>
-<dd><p>numeric, ending x location of line-sink</p></dd>
+<dd><p>numeric, ending x location of line-sink.</p></dd>
 
 
 <dt id="arg-y-">y1<a class="anchor" aria-label="anchor" href="#arg-y-"></a></dt>
-<dd><p>numeric, ending y location of line-sink</p></dd>
+<dd><p>numeric, ending y location of line-sink.</p></dd>
 
 
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
-<dd><p>numeric, specific strength of the line-sink, i.e. discharge per length of line-sink. Positive is out of aquifer.</p></dd>
+<dd><p>numeric, specific strength of the line-sink, i.e. discharge per unit length of line-sink. Positive is out of aquifer.</p></dd>
 
 
 <dt id="arg-width">width<a class="anchor" aria-label="anchor" href="#arg-width"></a></dt>
-<dd><p>numeric, width of the line-sink. Only used in <code><a href="tracelines.html">tracelines()</a></code> to determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).</p></dd>
+<dd><p>numeric, width of the line-sink. Only used in <code><a href="tracelines.html">tracelines()</a></code> to determine if a particle has reached the line.
+Defaults to zero (infinitesimally narrow line).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -89,27 +90,7 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">linesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -75+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $z1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100+50i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $width</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "linesink" "element" </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ls</span> <span class="op">&lt;-</span> <span class="fu">linesink</span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">50</span>, sigma <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -54,7 +54,7 @@ at the given x and y coordinates."></head><body>
     <div class="ref-description section level2">
     <p><code>discharge()</code> computes the <code>x, y</code> and <code>z</code> components of the discharge vector for an <code>aem</code> object
 at the given x, y and z coordinates.</p>
-<p><code>darcy()</code> computes the <code>x, y</code> and <code>z</code> components of the Darcy flux vector (also called specific discharge vector)
+<p><code>darcy()</code> computes the <code>x, y</code> and <code>z</code> components of the Darcy flux vector (also called <em>specific discharge vector</em>)
 for an <code>aem</code> object at the given x, y and z coordinates.</p>
 <p><code>velocity()</code> computes the <code>x, y</code> and <code>z</code> components of the average linear groundwater flow velocity vector
 for an <code>aem</code> object at the given x, y and z coordinates.</p>
@@ -106,15 +106,15 @@ at the given x and y coordinates.</p>
 
 
 <dt id="arg-aem">aem<a class="anchor" aria-label="anchor" href="#arg-aem"></a></dt>
-<dd><p><code>aem</code> object</p></dd>
+<dd><p><code>aem</code> object.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>numeric x coordinates to evaluate at</p></dd>
+<dd><p>numeric x coordinates to evaluate the flow at.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>numeric y coordinates to evaluate at</p></dd>
+<dd><p>numeric y coordinates to evaluate the flow at.</p></dd>
 
 
 <dt id="arg-z">z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
@@ -130,15 +130,15 @@ at the given x and y coordinates.</p>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>logical, if <code>TRUE</code> (default), warnings with regards to setting <code>Qz</code> to NA are printed. See details.</p></dd>
+<dd><p>logical, if <code>TRUE</code> (default), warnings with regards to setting <code>Qz</code> to <code>NA</code> are printed. See details.</p></dd>
 
 
 <dt id="arg-r">R<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
-<dd><p>numeric, retardation coefficient. Defaults to 1 (no retardation).</p></dd>
+<dd><p>numeric, retardation coefficient used in <code>velocity()</code>. Defaults to 1 (no retardation).</p></dd>
 
 
 <dt id="arg-element">element<a class="anchor" aria-label="anchor" href="#arg-element"></a></dt>
-<dd><p>analytic element of class <code>element</code></p></dd>
+<dd><p>analytic element of class <code>element</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,15 +152,15 @@ containing the <code>x, y</code> and <code>z</code> components of the discharge 
 the negative imaginary component and the <code>z</code> component is calculated based on area-sink strengths
 and/or the curvature of the phreatic surface.</p>
 <p>If <code>magnitude = TRUE</code>, the last dimension of the returned array is expanded to include
-the magnitude of the discharge/darcy/velocity vector, calculated as <code>sqrt(Qx^2 + Qy^2 + Qz^2)</code>
+the magnitude of the discharge/Darcy/velocity vector, calculated as <code>sqrt(Qx^2 + Qy^2 + Qz^2)</code>
 (or <code>sqrt(qx^2 + qy^2 + qz^2)</code> or <code>sqrt(vx^2 + vy^2 + vz^2)</code>, respectively).</p>
 <p>For <code>darcy()</code>, the same as for <code>discharge()</code> but with the <code>x</code>, <code>y</code> and <code>z</code> components of the
-Darcy flux vector (<code>qx</code>, <code>qy</code> and <code>qz</code>). The value are computed by dividing the values of <code>discharge()</code> by
+Darcy flux vector (<code>qx</code>, <code>qy</code> and <code>qz</code>). The values are computed by dividing the values of <code>discharge()</code> by
 the saturated thickness at <code>x</code>, <code>y</code> and <code>z</code>.</p>
 <p>For <code>velocity()</code>, the same as for <code>discharge()</code> but with the <code>x</code>, <code>y</code> and <code>z</code> components of the
 average linear groundwater flow velocity vector (<code>vx</code>, <code>vy</code> and <code>vz</code>). The values are computed by dividing
 the <code>darcy()</code> values by the effective porosity (<code>aem$n</code>) and the retardation coefficient <code>R</code>.</p>
-<p>For <code>domega()</code>,  vector of <code>length(x)</code> (equal to <code>length(y)</code>) with the complex discharge values at <code>x</code> and <code>y</code>,
+<p>For <code>domega()</code>, a vector of <code>length(x)</code> (equal to <code>length(y)</code>) with the complex discharge values at <code>x</code> and <code>y</code>,
 If <code>as.grid = TRUE</code>, a matrix of dimensions <code>c(length(y), length(x))</code> described by
 marginal vectors <code>x</code> and <code>y</code> containing the complex discharge values at the grid points.
 <code>domega()</code> is the derivative of <code><a href="state-variables.html">omega()</a></code> in the x and y directions.</p>
@@ -170,8 +170,8 @@ marginal vectors <code>x</code> and <code>y</code> containing the complex discha
     <p>There is no <code>discharge()</code>, <code>darcy()</code> or <code>velocity()</code> method for an object of class <code>element</code> because an <code>aem</code> object is required
 to obtain the aquifer base and top.</p>
 <p>If the <code>z</code> coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
-the aquifer top for confined conditions), or below the aquifer base, <code>Qz</code> values are set to NA with a warning (if <code>verbose = TRUE</code>).
-The <code>Qx</code> and <code>Qy</code> values are not set to NA, for convenience in specifying the <code>z</code> coordinate when only lateral flow
+the aquifer top for confined conditions), or below the aquifer base, <code>Qz</code> values are set to <code>NA</code> with a warning (if <code>verbose = TRUE</code>).
+The <code>Qx</code> and <code>Qy</code> values are not set to <code>NA</code>, for convenience in specifying the <code>z</code> coordinate when only lateral flow
 is of interest.</p>
     </div>
     <div class="section level2">
@@ -181,13 +181,11 @@ is of interest.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="well.html">well</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">55</span>, yw <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="well.html">well</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">55</span>, yw <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">uf</span> <span class="op">&lt;-</span> <span class="fu"><a href="uniformflow.html">uniformflow</a></span><span class="op">(</span>gradient <span class="op">=</span> <span class="fl">0.002</span>, angle <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, TR <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">as</span> <span class="op">&lt;-</span> <span class="fu"><a href="areasink.html">areasink</a></span><span class="op">(</span>xc <span class="op">=</span> <span class="fl">0</span>, yc <span class="op">=</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">0.001</span>, R <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="constant.html">constant</a></span><span class="op">(</span>xc <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, yc <span class="op">=</span> <span class="fl">1000</span>, hc <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="aem.html">aem</a></span><span class="op">(</span>k <span class="op">=</span> <span class="fl">10</span>, top <span class="op">=</span> <span class="fl">10</span>, base <span class="op">=</span> <span class="op">-</span><span class="fl">15</span>, n <span class="op">=</span> <span class="fl">0.2</span>, <span class="va">w</span>, <span class="va">uf</span>, <span class="va">as</span>, <span class="va">rf</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">xg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">100</span>, length <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">yg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">75</span>, <span class="fl">75</span>, length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>

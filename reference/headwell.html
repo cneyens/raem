@@ -57,11 +57,11 @@ the well or at any other location.</p>
 
 
 <dl><dt id="arg-xw">xw<a class="anchor" aria-label="anchor" href="#arg-xw"></a></dt>
-<dd><p>numeric, x location of the well</p></dd>
+<dd><p>numeric, x location of the well.</p></dd>
 
 
 <dt id="arg-yw">yw<a class="anchor" aria-label="anchor" href="#arg-yw"></a></dt>
-<dd><p>numeric, y location of the well</p></dd>
+<dd><p>numeric, y location of the well.</p></dd>
 
 
 <dt id="arg-hc">hc<a class="anchor" aria-label="anchor" href="#arg-hc"></a></dt>
@@ -85,7 +85,7 @@ the well or at any other location.</p>
 
 
 <dt id="arg-resistance">resistance<a class="anchor" aria-label="anchor" href="#arg-resistance"></a></dt>
-<dd><p>numeric, hydraulic resistance of the well screen at the collocation point. Defaults to 0 (no resistance).</p></dd>
+<dd><p>numeric, hydraulic resistance at the collocation point. Defaults to 0 (no resistance).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -98,13 +98,13 @@ the well or at any other location.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The discharge from the well at location <code>xw yw</code> is computed by solving the <code>aem</code> model given
-the specified head <code>hc</code>. This head can be specified at any point, called the collocation point.
+    <p>The discharge from the well at location <code>xw - yw</code> is computed by solving the <code>aem</code> model given
+the specified head <code>hc</code>. This head is specified at <code>xc + rc - yc</code>, called the collocation point.
 This can be used to compute the discharge of the well by specifying the head at some other location.
-The collocation point is located at <code>xc + rc</code>, <code>yc</code>. By default, the location of the well and the collocation point are the same.</p>
-<p>The resistance at the well screen of the collocation point can be increased for a well in poor connection with the aquifer.
-If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
-with respect to the hydraulic head and iteration is required to solve the model.</p>
+By default, the location of the well and the collocation point are the same.</p>
+<p>The hydraulic resistance of the well screen at the collocation point can be increased for a well in poor connection with
+the aquifer. If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes
+non-linear with respect to the hydraulic head and iteration is required to solve the model.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -113,87 +113,9 @@ with respect to the hydraulic head and iteration is required to solve the model.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zetaw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 400+300i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $rw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 400.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $resistance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "headwell" "well"     "element" </span>
-<span class="r-in"><span><span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span>, resistance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zetaw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 400+300i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $rw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 400.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $resistance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "headwell" "well"     "element" </span>
-<span class="r-in"><span><span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span>, xc <span class="op">=</span> <span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">500</span>, rc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $nunknowns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zetaw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 400+300i</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $rw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $xc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $yc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $hc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $resistance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "headwell" "well"     "element" </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">hw</span> <span class="op">&lt;-</span> <span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hw</span> <span class="op">&lt;-</span> <span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span>, resistance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hw</span> <span class="op">&lt;-</span> <span class="fu">headwell</span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">400</span>, yw <span class="op">=</span> <span class="fl">300</span>, hc <span class="op">=</span> <span class="fl">20</span>, rw <span class="op">=</span> <span class="fl">0.3</span>, xc <span class="op">=</span> <span class="fl">500</span>, yc <span class="op">=</span> <span class="fl">500</span>, rc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
