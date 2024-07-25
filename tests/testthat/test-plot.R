@@ -59,8 +59,8 @@ test_that("plotting elements work", {
   expect_invisible(plot(hls, xlim = c(-600, 600), ylim = c(-300, 300)))
   expect_invisible(plot(hls, xlim = c(-600, 600), ylim = c(-300, 300), use.widths = FALSE))
   expect_invisible(plot(as, xlim = c(-600, 600), ylim = c(-300, 300), col = adjustcolor('grey60', alpha = 0.6)))
-  expect_invisible(plot(uf))
-
+  expect_invisible(plot(uf)) # empty
+  expect_invisible(plot(rf))
 
 })
 
