@@ -18,7 +18,7 @@
 #'    and/or the curvature of the phreatic surface.
 #'
 #' If `magnitude = TRUE`, the last dimension of the returned array is expanded to include
-#'     the magnitude of the discharge/darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
+#'     the magnitude of the discharge/Darcy/velocity vector, calculated as `sqrt(Qx^2 + Qy^2 + Qz^2)`
 #'     (or `sqrt(qx^2 + qy^2 + qz^2)` or `sqrt(vx^2 + vy^2 + vz^2)`, respectively).
 #' @rdname flow
 #' @name flow
@@ -28,12 +28,12 @@
 discharge <- function(...) UseMethod('discharge')
 
 #'
-#' @description [darcy()] computes the `x, y` and `z` components of the Darcy flux vector (also called specific discharge vector)
+#' @description [darcy()] computes the `x, y` and `z` components of the Darcy flux vector (also called *specific discharge vector*)
 #'    for an `aem` object at the given x, y and z coordinates.
 #'
 #' @export
 #' @return For [darcy()], the same as for [discharge()] but with the `x`, `y` and `z` components of the
-#'    Darcy flux vector (`qx`, `qy` and `qz`). The value are computed by dividing the values of [discharge()] by
+#'    Darcy flux vector (`qx`, `qy` and `qz`). The values are computed by dividing the values of [discharge()] by
 #'    the saturated thickness at `x`, `y` and `z`.
 #' @rdname flow
 #'
@@ -54,7 +54,7 @@ velocity <- function(...) UseMethod('velocity')
 #' @description [domega()] computes the complex discharge for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @return For [domega()],  vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
+#' @return For [domega()], a vector of `length(x)` (equal to `length(y)`) with the complex discharge values at `x` and `y`,
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the complex discharge values at the grid points.
 #'     [domega()] is the derivative of [omega()] in the x and y directions.
@@ -67,8 +67,8 @@ domega <- function(...) UseMethod('domega')
 #' Calculate the complex discharge influence
 #'
 #' [domegainf()] computes the complex discharge influence at the given x and y coordinates.
-#' @param x numeric x coordinates to evaluate `domegainf` at
-#' @param y numeric y coordinates to evaluate `domegainf` at
+#' @param x numeric x coordinates to evaluate `domegainf` the flow at.
+#' @param y numeric y coordinates to evaluate `domegainf` the flow at.
 #' @param ... ignored
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the complex discharge influence values at `x` and `y`.
@@ -82,22 +82,20 @@ domegainf <- function(...) UseMethod('domegainf')
 #'
 #' @param z numeric z coordinates to evaluate at
 #' @param magnitude logical, should the magnitude of the flow vector be returned as well? Default to `FALSE`. See details.
-#' @param verbose logical, if `TRUE` (default), warnings with regards to setting `Qz` to NA are printed. See details.
+#' @param verbose logical, if `TRUE` (default), warnings with regards to setting `Qz` to `NA` are printed. See details.
 #'
 #' @details If the `z` coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
-#'    the aquifer top for confined conditions), or below the aquifer base, `Qz` values are set to NA with a warning (if `verbose = TRUE`).
-#'    The `Qx` and `Qy` values are not set to NA, for convenience in specifying the `z` coordinate when only lateral flow
+#'    the aquifer top for confined conditions), or below the aquifer base, `Qz` values are set to `NA` with a warning (if `verbose = TRUE`).
+#'    The `Qx` and `Qy` values are not set to `NA`, for convenience in specifying the `z` coordinate when only lateral flow
 #'    is of interest.
 #' @export
 #' @rdname flow
 #' @examples
-#'
 #' w <- well(xw = 55, yw = 0, Q = 200)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 #' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
 #' rf <- constant(xc = -1000, yc = 1000, hc = 10)
 #' ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, as, rf)
-#'
 #'
 #' xg <- seq(-100, 100, length = 5)
 #' yg <- seq(-75, 75, length = 3)
@@ -184,7 +182,7 @@ darcy.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, ...) {
   return(q)
 }
 
-#' @param R numeric, retardation coefficient. Defaults to 1 (no retardation).
+#' @param R numeric, retardation coefficient used in `velocity()`. Defaults to 1 (no retardation).
 #'
 #' @rdname flow
 #' @export
@@ -228,9 +226,9 @@ velocity.aem <- function(aem, x, y, z, as.grid = FALSE, magnitude = FALSE, R = 1
 }
 
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
+#' @param aem `aem` object.
+#' @param x numeric x coordinates to evaluate the flow at.
+#' @param y numeric y coordinates to evaluate the flow at.
 #' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
 #' @param ... ignored or arguments passed from [velocity()] or [darcy()] to [discharge()].
 #'
@@ -262,7 +260,7 @@ domega.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 }
 
 #'
-#' @param element analytic element of class `element`
+#' @param element analytic element of class `element`.
 #'
 #' @export
 #' @rdname flow

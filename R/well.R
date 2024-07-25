@@ -1,23 +1,25 @@
 
-#' Create a analytic element of a constant-discharge well
+#' Create an analytic element of a constant-discharge well
 #'
 #' [well()] creates an analytic element of a well with constant discharge.
 #'
-#' @param xw numeric, x location of the well
-#' @param yw numeric, y location of the well
-#' @param Q numeric, volumetric discharge of the well (positive is out of aquifer)
-#' @param rw numeric, radius of well. Defaults to 0.3.
+#' @param xw numeric, x location of the well.
+#' @param yw numeric, y location of the well.
+#' @param Q numeric, volumetric discharge of the well (positive is out of aquifer).
+#' @param rw numeric, radius of well. Defaults to 0.3 length units.
 #' @param ... ignored
 #'
 #' @details The inner annulus of a well element constitutes a singularity in the equations as the hydraulic head is undefined at
 #'    a distance smaller than `rw` from the well center. If a state- or flow-variable is calculated within this annulus, its
 #'    location is reset to its nearest location on the well screen.
 #'
+#' The well is assumed to fully penetrate the saturated aquifer.
+#'
 #' @return Analytic element of a well with constant discharge which is an object of class `well` and inherits from `element`.
 #' @export
 #' @seealso [headwell()]
 #' @examples
-#' well(xw = 50, yw = 0, Q = 200, rw = 0.3)
+#' w <- well(xw = 50, yw = 0, Q = 200, rw = 0.3)
 #'
 well <- function(xw, yw, Q, rw = 0.3, ...) {
   well <- element(Q)
@@ -33,32 +35,32 @@ well <- function(xw, yw, Q, rw = 0.3, ...) {
 #'    into the well is computed by solving the corresponding `aem` model. The head can be specified at
 #'    the well or at any other location.
 #'
-#' @param xw numeric, x location of the well
-#' @param yw numeric, y location of the well
+#' @param xw numeric, x location of the well.
+#' @param yw numeric, y location of the well.
 #' @param hc numeric, specified hydraulic head at the collocation point.
 #' @param rw numeric, radius of the well. Defaults to 0.3 (meter).
 #' @param xc numeric, x location of the collocation point. See details. Defaults to `xw`.
 #' @param yc numeric, y location of the collocation point. See details. Defaults to `yw`.
 #' @param rc numeric, radius of the collocation point. See details. Defaults to `rw`.
-#' @param resistance numeric, hydraulic resistance of the well screen at the collocation point. Defaults to 0 (no resistance).
+#' @param resistance numeric, hydraulic resistance at the collocation point. Defaults to 0 (no resistance).
 #' @param ... ignored
 #'
-#' @details The discharge from the well at location `xw yw` is computed by solving the `aem` model given
-#'    the specified head `hc`. This head can be specified at any point, called the collocation point.
+#' @details The discharge from the well at location `xw - yw` is computed by solving the `aem` model given
+#'    the specified head `hc`. This head is specified at `xc + rc - yc`, called the collocation point.
 #'    This can be used to compute the discharge of the well by specifying the head at some other location.
-#'    The collocation point is located at `xc + rc`, `yc`. By default, the location of the well and the collocation point are the same.
+#'    By default, the location of the well and the collocation point are the same.
 #'
-#' The resistance at the well screen of the collocation point can be increased for a well in poor connection with the aquifer.
-#'    If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes non-linear
-#'    with respect to the hydraulic head and iteration is required to solve the model.
+#' The hydraulic resistance of the well screen at the collocation point can be increased for a well in poor connection with
+#'    the aquifer. If the aquifer is unconfined (i.e. has a variable saturated thickness), the system of equations becomes
+#'    non-linear with respect to the hydraulic head and iteration is required to solve the model.
 #'
 #' @return Analytic element of a well with constant head which is an object of class `headwell` and inherits from `well`.
 #' @export
 #' @seealso [well()]
 #' @examples
-#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
-#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, resistance = 10)
-#' headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500, rc = 0)
+#' hw <- headwell(xw = 400, yw = 300, hc = 20, rw = 0.3)
+#' hw <- headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, resistance = 10)
+#' hw <- headwell(xw = 400, yw = 300, hc = 20, rw = 0.3, xc = 500, yc = 500, rc = 0)
 #'
 headwell <- function(xw, yw, hc, rw = 0.3, xc = xw, yc = yw, rc = rw, resistance = 0, ...) {
   hwe <- well(xw = xw, yw = yw, Q = 0, rw = rw)

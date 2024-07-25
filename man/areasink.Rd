@@ -7,13 +7,13 @@
 areasink(xc, yc, N, R, location = c("top", "base"), ...)
 }
 \arguments{
-\item{xc}{numeric, x location of the center of the area-sink}
+\item{xc}{numeric, x location of the center of the area-sink.}
 
-\item{yc}{numeric, y location of the center of the area-sink}
+\item{yc}{numeric, y location of the center of the area-sink.}
 
 \item{N}{numeric, uniform constant leakage value (positive is into aquifer) in length per time.}
 
-\item{R}{numeric, radius of the circular area-sink}
+\item{R}{numeric, radius of the circular area-sink.}
 
 \item{location}{character, either \code{top} (default) or \code{base} specifying the vertical position of the area-sink.}
 
@@ -31,12 +31,12 @@ or out of the aquifer at its base. The \code{location} argument is used when cal
 component.
 }
 \examples{
-areasink(xc = -500, yc = 0, N = 0.001, R = 500)
+as <- areasink(xc = -500, yc = 0, N = 0.001, R = 500)
 
 # flux assuming a constant head difference over a confining unit
 dh <- 3
 res <- 10 / 0.0001
-areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
+as <- areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 
 }
 \seealso{

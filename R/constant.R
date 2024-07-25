@@ -2,7 +2,7 @@
 #' Create a constant-head analytic element
 #'
 #' [constant()] creates an analytic element containing a constant head, often referred to
-#'     as the reference point.
+#'     as *the reference point*.
 #'
 #' @param xc numeric, x location of the reference point.
 #' @param yc numeric, y location of the reference point.

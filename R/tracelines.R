@@ -140,11 +140,11 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' by numerically integrating the velocity vector. The resulting set of connected coordinates produces the
 #' tracelines.
 #'
-#' @param aem `aem` object
-#' @param x0 numeric vector, starting `x` locations of the particles
-#' @param y0 numeric vector, starting `y` locations of the particles
-#' @param z0 numeric vector, starting `z` locations of the particles
-#' @param times numeric vector with the times at which locations should be registered
+#' @param aem `aem` object.
+#' @param x0 numeric vector with starting x locations of the particles.
+#' @param y0 numeric vector with starting y locations of the particles.
+#' @param z0 numeric vector with starting z locations of the particles.
+#' @param times numeric vector with the times at which particle locations should be registered.
 #' @param forward logical, should forward (`TRUE`; default) or backward (`FALSE`) tracking be performed.
 #' @param R numeric, retardation coefficient passed to [velocity()]. Defaults to 1 (no retardation).
 #' @param tfunc function or list of functions with additional termination events for particles. See details. Defaults to `NULL`.
@@ -162,13 +162,15 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'
 #' The `tfunc` argument can be used to specify additional termination events. It is a function (or a list of functions) that
 #'    takes arguments `t`, `coords` and `parms`. These are, respectively, a numeric value with the current tracking time,
-#'    a numeric vector of length 3 with the current `x`, `y` and `z` coordinates of the particle, and a list with elements
-#'    `aem` and `R`. It should return a single logical value indicating if the particle should terminate. See examples.
+#'    a numeric vector of length 3 with the current `x`, `y` and `z` coordinate of the particle, and a list with elements
+#'    `aem` and `R` (named as such). It should return a single logical value indicating if the particle should terminate. See examples.
 #'
 #' If initial particle locations are above the saturated aquifer level, they are reset to this elevation with a warning.
 #'    Initial particle locations below the aquifer base are reset at the aquifer base with a warning. A small
 #'    perturbation is added to these elevations to avoid the particle tracking algorithm to get stuck at these locations.
 #'    If the algorithm does get stuck (i.e. excessive run-times), try resetting the `z0` values to elevations well inside the saturated domain.
+#'
+#' Initial particle locations inside a termination point are dropped with a warning.
 #'
 #' Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with `-1`).
 #'
@@ -176,7 +178,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'     the tracelines are computed using [parallel::parLapplyLB()]. `ncores` should not exceed the number of available cores as returned by [parallel::detectCores()].
 #'
 #' @return [tracelines()] returns an object of class `tracelines` which is a list with length equal to the number of particles where each list element contains
-#'    a matrix with columns `time`, `x`, `y` and `z` specifying the registered time and coordinates of the particle as is it tracked through the flow field.
+#'    a matrix with columns `time`, `x`, `y` and `z` specifying the registered time and coordinates of the particle as it is tracked through the flow field.
 #'
 #' The final row represents either the location at the maximum `times` value or, if the particle terminated prematurely, the time and location of the termination.
 #'
@@ -236,6 +238,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
 #'   return(in_poly)
 #' }
+#'
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(m, add = TRUE)
@@ -310,6 +313,24 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
     rt <- any(c(outside_v, wls, lls, tfn))
     return(as.numeric(!rt))
   }
+
+  # combine coordinates
+  crds <- data.frame(x = x0, y = y0, z = z0)
+
+  # drop coordinates which are already in termination locations
+  drop <- apply(crds, 1, function(i) rootfun(t = 0, coords = i, parms = list(R=R, aem=aem)))
+
+  if(all(drop == 0)) {
+    warning('All initial particle locations are already terminated.\nReturning NULL.', call. = FALSE)
+    return(NULL)
+
+  } else if(any(drop == 0)) {
+    warning('Following particles are initially located in termination positions and are dropped:\n',
+            which(drop == 0), call. = FALSE)
+  }
+
+  crds <- crds[drop == 1,]
+
   # vectorized ODE
   get_paths <- Vectorize(function(x, y, z) {
     deSolve::lsoda(c(x, y, z), times = times, func = vxvy, parms = list(aem = aem, R = R),
@@ -317,12 +338,10 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
                    rootfun = rootfun)
   }, SIMPLIFY = FALSE)
 
-
   # get paths
   if(ncores > 0) { # parallel
     if(ncores > parallel::detectCores()) stop('ncores > available cores', call. = FALSE)
 
-    crds <- data.frame(x = x0, y = y0, z = z0)
     crds_list <- unname(split(crds, seq(nrow(crds))))
 
     # make cluster
@@ -342,7 +361,7 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
     parallel::stopCluster(clust)
 
   } else { # sequential
-    paths <- get_paths(x0, y0, z0)
+    paths <- get_paths(crds$x, crds$y, crds$z)
   }
 
   # clean
@@ -353,9 +372,9 @@ tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NU
   return(paths.m)
 }
 
-#' @description [endpoints()] obtains the final time and locations of tracked particles
+#' @description [endpoints()] obtains the final time and locations of tracked particles.
 #'
-#' @param tracelines object of class `tracelines` as returned by [tracelines()]
+#' @param tracelines object of class `tracelines` as returned by [tracelines()].
 #'
 #' @return [endpoints()] returns a matrix with columns `time`, `x`, `y` and `z` specifying the final time and coordinates
 #'     of the particles in the `tracelines` object.
@@ -368,14 +387,14 @@ endpoints <- function(tracelines, ...) {
 }
 
 
-#' Calculate capture zone of a well element
+#' Calculate the capture zone of a well element
 #'
 #' [capzone()] determines the capture zone of a well element in the flow field by performing backward
 #' particle tracking until the requested time is reached.
 #'
-#' @param aem `aem` object
-#' @param well well analytic element of class `well` or inherits from it.
-#' @param time numeric, time of the capture zone
+#' @param aem `aem` object.
+#' @param well analytic element of class `well`.
+#' @param time numeric, time of the capture zone.
 #' @param npar integer, number of particles to use in the backward tracking. Defaults to 15.
 #' @param dt numeric, time step length used in the particle tracking. Defaults `time / 10`.
 #' @param zstart numeric value with the starting elevation of the particles. Defaults to the base of the aquifer.
@@ -383,8 +402,8 @@ endpoints <- function(tracelines, ...) {
 #'
 #' @details [capzone()] is a thin wrapper around [tracelines()]. Backward particle tracking is performed using [tracelines()]
 #'     and setting `forward = FALSE`. Initial particle locations are computed by equally spacing `npar` locations at the well
-#'     radius at the `zstart` elevation. To obtain a sharper delineation of the capture zone, try using more particles or
-#'     decreasing `dt`.
+#'     radius at the `zstart` elevation. To obtain a sharper delineation of the capture zone envelope, try using more particles
+#'     or decreasing `dt`.
 #'
 #' Note that different `zstart` values only have an effect in models with vertical flow components.
 #'
@@ -393,7 +412,6 @@ endpoints <- function(tracelines, ...) {
 #' @export
 #' @seealso [tracelines()]
 #' @examples
-#'
 #' k <- 10
 #' top <- 10; base <- 0
 #' n <- 0.3
@@ -405,6 +423,7 @@ endpoints <- function(tracelines, ...) {
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 #'
+#' # 5-year and 10-year capture zones
 #' cp5 <- capzone(m, w1, time = 5*365)
 #' cp10 <- capzone(m, w2, time = 10*365)
 #'

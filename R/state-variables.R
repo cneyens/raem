@@ -5,8 +5,10 @@
 #'
 #' @param na.below logical indicating if calculated head values below the aquifer base should be set to `NA`. Defaults to `TRUE`. See [potential_to_head()].
 #' @details [heads()] should not to be confused with [utils::head()], which returns the first part of an object.
-#' @return For [heads()], the same as for [omega()] but containing the hydraulic head values
-#'    evaluated at `x` and `y`, which are computed from [potential()] and the aquifer parameters using [potential_to_head()].
+#' @return For [heads()], a vector of `length(x)` (equal to `length(y)`) with the hydraulic head values at `x` and `y`.
+#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
+#'     marginal vectors `x` and `y` containing the hydraulic head values at the grid points.
+#'     The heads are computed from [potential()] and the aquifer parameters using [potential_to_head()].
 #' @export
 #' @rdname state-variables
 #' @name state-variables
@@ -37,11 +39,10 @@ heads <- function(aem, x, y, as.grid = FALSE, na.below = TRUE, ...) {
 
 #'
 #' @description [omega()] computes the complex potential for an `aem` or `element` object
-#'     at the given x and y coordinates.
+#'   at the given x and y coordinates.
 #'
-#' @return For [omega()], a vector of `length(x)` (equal to `length(y)`) with the complex potential values at `x` and `y`.
-#'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
-#'     marginal vectors `x` and `y` containing the complex potential values at the grid points.
+#' @return For [omega()], the same as for [heads()] but containing the complex potential values
+#'   evaluated at `x` and `y`.
 #' @export
 #' @rdname state-variables
 #'
@@ -51,7 +52,7 @@ omega <- function(...) UseMethod('omega')
 #' @description [potential()] computes the discharge potential for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @return For [potential()], the same as for [omega()] but containing the discharge potential values
+#' @return For [potential()], the same as for [heads()] but containing the discharge potential values
 #'    evaluated at `x` and `y`, which are the real components of [omega()].
 #' @export
 #' @rdname state-variables
@@ -62,7 +63,7 @@ potential <- function(...) UseMethod('potential')
 #' @description [streamfunction()] computes the stream function for an `aem` or `element` object
 #'     at the given x and y coordinates.
 #'
-#' @return For [streamfunction()], the same as for [omega()] but containing the stream function values
+#' @return For [streamfunction()], the same as for [heads()] but containing the stream function values
 #'    evaluated at `x` and `y`, which are the imaginary components of [omega()].
 #' @export
 #' @rdname state-variables
@@ -74,8 +75,8 @@ streamfunction <- function(...) UseMethod('streamfunction')
 #' [potinf()] computes the potential influence at the given x and y coordinates.
 #'
 #' @param ... ignored
-#' @param x numeric x coordinates to evaluate `potinf` at
-#' @param y numeric y coordinates to evaluate `potinf` at
+#' @param x numeric x coordinates to evaluate `potinf` at.
+#' @param y numeric y coordinates to evaluate `potinf` at.
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the potential influence values at `x` and `y`.
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
@@ -90,8 +91,8 @@ potinf <- function(...) UseMethod('potinf')
 #' [omegainf()] computes the complex potential influence at the given x and y coordinates.
 #'
 #' @param ... ignored
-#' @param x numeric x coordinates to evaluate `omegainf` at
-#' @param y numeric y coordinates to evaluate `omegainf` at
+#' @param x numeric x coordinates to evaluate `omegainf` at.
+#' @param y numeric y coordinates to evaluate `omegainf` at.
 #'
 #' @return A vector of `length(x)` (equal to `length(y)`) with the complex potential influence values at `x` and `y`.
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
@@ -102,10 +103,10 @@ potinf <- function(...) UseMethod('potinf')
 omegainf <- function(...) UseMethod('omegainf')
 
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
+#' @param aem `aem` object.
+#' @param x numeric x coordinates to evaluate the variable at.
+#' @param y numeric y coordinates to evaluate the variable at.
+#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
 #' @param ... ignored
 #'
 #' @export
@@ -161,7 +162,7 @@ streamfunction.aem <- function(aem, x, y, as.grid = FALSE, ...) {
 
 
 #'
-#' @param element analytic element of class `element`
+#' @param element analytic element of class `element`.
 #'
 #' @export
 #' @rdname state-variables
@@ -202,7 +203,7 @@ streamfunction.element <- function(element, x, y, ...) {
 }
 
 #'
-#' @param element analytic element of class `element`
+#' @param element analytic element of class `element`.
 #' @noRd
 #'
 potinf.element <- function(element, x, y, ...) {
@@ -214,7 +215,7 @@ potinf.element <- function(element, x, y, ...) {
 #'
 #' [head_to_potential()] calculates the discharge potential from the hydraulic head.
 #'
-#' @param aem `aem` object
+#' @param aem `aem` object.
 #' @param h numeric hydraulic head values as vector or matrix.
 #' @param ... ignored
 #'
@@ -223,7 +224,6 @@ potinf.element <- function(element, x, y, ...) {
 #' @export
 #' @rdname head_to_potential
 #' @examples
-#'
 #' k <- 10
 #' top <- 10; base <- 0
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
@@ -236,8 +236,8 @@ potinf.element <- function(element, x, y, ...) {
 #'
 #' h <- heads(m, x = xg, y = yg, as.grid = TRUE)
 #' hc <- heads(mc, x = xg, y = yg, as.grid = TRUE)
-#' head_to_potential(m, h)
-#' head_to_potential(mc, hc)
+#' pot <- head_to_potential(m, h)
+#' potc <- head_to_potential(mc, hc)
 #'
 head_to_potential <- function(aem, h, ...) {
   b <- aem$top - aem$base
@@ -259,7 +259,7 @@ head_to_potential <- function(aem, h, ...) {
 #'    structure as `phi`.
 #'
 #' The conversion of potential to head or vice versa is different for confined (constant saturated thickness)
-#'    and unconfined (variable saturated thickness) aquifers.
+#'    and unconfined (variable saturated thickness) aquifers as set by the `type` argument in `aem()`.
 #'
 #' If `na.below = FALSE`, negative potentials can be converted to hydraulic heads if flow is unconfined (`aem$type = 'variable'`).
 #'    The resulting heads are below the aquifer base. This may be useful for some use cases, e.g. in preliminary model construction
@@ -273,8 +273,8 @@ head_to_potential <- function(aem, h, ...) {
 #' @examples
 #' phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
 #' phic <- potential(mc, x = xg, y = yg, as.grid = TRUE)
-#' potential_to_head(m, phi)
-#' potential_to_head(mc, phic)
+#' hds <- potential_to_head(m, phi)
+#' hdsc <- potential_to_head(mc, phic)
 #'
 #' # Converting negative potentials results in NA's with warning
 #' try(

@@ -2,16 +2,16 @@
 % Please edit documentation in R/tracelines.R
 \name{capzone}
 \alias{capzone}
-\title{Calculate capture zone of a well element}
+\title{Calculate the capture zone of a well element}
 \usage{
 capzone(aem, well, time, npar = 15, dt = time/10, zstart = aem$base, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{well}{well analytic element of class \code{well} or inherits from it.}
+\item{well}{analytic element of class \code{well}.}
 
-\item{time}{numeric, time of the capture zone}
+\item{time}{numeric, time of the capture zone.}
 
 \item{npar}{integer, number of particles to use in the backward tracking. Defaults to 15.}
 
@@ -31,13 +31,12 @@ particle tracking until the requested time is reached.
 \details{
 \code{\link[=capzone]{capzone()}} is a thin wrapper around \code{\link[=tracelines]{tracelines()}}. Backward particle tracking is performed using \code{\link[=tracelines]{tracelines()}}
 and setting \code{forward = FALSE}. Initial particle locations are computed by equally spacing \code{npar} locations at the well
-radius at the \code{zstart} elevation. To obtain a sharper delineation of the capture zone, try using more particles or
-decreasing \code{dt}.
+radius at the \code{zstart} elevation. To obtain a sharper delineation of the capture zone envelope, try using more particles
+or decreasing \code{dt}.
 
 Note that different \code{zstart} values only have an effect in models with vertical flow components.
 }
 \examples{
-
 k <- 10
 top <- 10; base <- 0
 n <- 0.3
@@ -49,6 +48,7 @@ w2 = well(-200, -100, Q = 450)
 
 m <- aem(k, top, base, n = n, uf, rf, w1, w2)
 
+# 5-year and 10-year capture zones
 cp5 <- capzone(m, w1, time = 5*365)
 cp10 <- capzone(m, w2, time = 10*365)
 

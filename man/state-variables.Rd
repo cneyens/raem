@@ -35,32 +35,33 @@ streamfunction(...)
 \method{streamfunction}{element}(element, x, y, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x}{numeric x coordinates to evaluate at}
+\item{x}{numeric x coordinates to evaluate the variable at.}
 
-\item{y}{numeric y coordinates to evaluate at}
+\item{y}{numeric y coordinates to evaluate the variable at.}
 
-\item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
+\item{as.grid}{logical, should a matrix be returned? Defaults to \code{FALSE}. See details.}
 
 \item{na.below}{logical indicating if calculated head values below the aquifer base should be set to \code{NA}. Defaults to \code{TRUE}. See \code{\link[=potential_to_head]{potential_to_head()}}.}
 
 \item{...}{ignored}
 
-\item{element}{analytic element of class \code{element}}
+\item{element}{analytic element of class \code{element}.}
 }
 \value{
-For \code{\link[=heads]{heads()}}, the same as for \code{\link[=omega]{omega()}} but containing the hydraulic head values
-evaluated at \code{x} and \code{y}, which are computed from \code{\link[=potential]{potential()}} and the aquifer parameters using \code{\link[=potential_to_head]{potential_to_head()}}.
-
-For \code{\link[=omega]{omega()}}, a vector of \code{length(x)} (equal to \code{length(y)}) with the complex potential values at \code{x} and \code{y}.
+For \code{\link[=heads]{heads()}}, a vector of \code{length(x)} (equal to \code{length(y)}) with the hydraulic head values at \code{x} and \code{y}.
 If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
-marginal vectors \code{x} and \code{y} containing the complex potential values at the grid points.
+marginal vectors \code{x} and \code{y} containing the hydraulic head values at the grid points.
+The heads are computed from \code{\link[=potential]{potential()}} and the aquifer parameters using \code{\link[=potential_to_head]{potential_to_head()}}.
 
-For \code{\link[=potential]{potential()}}, the same as for \code{\link[=omega]{omega()}} but containing the discharge potential values
+For \code{\link[=omega]{omega()}}, the same as for \code{\link[=heads]{heads()}} but containing the complex potential values
+evaluated at \code{x} and \code{y}.
+
+For \code{\link[=potential]{potential()}}, the same as for \code{\link[=heads]{heads()}} but containing the discharge potential values
 evaluated at \code{x} and \code{y}, which are the real components of \code{\link[=omega]{omega()}}.
 
-For \code{\link[=streamfunction]{streamfunction()}}, the same as for \code{\link[=omega]{omega()}} but containing the stream function values
+For \code{\link[=streamfunction]{streamfunction()}}, the same as for \code{\link[=heads]{heads()}} but containing the stream function values
 evaluated at \code{x} and \code{y}, which are the imaginary components of \code{\link[=omega]{omega()}}.
 }
 \description{

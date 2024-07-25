@@ -7,29 +7,29 @@
 satthick(aem, x, y, as.grid = FALSE, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x}{numeric x coordinates to evaluate at}
+\item{x}{numeric x coordinates to evaluate at.}
 
-\item{y}{numeric y coordinates to evaluate at}
+\item{y}{numeric y coordinates to evaluate at.}
 
-\item{as.grid}{logical, should a matrix of dimensions c(\verb{length(y), length(x)}) be returned? Defaults to \code{FALSE}.}
+\item{as.grid}{logical, should a matrix be returned? Defaults to \code{FALSE}. See details.}
 
 \item{...}{additional arguments passed to \code{\link[=heads]{heads()}} when \code{aem$type = 'variable'}.}
 }
 \value{
-\code{\link[=satthick]{satthick()}} returns a vector of \code{length(x)} (equal to \code{length(y)}) with the saturated thicknesses at \code{x} and \code{y}.
+A vector of \code{length(x)} (equal to \code{length(y)}) with the saturated thicknesses at \code{x} and \code{y}.
 If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
 marginal vectors \code{x} and \code{y} containing the saturated thicknesses at the grid points.
 }
 \description{
-\code{\link[=satthick]{satthick()}} computes the saturated thickness of the aquifer of an \code{aem} object
+\code{\link[=satthick]{satthick()}} computes the saturated thickness of the aquifer from an \code{aem} object
 at the given x and y coordinates.
 }
 \details{
 If the aquifer is confined at \code{x} and \code{y}, the saturated thickness equals the aquifer thickness.
-For flow with variable saturated thickness, if the aquifer is unconfined at \code{x} and \code{y}, the saturated thickness
-it is calculated as the hydraulic head at \code{x} and \code{y} minus the aquifer base.
+For flow with variable saturated thickness (\code{aem$type = 'variable'}), if the aquifer is unconfined at \code{x} and \code{y},
+the saturated thickness is calculated as the hydraulic head at \code{x} and \code{y} minus the aquifer base.
 }
 \examples{
 uf <- uniformflow(100, 0.001, 0)

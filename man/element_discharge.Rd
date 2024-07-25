@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{element_discharge}
 \alias{element_discharge}
-\title{Get the discharge in or out of the aquifer from an element}
+\title{Get the computed discharge from an element}
 \usage{
 element_discharge(aem, name = NULL, type = NULL, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
 \item{name}{character vector with the name of the element(s) as available in \code{aem$elements}.}
 
@@ -26,7 +26,7 @@ for a individual analytic element or all elements of a given type.
 }
 \details{
 Either \code{name} or \code{type} should be specified. If \code{type} is specified, only one type is allowed.
-Possible values are \verb{'headwell', 'well', 'linesink', 'headlinesink', 'areasink'} or \verb{headareasink'}.
+Possible values are \verb{'headwell', 'well', 'linesink', 'headlinesink', 'areasink'} or \code{'headareasink'}.
 
 Only elements that add or remove water from the aquifer will return a non-zero discharge value.
 }
@@ -49,4 +49,6 @@ m <- aem(k, top, base, n, rf, uf, w1, w2, hw, hls, as)
 element_discharge(m, name = c('hls', 'as'))
 element_discharge(m, type = 'well')
 
+# zero discharge for uniform flow element as it does not add or remove water
+element_discharge(m, name = 'uf')
 }

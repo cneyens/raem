@@ -36,15 +36,15 @@ aem(
 \method{plot}{aem}(x, y = NULL, add = FALSE, xlim, ylim, ...)
 }
 \arguments{
-\item{k}{numeric, hydraulic conductivity of aquifer}
+\item{k}{numeric, hydraulic conductivity of the aquifer.}
 
-\item{top}{numeric, top elevation of aquifer}
+\item{top}{numeric, top elevation of the aquifer.}
 
-\item{base}{numeric, base elevation of aquifer}
+\item{base}{numeric, bottom elevation of the aquifer.}
 
-\item{n}{numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
+\item{n}{numeric, effective porosity of the aquifer as a fraction of total unit volume. Used for determining flow velocities with \code{\link[=velocity]{velocity()}}.}
 
-\item{...}{ignored}
+\item{...}{for \code{aem()}, objects of class \code{element}, or a single (named) list with \code{element} objects. Otherwise, ignored.}
 
 \item{type}{character specifying the type of flow in the aquifer, either \code{variable} (default) or \code{confined}. See details.}
 
@@ -52,7 +52,7 @@ aem(
 
 \item{maxiter}{integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See details.}
 
-\item{a}{\code{aem} object}
+\item{a}{\code{aem} object.}
 
 \item{b}{ignored}
 
@@ -62,7 +62,7 @@ aem(
 
 \item{add}{logical, should the plot be added to the existing plot? Defaults to \code{FALSE}.}
 
-\item{pch}{numeric point symbol value, defaults to \code{16}. For a reference point, a value of 4 is used.}
+\item{pch}{numeric point symbol value, defaults to \code{16}. For a reference point, a value of \code{4} is used.}
 
 \item{cex}{numeric symbol size value, defaults to \code{0.75}.}
 
@@ -90,29 +90,35 @@ to the system of equations as constructed by the contained elements.
 
 \code{\link[=plot.element]{plot.element()}} plots the location of an analytic element with point or line geometry.
 
-\code{\link[=plot.aem]{plot.aem()}} plots the planar locations of all analytic elements with a point or line geometry
+\code{\link[=plot.aem]{plot.aem()}} plots the locations of all analytic elements with a point or line geometry
 in an \code{aem} object by calling \code{\link[=plot.element]{plot.element()}} on them, or adds them to an existing plot.
 }
 \details{
 The default \code{type = 'variable'} allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If \code{type = 'confined'},
-the saturated thickness is always constant and equal to the aquifer thickness.
+the saturated thickness is always constant and equal to the aquifer thickness. This results in a linear model when head-specified elements with
+a resistance are used, whereas \code{type = 'variable'} would create a non-linear model in that case.
 
-\code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem} object before it is returned, which solves the system of equations.
+\code{\link[=solve.aem]{solve.aem()}} is called on the \code{aem} object before it is returned by \code{aem()}, which solves the system of equations.
+
+\subsection{Solving}{
 
 \code{\link[=solve.aem]{solve.aem()}} sets up the system of equations, and calls \code{\link[=solve]{solve()}} to
 solve. If head-specified elements are supplied, an element of class \code{constant} as
 created by \code{\link[=constant]{constant()}} (also called the reference point), should be supplied as well.
-
 Constructing an \code{aem} object by a call to \code{\link[=aem]{aem()}} automatically calls \code{\link[=solve.aem]{solve.aem()}}.
 
-If the system of equations is non-linear, for example when the flow system is unconfined (variable
+If the system of equations is non-linear, i.e. when the flow system is unconfined (variable
 saturated thickness) and elements with hydraulic resistance are specified, a Picard iteration is entered.
 During each Picard iteration step (outer iteration), the previously solved model parameters are used to set up and
 solve a linear system of equations. The model parameters are then updated and the next outer iteration step is
 entered, until \code{maxiter} iterations are reached. For an linear model, \code{maxiter} is ignored.
+}
+
+\subsection{Plotting}{
 
 If the analytic element has a point geometry and has a collocation point
 (e.g. \code{\link[=headwell]{headwell()}}), that point is also plotted with \code{pch = 1}.
+}
 
 A reference point (as created by \code{\link[=constant]{constant()}}) is never plotted when plotting the model
 as it is not a hydraulic feature. Area-sinks (as created by \code{\link[=areasink]{areasink()}} or \code{\link[=headareasink]{headareasink()}})
@@ -164,6 +170,4 @@ plot(m, add = TRUE)
 }
 \seealso{
 \code{\link[=add_element]{add_element()}} \code{\link[=contours]{contours()}}
-
-\code{\link[=contours]{contours()}}
 }

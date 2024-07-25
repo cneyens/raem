@@ -93,7 +93,7 @@ test_that('aem keeps names of element list and add_/remove_element works', {
   expect_named(m$elements, c('well', 'element_3', 'well2'))
 
   m <- m |>
-    remove_element(type = 'well')
+    remove_element(type = 'well', solve = TRUE)
   expect_named(m$elements, 'element_3')
 
 })
@@ -137,6 +137,7 @@ test_that('setting verbose = TRUE works when solving model', {
   hls <- headlinesink(-20, -100, -20, 100, hc = 8, resistance = 2)
 
   expect_output(aem(k, top, base, n, hls, rf, verbose = TRUE))
+  expect_output(aem(k, top, base, n, uf, rf, verbose = TRUE))
 
 })
 

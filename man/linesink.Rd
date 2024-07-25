@@ -7,17 +7,18 @@
 linesink(x0, y0, x1, y1, sigma, width = 0, ...)
 }
 \arguments{
-\item{x0}{numeric, starting x location of line-sink}
+\item{x0}{numeric, starting x location of line-sink.}
 
-\item{y0}{numeric, starting y location of line-sink}
+\item{y0}{numeric, starting y location of line-sink.}
 
-\item{x1}{numeric, ending x location of line-sink}
+\item{x1}{numeric, ending x location of line-sink.}
 
-\item{y1}{numeric, ending y location of line-sink}
+\item{y1}{numeric, ending y location of line-sink.}
 
-\item{sigma}{numeric, specific strength of the line-sink, i.e. discharge per length of line-sink. Positive is out of aquifer.}
+\item{sigma}{numeric, specific strength of the line-sink, i.e. discharge per unit length of line-sink. Positive is out of aquifer.}
 
-\item{width}{numeric, width of the line-sink. Only used in \code{\link[=tracelines]{tracelines()}} to determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).}
+\item{width}{numeric, width of the line-sink. Only used in \code{\link[=tracelines]{tracelines()}} to determine if a particle has reached the line.
+Defaults to zero (infinitesimally narrow line).}
 
 \item{...}{ignored}
 }
@@ -28,7 +29,7 @@ Strength-specified line-sink analytic element which is an object of class \code{
 \code{\link[=linesink]{linesink()}} creates a line-sink analytic element with constant specified strength.
 }
 \examples{
-linesink(-75, 50, 100, 50, sigma = 1)
+ls <- linesink(-75, 50, 100, 50, sigma = 1, width = 3)
 
 }
 \seealso{

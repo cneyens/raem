@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 # Create an example AEM model
 
-As an example model, two extraction wells in a phreatic aquifer with uniform background flow and areal recharge are modeled. The output grid is set up and head contours are plotted.
+As an example model, two extraction wells in a phreatic aquifer with uniform background flow and areal recharge are modeled. The output grid is defined and head contours are plotted.
 
 ```{r create-model}
 library(raem)
@@ -47,7 +47,8 @@ xg = seq(-1200, 1000, length = 100)
 yg = seq(-700, 500, length = 100)
 
 # plot head contours
-contours(m, xg, yg, col = 'dodgerblue', nlevels = 20, labcex = 0.8, xlab = 'x (m)', ylab = 'y (m)')
+contours(m, xg, yg, col = 'dodgerblue', nlevels = 20, labcex = 0.8,
+         xlab = 'x (m)', ylab = 'y (m)')
 
 ```
 

@@ -20,7 +20,7 @@ Constant-head analytic element point which is an object of class \code{constant}
 }
 \description{
 \code{\link[=constant]{constant()}} creates an analytic element containing a constant head, often referred to
-as the reference point.
+as \emph{the reference point}.
 }
 \examples{
 rf <- constant(xc = -100, yc = 0, hc = 10)

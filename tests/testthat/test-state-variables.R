@@ -24,7 +24,9 @@ test_that('state-variables dimensions are correct and names are preserved', {
   h <- heads(m, x, y)
   expect_named(heads(m, x, y), names(x)) # names of x are preserved
 
-  expect_named(heads(m, 0, y), names(y)) # names of x are preserved
+  # test streamfunction()
+  expect_named(streamfunction(m, 0, y), names(y)) # names of y are preserved
+  expect_named(streamfunction(uf, 0, y), names(y)) # names of y are preserved
 
 })
 

@@ -2,18 +2,18 @@
 % Please edit documentation in R/well.R
 \name{well}
 \alias{well}
-\title{Create a analytic element of a constant-discharge well}
+\title{Create an analytic element of a constant-discharge well}
 \usage{
 well(xw, yw, Q, rw = 0.3, ...)
 }
 \arguments{
-\item{xw}{numeric, x location of the well}
+\item{xw}{numeric, x location of the well.}
 
-\item{yw}{numeric, y location of the well}
+\item{yw}{numeric, y location of the well.}
 
-\item{Q}{numeric, volumetric discharge of the well (positive is out of aquifer)}
+\item{Q}{numeric, volumetric discharge of the well (positive is out of aquifer).}
 
-\item{rw}{numeric, radius of well. Defaults to 0.3.}
+\item{rw}{numeric, radius of well. Defaults to 0.3 length units.}
 
 \item{...}{ignored}
 }
@@ -27,9 +27,11 @@ Analytic element of a well with constant discharge which is an object of class \
 The inner annulus of a well element constitutes a singularity in the equations as the hydraulic head is undefined at
 a distance smaller than \code{rw} from the well center. If a state- or flow-variable is calculated within this annulus, its
 location is reset to its nearest location on the well screen.
+
+The well is assumed to fully penetrate the saturated aquifer.
 }
 \examples{
-well(xw = 50, yw = 0, Q = 200, rw = 0.3)
+w <- well(xw = 50, yw = 0, Q = 200, rw = 0.3)
 
 }
 \seealso{

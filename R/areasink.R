@@ -3,10 +3,10 @@
 #'
 #' [areasink()] creates a circular area-sink analytic element with constant, uniform specified recharge.
 #'
-#' @param xc numeric, x location of the center of the area-sink
-#' @param yc numeric, y location of the center of the area-sink
+#' @param xc numeric, x location of the center of the area-sink.
+#' @param yc numeric, y location of the center of the area-sink.
 #' @param N numeric, uniform constant leakage value (positive is into aquifer) in length per time.
-#' @param R numeric, radius of the circular area-sink
+#' @param R numeric, radius of the circular area-sink.
 #' @param location character, either `top` (default) or `base` specifying the vertical position of the area-sink.
 #' @param ... ignored
 #'
@@ -19,12 +19,12 @@
 #' @seealso [headareasink()]
 #'
 #' @examples
-#' areasink(xc = -500, yc = 0, N = 0.001, R = 500)
+#' as <- areasink(xc = -500, yc = 0, N = 0.001, R = 500)
 #'
 #' # flux assuming a constant head difference over a confining unit
 #' dh <- 3
 #' res <- 10 / 0.0001
-#' areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
+#' as <- areasink(xc = -500, yc = 0, N = -dh/res, R = 500, location = 'base')
 #'
 areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
   location <- match.arg(location)
@@ -39,13 +39,13 @@ areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
 
 #' Create a head-specified area-sink analytic element
 #'
-#' [headareasink()] creates a area-sink analytic element with constant specified head. The constant leakage flux
+#' [headareasink()] creates a circular area-sink analytic element with constant specified head. The constant leakage flux
 #'    into or out of the aquifer from the area-sink is computed by solving the corresponding `aem` model.
 #'
-#' @param xc numeric, x location of the center of the area-sink
-#' @param yc numeric, y location of the center of the area-sink
-#' @param hc numeric, specified hydraulic head at the center of the area-sink
-#' @param R numeric, radius of the circular area-sink
+#' @param xc numeric, x location of the center of the area-sink.
+#' @param yc numeric, y location of the center of the area-sink.
+#' @param hc numeric, specified hydraulic head at the center of the area-sink.
+#' @param R numeric, radius of the circular area-sink.
 #' @param resistance numeric, hydraulic resistance of the area-sink at its connection with the aquifer. Defaults to 0 (no resistance).
 #' @param location character, either `top` (default) or `base` specifying the vertical position of the area-sink.
 #' @param ... ignored
@@ -59,17 +59,15 @@ areasink <- function(xc, yc, N, R, location = c('top', 'base'), ...) {
 #'
 #' The resistance can be increased for a area-sink in poor connection with the aquifer, e.g. because of
 #'    a confining unit of low hydraulic conductivity between the aquifer and the area-sink. If the aquifer is unconfined
-#'    (i.e. has a variable saturated thickness), the system of equations becomes non-linear with respect to the hydraulic head
-#'    and iteration is required to solve the model.
+#'    (i.e. has a variable saturated thickness), the system of equations will then become non-linear with respect to the hydraulic
+#'    head and iteration is required to solve the model.
 #'
 #' @return Circular head-specified area-sink analytic element which is an object of class `headareasink` and inherits from `areasink`.
 #' @export
 #' @seealso [areasink()]
 #' @examples
-#'
-#' # using headareasink, the head difference depends on the computed instead of given aquifer head
-#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
-#' headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
+#' has <- headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
+#' has <- headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
 #'
 headareasink <- function(xc,
                          yc,

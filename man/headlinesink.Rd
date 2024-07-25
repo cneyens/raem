@@ -7,15 +7,15 @@
 headlinesink(x0, y0, x1, y1, hc, resistance = 0, width = 0, ...)
 }
 \arguments{
-\item{x0}{numeric, starting x location of line-sink}
+\item{x0}{numeric, starting x location of line-sink.}
 
-\item{y0}{numeric, starting y location of line-sink}
+\item{y0}{numeric, starting y location of line-sink.}
 
-\item{x1}{numeric, ending x location of line-sink}
+\item{x1}{numeric, ending x location of line-sink.}
 
-\item{y1}{numeric, ending y location of line-sink}
+\item{y1}{numeric, ending y location of line-sink.}
 
-\item{hc}{numeric, specified hydraulic head of the line-sink}
+\item{hc}{numeric, specified hydraulic head of the line-sink.}
 
 \item{resistance}{numeric, hydraulic resistance of the line-sink at its connection with the aquifer. Defaults to 0 (no resistance).}
 
@@ -43,8 +43,8 @@ or smaller wetted perimeter can be mimicked by adjusting the \code{resistance} a
 hydraulic head and iteration is required to solve the model.
 }
 \examples{
-headlinesink(-75, 50, 100, 50, hc = 10)
-headlinesink(-75, 50, 100, 50, hc = 10, res = 10, width = 4)
+hls <- headlinesink(-75, 50, 100, 50, hc = 10)
+hls <- headlinesink(-75, 50, 100, 50, hc = 10, resistance = 10, width = 4)
 
 }
 \seealso{

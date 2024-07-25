@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{contours}
 \alias{contours}
-\title{Plot contours of a computed variable of the analytic element model}
+\title{Plot contours of a state-variable of the analytic element model}
 \usage{
 contours(
   aem,
@@ -14,13 +14,13 @@ contours(
 )
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x}{numeric x coordinates at which the values in \code{z} are computed. These must be in ascending order.}
+\item{x}{numeric, vector or marginal x coordinates at which the gridded values are computed. These must be in ascending order.}
 
-\item{y}{numeric x coordinates at which the values in \code{z} are computed. These must be in ascending order.}
+\item{y}{numeric, vector or marginal y coordinates at which the gridded values are computed. These must be in ascending order.}
 
-\item{variable}{character indicating which variable to plot. Possible values are \code{heads} (default),
+\item{variable}{character indicating which state-variable to plot. Possible values are \code{heads} (default),
 \code{streamfunction} and \code{potential}.}
 
 \item{asp}{the \code{y/x} aspect ratio, see \code{\link[=plot.window]{plot.window()}}. Defaults to 1 (equal unit lengths).}
@@ -28,22 +28,22 @@ contours(
 \item{...}{additional arguments passed to \code{\link[=contour]{contour()}}.}
 }
 \description{
-\code{\link[=contours]{contours()}} creates a contour plot of a variable computed by the analytic element
+\code{\link[=contours]{contours()}} creates a contour plot of a state-variable computed by the analytic element
 model \code{aem}, or adds the contour lines to an existing plot.
 }
 \details{
 \code{\link[=contours]{contours()}} is a wrapper around \code{\link[=contour]{contour()}}. It obtains the values of \code{variable} at
-the supplied grid points and constructs the matrix supplied to \code{\link[=contour]{contour()}} by reversing the rows and
+the grid points defined by marginal vectors \code{x} and \code{y} and constructs the matrix supplied to \code{\link[=contour]{contour()}} by reversing the rows and
 transposing the matrix (see also the documentation of \code{\link[=image]{image()}}).
 }
 \examples{
-
 w <- well(xw = 50, yw = 0, Q = 200)
 wi <- well(xw = -200, yw = 0, Q = -100)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 rf <- constant(-1000, 0, hc = 10)
 ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, rf)
 
+# grid points
 xg <- seq(-350, 200, length = 100)
 yg <- seq(-125, 125, length = 100)
 

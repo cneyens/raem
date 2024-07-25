@@ -18,17 +18,17 @@ flow_through_line(
 \arguments{
 \item{aem}{\code{aem} object}
 
-\item{x0}{numeric, starting x location of line}
+\item{x0}{numeric, starting x location of line.}
 
-\item{y0}{numeric, starting y location of line}
+\item{y0}{numeric, starting y location of line.}
 
-\item{x1}{numeric, ending x location of line}
+\item{x1}{numeric, ending x location of line.}
 
-\item{y1}{numeric, ending y location of line}
+\item{y1}{numeric, ending y location of line.}
 
 \item{flow}{character specifying which flow variable to use. Possible values are \code{discharge} (default) and \code{darcy}. See \code{\link[=flow]{flow()}}.}
 
-\item{split}{logical, should the flow be split up into positive and negative flows or should they be summed (default)? See details.}
+\item{split}{logical, should the flow be split up into positive and negative flows (\code{TRUE}) or should they be summed (\code{FALSE}; default)? See details.}
 
 \item{...}{ignored}
 }

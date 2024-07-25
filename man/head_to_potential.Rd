@@ -10,7 +10,7 @@ head_to_potential(aem, h, ...)
 potential_to_head(aem, phi, na.below = TRUE, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
 \item{h}{numeric hydraulic head values as vector or matrix.}
 
@@ -28,7 +28,7 @@ structure as \code{h}.
 structure as \code{phi}.
 
 The conversion of potential to head or vice versa is different for confined (constant saturated thickness)
-and unconfined (variable saturated thickness) aquifers.
+and unconfined (variable saturated thickness) aquifers as set by the \code{type} argument in \code{aem()}.
 
 If \code{na.below = FALSE}, negative potentials can be converted to hydraulic heads if flow is unconfined (\code{aem$type = 'variable'}).
 The resulting heads are below the aquifer base. This may be useful for some use cases, e.g. in preliminary model construction
@@ -44,7 +44,6 @@ setting \code{na.below = FALSE}.
 \code{\link[=potential_to_head]{potential_to_head()}} calculates the hydraulic head from the discharge potential.
 }
 \examples{
-
 k <- 10
 top <- 10; base <- 0
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -45)
@@ -57,13 +56,13 @@ yg <- seq(-250, 250, length = 100)
 
 h <- heads(m, x = xg, y = yg, as.grid = TRUE)
 hc <- heads(mc, x = xg, y = yg, as.grid = TRUE)
-head_to_potential(m, h)
-head_to_potential(mc, hc)
+pot <- head_to_potential(m, h)
+potc <- head_to_potential(mc, hc)
 
 phi <- potential(m, x = xg, y = yg, as.grid = TRUE)
 phic <- potential(mc, x = xg, y = yg, as.grid = TRUE)
-potential_to_head(m, phi)
-potential_to_head(mc, phic)
+hds <- potential_to_head(m, phi)
+hdsc <- potential_to_head(mc, phic)
 
 # Converting negative potentials results in NA's with warning
 try(

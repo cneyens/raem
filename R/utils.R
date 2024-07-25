@@ -1,20 +1,20 @@
 
 #' Compute the saturated thickness
 #'
-#' [satthick()] computes the saturated thickness of the aquifer of an `aem` object
+#' [satthick()] computes the saturated thickness of the aquifer from an `aem` object
 #'     at the given x and y coordinates.
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate at
-#' @param y numeric y coordinates to evaluate at
-#' @param as.grid logical, should a matrix of dimensions c(`length(y), length(x)`) be returned? Defaults to `FALSE`.
+#' @param aem `aem` object.
+#' @param x numeric x coordinates to evaluate at.
+#' @param y numeric y coordinates to evaluate at.
+#' @param as.grid logical, should a matrix be returned? Defaults to `FALSE`. See details.
 #' @param ... additional arguments passed to [heads()] when `aem$type = 'variable'`.
 #'
 #' @details If the aquifer is confined at `x` and `y`, the saturated thickness equals the aquifer thickness.
-#'    For flow with variable saturated thickness, if the aquifer is unconfined at `x` and `y`, the saturated thickness
-#'    it is calculated as the hydraulic head at `x` and `y` minus the aquifer base.
+#'    For flow with variable saturated thickness (`aem$type = 'variable'`), if the aquifer is unconfined at `x` and `y`,
+#'    the saturated thickness is calculated as the hydraulic head at `x` and `y` minus the aquifer base.
 #'
-#' @return [satthick()] returns a vector of `length(x)` (equal to `length(y)`) with the saturated thicknesses at `x` and `y`.
+#' @return A vector of `length(x)` (equal to `length(y)`) with the saturated thicknesses at `x` and `y`.
 #'     If `as.grid = TRUE`, a matrix of dimensions `c(length(y), length(x))` described by
 #'     marginal vectors `x` and `y` containing the saturated thicknesses at the grid points.
 #' @export
@@ -58,17 +58,17 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 }
 
 
-#' Compute flow at a point in the direction of a given angle
+#' Compute flow in the direction of a given angle
 #'
-#' [dirflow()] computes a flow variable at the given points in the direction of the supplied angle
+#' [dirflow()] computes a flow variable at the given points in the direction of the supplied angle.
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates to evaluate `flow` at
-#' @param y numeric y coordinates to evaluate `flow` at
-#' @param angle numeric, angle of the direction to evaluate `flow`, in degrees counterclockwise from the x-axis
+#' @param aem `aem` object.
+#' @param x numeric x coordinates to evaluate `flow` at.
+#' @param y numeric y coordinates to evaluate `flow` at.
+#' @param angle numeric, angle of the direction to evaluate `flow`, in degrees counterclockwise from the x-axis.
 #' @param flow character specifying which flow variable to use. Possible values are `discharge` (default), `darcy` and `velocity`. See [flow()].
 #' @param as.grid logical, should a matrix be returned? Defaults to FALSE. See details.
-#' @param ... additional arguments passed to [discharge()], [darcy()] or [velocity()]
+#' @param ... additional arguments passed to [discharge()], [darcy()] or [velocity()].
 #'
 #' @details The x and y components of `flow` are used to calculate the directed value using `angle`.
 #'    The `z` coordinate in [discharge()], [darcy()] or [velocity()] is set at the aquifer base. Under Dupuit-Forchheimer,
@@ -89,7 +89,8 @@ satthick <- function(aem, x, y, as.grid = FALSE, ...) {
 #' dirflow(m, x = c(0, 100), y = 50, angle = -45)
 #'
 #' m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = 'confined')
-#' dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = 'velocity', as.grid = TRUE)
+#' dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90,
+#' flow = 'velocity', as.grid = TRUE)
 #'
 dirflow <- function(aem, x, y, angle,
                      flow = c('discharge', 'darcy', 'velocity'), as.grid = FALSE, ...) {
@@ -120,12 +121,12 @@ dirflow <- function(aem, x, y, angle,
 #' [flow_through_line()] computes the integrated flow passing through a straight line at a right angle.
 #'
 #' @param aem `aem` object
-#' @param x0 numeric, starting x location of line
-#' @param y0 numeric, starting y location of line
-#' @param x1 numeric, ending x location of line
-#' @param y1 numeric, ending y location of line
+#' @param x0 numeric, starting x location of line.
+#' @param y0 numeric, starting y location of line.
+#' @param x1 numeric, ending x location of line.
+#' @param y1 numeric, ending y location of line.
 #' @param flow character specifying which flow variable to use. Possible values are `discharge` (default) and `darcy`. See [flow()].
-#' @param split logical, should the flow be split up into positive and negative flows or should they be summed (default)? See details.
+#' @param split logical, should the flow be split up into positive and negative flows (`TRUE`) or should they be summed (`FALSE`; default)? See details.
 #' @param ... ignored
 #'
 #' @details The flow is computed normal to the line and integrated along the line length using [stats::integrate()].
@@ -192,18 +193,18 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
   return(fint)
 }
 
-#' Get the discharge in or out of the aquifer from an element
+#' Get the computed discharge from an element
 #'
 #' [element_discharge()] obtains the computed discharge into or out of the aquifer
 #'    for a individual analytic element or all elements of a given type.
 #'
-#' @param aem `aem` object
+#' @param aem `aem` object.
 #' @param name character vector with the name of the element(s) as available in `aem$elements`.
 #' @param type character with the type (class) of element to obtain the summed discharge from. See details.
 #' @param ... ignored
 #'
 #' @details Either `name` or `type` should be specified. If `type` is specified, only one type is allowed.
-#'    Possible values are `'headwell', 'well', 'linesink', 'headlinesink', 'areasink'` or `headareasink'`.
+#'    Possible values are `'headwell', 'well', 'linesink', 'headlinesink', 'areasink'` or `'headareasink'`.
 #'
 #' Only elements that add or remove water from the aquifer will return a non-zero discharge value.
 #'
@@ -231,6 +232,8 @@ flow_through_line <- function(aem, x0, y0, x1, y1, flow = c('discharge', 'darcy'
 #' element_discharge(m, name = c('hls', 'as'))
 #' element_discharge(m, type = 'well')
 #'
+#' # zero discharge for uniform flow element as it does not add or remove water
+#' element_discharge(m, name = 'uf')
 element_discharge <- function(aem, name = NULL, type = NULL, ...) {
   if((is.null(name) && is.null(type)) || (!is.null(name) && !is.null(type))) stop('Either "name" or "type" should be specified', call. = FALSE)
   if(!is.null(name)) {

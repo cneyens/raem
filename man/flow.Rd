@@ -43,11 +43,11 @@ domega(...)
 \arguments{
 \item{...}{ignored or arguments passed from \code{\link[=velocity]{velocity()}} or \code{\link[=darcy]{darcy()}} to \code{\link[=discharge]{discharge()}}.}
 
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x}{numeric x coordinates to evaluate at}
+\item{x}{numeric x coordinates to evaluate the flow at.}
 
-\item{y}{numeric y coordinates to evaluate at}
+\item{y}{numeric y coordinates to evaluate the flow at.}
 
 \item{z}{numeric z coordinates to evaluate at}
 
@@ -55,11 +55,11 @@ domega(...)
 
 \item{magnitude}{logical, should the magnitude of the flow vector be returned as well? Default to \code{FALSE}. See details.}
 
-\item{verbose}{logical, if \code{TRUE} (default), warnings with regards to setting \code{Qz} to NA are printed. See details.}
+\item{verbose}{logical, if \code{TRUE} (default), warnings with regards to setting \code{Qz} to \code{NA} are printed. See details.}
 
-\item{R}{numeric, retardation coefficient. Defaults to 1 (no retardation).}
+\item{R}{numeric, retardation coefficient used in \code{velocity()}. Defaults to 1 (no retardation).}
 
-\item{element}{analytic element of class \code{element}}
+\item{element}{analytic element of class \code{element}.}
 }
 \value{
 For \code{\link[=discharge]{discharge()}}, a matrix with the number of rows equal to the number of points to evaluate
@@ -73,18 +73,18 @@ the negative imaginary component and the \code{z} component is calculated based 
 and/or the curvature of the phreatic surface.
 
 If \code{magnitude = TRUE}, the last dimension of the returned array is expanded to include
-the magnitude of the discharge/darcy/velocity vector, calculated as \code{sqrt(Qx^2 + Qy^2 + Qz^2)}
+the magnitude of the discharge/Darcy/velocity vector, calculated as \code{sqrt(Qx^2 + Qy^2 + Qz^2)}
 (or \code{sqrt(qx^2 + qy^2 + qz^2)} or \code{sqrt(vx^2 + vy^2 + vz^2)}, respectively).
 
 For \code{\link[=darcy]{darcy()}}, the same as for \code{\link[=discharge]{discharge()}} but with the \code{x}, \code{y} and \code{z} components of the
-Darcy flux vector (\code{qx}, \code{qy} and \code{qz}). The value are computed by dividing the values of \code{\link[=discharge]{discharge()}} by
+Darcy flux vector (\code{qx}, \code{qy} and \code{qz}). The values are computed by dividing the values of \code{\link[=discharge]{discharge()}} by
 the saturated thickness at \code{x}, \code{y} and \code{z}.
 
 For \code{\link[=velocity]{velocity()}}, the same as for \code{\link[=discharge]{discharge()}} but with the \code{x}, \code{y} and \code{z} components of the
 average linear groundwater flow velocity vector (\code{vx}, \code{vy} and \code{vz}). The values are computed by dividing
 the \code{\link[=darcy]{darcy()}} values by the effective porosity (\code{aem$n}) and the retardation coefficient \code{R}.
 
-For \code{\link[=domega]{domega()}},  vector of \code{length(x)} (equal to \code{length(y)}) with the complex discharge values at \code{x} and \code{y},
+For \code{\link[=domega]{domega()}}, a vector of \code{length(x)} (equal to \code{length(y)}) with the complex discharge values at \code{x} and \code{y},
 If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} described by
 marginal vectors \code{x} and \code{y} containing the complex discharge values at the grid points.
 \code{\link[=domega]{domega()}} is the derivative of \code{\link[=omega]{omega()}} in the x and y directions.
@@ -93,7 +93,7 @@ marginal vectors \code{x} and \code{y} containing the complex discharge values a
 \code{\link[=discharge]{discharge()}} computes the \verb{x, y} and \code{z} components of the discharge vector for an \code{aem} object
 at the given x, y and z coordinates.
 
-\code{\link[=darcy]{darcy()}} computes the \verb{x, y} and \code{z} components of the Darcy flux vector (also called specific discharge vector)
+\code{\link[=darcy]{darcy()}} computes the \verb{x, y} and \code{z} components of the Darcy flux vector (also called \emph{specific discharge vector})
 for an \code{aem} object at the given x, y and z coordinates.
 
 \code{\link[=velocity]{velocity()}} computes the \verb{x, y} and \code{z} components of the average linear groundwater flow velocity vector
@@ -107,18 +107,16 @@ There is no \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}}
 to obtain the aquifer base and top.
 
 If the \code{z} coordinate is above the saturated aquifer level (i.e. the water-table for unconfined conditions or
-the aquifer top for confined conditions), or below the aquifer base, \code{Qz} values are set to NA with a warning (if \code{verbose = TRUE}).
-The \code{Qx} and \code{Qy} values are not set to NA, for convenience in specifying the \code{z} coordinate when only lateral flow
+the aquifer top for confined conditions), or below the aquifer base, \code{Qz} values are set to \code{NA} with a warning (if \code{verbose = TRUE}).
+The \code{Qx} and \code{Qy} values are not set to \code{NA}, for convenience in specifying the \code{z} coordinate when only lateral flow
 is of interest.
 }
 \examples{
-
 w <- well(xw = 55, yw = 0, Q = 200)
 uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 as <- areasink(xc = 0, yc = 0, N = 0.001, R = 500)
 rf <- constant(xc = -1000, yc = 1000, hc = 10)
 ml <- aem(k = 10, top = 10, base = -15, n = 0.2, w, uf, as, rf)
-
 
 xg <- seq(-100, 100, length = 5)
 yg <- seq(-75, 75, length = 3)

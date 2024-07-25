@@ -12,14 +12,14 @@ coverage](https://codecov.io/gh/cneyens/raem/branch/main/graph/badge.svg)](https
 status](https://www.r-pkg.org/badges/version/raem)](https://CRAN.R-project.org/package=raem)
 <!-- badges: end -->
 
-`raem` is an R package for modeling steady-state single-layer
+`raem` is an R package for modeling steady-state, single-layer
 groundwater flow under the Dupuit-Forchheimer assumption using analytic
 elements.
 
 ## Installation
 
 You can install the development version of `raem` from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/cneyens/raem) with:
 
 ``` r
 # install.packages("devtools")

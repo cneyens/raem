@@ -3,11 +3,11 @@
 #'
 #' [aem()] creates an analytic element model to which elements can be added
 #'
-#' @param k numeric, hydraulic conductivity of aquifer
-#' @param top numeric, top elevation of aquifer
-#' @param base numeric, base elevation of aquifer
-#' @param n numeric, effective porosity of aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
-#' @param ... objects of class `element`, or a single (named) list with `element` objects
+#' @param k numeric, hydraulic conductivity of the aquifer.
+#' @param top numeric, top elevation of the aquifer.
+#' @param base numeric, bottom elevation of the aquifer.
+#' @param n numeric, effective porosity of the aquifer as a fraction of total unit volume. Used for determining flow velocities with [velocity()].
+#' @param ... objects of class `element`, or a single (named) list with `element` objects.
 #' @param type character specifying the type of flow in the aquifer, either `variable` (default) or `confined`. See details.
 #' @param verbose logical indicating if information during the solving process should be printed. Defaults to `FALSE`.
 #' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See [solve.aem()].
@@ -16,9 +16,10 @@
 #'    a list containing all elements with the names of the objects specified in `...`, and a logical `solved`
 #'    indicating if the model is solved.
 #' @details The default `type = 'variable'` allows for unconfined/confined flow, i.e. flow with variable saturated thickness. If `type = 'confined'`,
-#'    the saturated thickness is always constant and equal to the aquifer thickness.
+#'    the saturated thickness is always constant and equal to the aquifer thickness. This results in a linear model when head-specified elements with
+#'    a resistance are used, whereas `type = 'variable'` would create a non-linear model in that case.
 #'
-#' [solve.aem()] is called on the `aem` object before it is returned, which solves the system of equations.
+#' [solve.aem()] is called on the `aem` object before it is returned by `aem()`, which solves the system of equations.
 #'
 #' @export
 #' @seealso [add_element()] [contours()]
@@ -81,19 +82,20 @@ aem <- function(k, top, base, n, ..., type = c('variable', 'confined'), verbose 
 #'
 #' [solve.aem()] solves the system of equations as constructed by the elements in the `aem` model
 #'
-#' @param a `aem` object
+#' @param a `aem` object.
 #' @param b ignored
 #' @param maxiter integer specifying the maximum allowed iterations for a non-linear solution. Defaults to 10. See details.
 #' @param verbose logical indicating if information during the solving process should be printed. Defaults to `FALSE`.
-#' @param ... ignored
+#' @param ... for `aem()`, objects of class `element`, or a single (named) list with `element` objects. Otherwise, ignored.
 #'
-#' @details [solve.aem()] sets up the system of equations, and calls [solve()] to
+#' @details
+#' ## Solving
+#' [solve.aem()] sets up the system of equations, and calls [solve()] to
 #'     solve. If head-specified elements are supplied, an element of class `constant` as
 #'     created by [constant()] (also called the reference point), should be supplied as well.
+#'     Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
 #'
-#' Constructing an `aem` object by a call to [aem()] automatically calls [solve.aem()].
-#'
-#' If the system of equations is non-linear, for example when the flow system is unconfined (variable
+#' If the system of equations is non-linear, i.e. when the flow system is unconfined (variable
 #'    saturated thickness) and elements with hydraulic resistance are specified, a Picard iteration is entered.
 #'    During each Picard iteration step (outer iteration), the previously solved model parameters are used to set up and
 #'    solve a linear system of equations. The model parameters are then updated and the next outer iteration step is
@@ -192,8 +194,8 @@ solve.aem <- function(a, b, maxiter = 10, verbose = FALSE, ...) {
 #'     for a given element used to construct the linear system of equations.
 #'
 #' @param element analytic element for which the coefficients should be determined.
-#' @param aem `aem` object
-#' @param id integer indicating which place `element` is in `aem$elements`
+#' @param aem `aem` object.
+#' @param id integer indicating which place `element` is in `aem$elements`.
 #' @param ... ignored
 #'
 #' @details [equation()] is used to set up the linear system of equations `Ax = b`
@@ -264,9 +266,9 @@ equation <- function(element, aem, id, ...) {
 #'
 #' [element()] creates a base element with a parameter and number of unknowns.
 #'
-#' @param p numeric parameter value
-#' @param un numeric number of unknowns
-#' @param ... ignored
+#' @param p numeric parameter value.
+#' @param un numeric number of unknowns.
+#' @param ... ignored.
 #'
 #' @return An object of class `element` which is a list with `p` and `un` elements.
 #'     This is used in constructing analytic elements by adding other variabels to this base class.
@@ -282,8 +284,8 @@ element <- function(p, un = 0, ...) {
 
 #' Get the resistance factor of an analytic element
 #'
-#' @param element analytic element with unknowns
-#' @param aem `aem` object
+#' @param element analytic element with unknowns.
+#' @param aem `aem` object.
 #'
 #' @return Numeric vector with the resistance factor at every collocation point of the element
 #' @noRd
@@ -367,15 +369,15 @@ resfac <- function(element, aem) {
 
 #' Add or remove an element from an existing `aem` object
 #'
-#' [add_element()] adds a new element to or from an `aem` object.
+#' [add_element()] adds a new element to an `aem` object.
 #'
-#' @param aem `aem` object
-#' @param element analytic element of class `element`
-#' @param name optional name of the element as character. Duplicate names in `aem` are not allowed.
+#' @param aem `aem` object.
+#' @param element analytic element of class `element`.
+#' @param name optional name of the element as character. Duplicate element names in `aem` are not allowed..
 #' @param solve logical, should the model be solved after adding or removing the element? Defaults to `FALSE`.
 #' @param ... ignored
 #'
-#' @return The `aem` model with the addition of `element` or with the removal of an element. If `solve = TRUE`,
+#' @return The `aem` model with the addition of `element` or with the removal of element(s). If `solve = TRUE`,
 #'    the model is solved using [solve.aem()]. The name of the new element is taken from the `name` argument,
 #'    the object name or set to `element_1` with `1` being the index of the new element in the element list. See examples.
 #' @export
@@ -390,8 +392,9 @@ resfac <- function(element, aem) {
 #'
 #' # or else sets it sequentially from number of elements
 #' mnew <- add_element(m, constant(xc = 0, yc = 1000, hc = 12))
+#'
 #' @examplesIf getRversion() >= '4.1.0'
-#' # add_element() is pipe-friendly
+#' # add_element() adn remove_element() are pipe-friendly
 #' mnew <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
 #'     add_element(rf, name = 'rf') |>
 #'     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
@@ -421,7 +424,7 @@ add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
 }
 
 #'
-#' @description [remove_element()] removes an element from the `aem` object based on its name or type.
+#' @description [remove_element()] removes an element from an `aem` object based on its name or type.
 #'
 #' @param type class of the element(s) to remove. Either `name` or `type` should be specified in [remove_element()].
 #'
@@ -429,6 +432,7 @@ add_element <- function(aem, element, name = NULL, solve = FALSE, ...) {
 #' @rdname add_element
 #'
 #' @examples
+#'
 #' # removing elements
 #' mnew <- remove_element(mnew, name = 'rf')
 #' mnew <- remove_element(mnew, type = 'headwell')

@@ -7,13 +7,13 @@
 headareasink(xc, yc, hc, R, resistance = 0, location = c("top", "base"), ...)
 }
 \arguments{
-\item{xc}{numeric, x location of the center of the area-sink}
+\item{xc}{numeric, x location of the center of the area-sink.}
 
-\item{yc}{numeric, y location of the center of the area-sink}
+\item{yc}{numeric, y location of the center of the area-sink.}
 
-\item{hc}{numeric, specified hydraulic head at the center of the area-sink}
+\item{hc}{numeric, specified hydraulic head at the center of the area-sink.}
 
-\item{R}{numeric, radius of the circular area-sink}
+\item{R}{numeric, radius of the circular area-sink.}
 
 \item{resistance}{numeric, hydraulic resistance of the area-sink at its connection with the aquifer. Defaults to 0 (no resistance).}
 
@@ -25,7 +25,7 @@ headareasink(xc, yc, hc, R, resistance = 0, location = c("top", "base"), ...)
 Circular head-specified area-sink analytic element which is an object of class \code{headareasink} and inherits from \code{areasink}.
 }
 \description{
-\code{\link[=headareasink]{headareasink()}} creates a area-sink analytic element with constant specified head. The constant leakage flux
+\code{\link[=headareasink]{headareasink()}} creates a circular area-sink analytic element with constant specified head. The constant leakage flux
 into or out of the aquifer from the area-sink is computed by solving the corresponding \code{aem} model.
 }
 \details{
@@ -38,14 +38,12 @@ varying aquifer head.
 
 The resistance can be increased for a area-sink in poor connection with the aquifer, e.g. because of
 a confining unit of low hydraulic conductivity between the aquifer and the area-sink. If the aquifer is unconfined
-(i.e. has a variable saturated thickness), the system of equations becomes non-linear with respect to the hydraulic head
-and iteration is required to solve the model.
+(i.e. has a variable saturated thickness), the system of equations will then become non-linear with respect to the hydraulic
+head and iteration is required to solve the model.
 }
 \examples{
-
-# using headareasink, the head difference depends on the computed instead of given aquifer head
-headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
-headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
+has <- headareasink(xc = -500, yc = 0, hc = 3, R = 500, res = 1000)
+has <- headareasink(xc = -500, yc = 0, hc = 3, R = 500, location = 'base')
 
 }
 \seealso{

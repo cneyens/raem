@@ -25,15 +25,15 @@ endpoints(tracelines, ...)
 \method{plot}{tracelines}(x, y = NULL, add = FALSE, type = "l", arrows = FALSE, marker = NULL, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x0}{numeric vector, starting \code{x} locations of the particles}
+\item{x0}{numeric vector with starting x locations of the particles.}
 
-\item{y0}{numeric vector, starting \code{y} locations of the particles}
+\item{y0}{numeric vector with starting y locations of the particles.}
 
-\item{z0}{numeric vector, starting \code{z} locations of the particles}
+\item{z0}{numeric vector with starting z locations of the particles.}
 
-\item{times}{numeric vector with the times at which locations should be registered}
+\item{times}{numeric vector with the times at which particle locations should be registered.}
 
 \item{forward}{logical, should forward (\code{TRUE}; default) or backward (\code{FALSE}) tracking be performed.}
 
@@ -45,11 +45,11 @@ endpoints(tracelines, ...)
 
 \item{ncores}{integer, number of cores to use when running in parallel. Defaults to 0 (no parallel computing). See details.}
 
-\item{...}{additional arguments passed to \code{\link[=plot]{plot()}} or \code{\link[=arrows]{arrows()}}.}
+\item{...}{additional arguments passed to \code{\link[=plot]{plot()}} or \code{\link[=arrows]{arrows()}} when plotting. Otherwise ignored.}
 
-\item{tracelines}{object of class \code{tracelines} as returned by \code{\link[=tracelines]{tracelines()}}}
+\item{tracelines}{object of class \code{tracelines} as returned by \code{\link[=tracelines]{tracelines()}}.}
 
-\item{x}{object of class \code{tracelines}}
+\item{x}{object of class \code{tracelines}.}
 
 \item{y}{ignored}
 
@@ -63,7 +63,7 @@ endpoints(tracelines, ...)
 }
 \value{
 \code{\link[=tracelines]{tracelines()}} returns an object of class \code{tracelines} which is a list with length equal to the number of particles where each list element contains
-a matrix with columns \code{time}, \code{x}, \code{y} and \code{z} specifying the registered time and coordinates of the particle as is it tracked through the flow field.
+a matrix with columns \code{time}, \code{x}, \code{y} and \code{z} specifying the registered time and coordinates of the particle as it is tracked through the flow field.
 
 The final row represents either the location at the maximum \code{times} value or, if the particle terminated prematurely, the time and location of the termination.
 
@@ -77,7 +77,7 @@ of the particles in the \code{tracelines} object.
 by numerically integrating the velocity vector. The resulting set of connected coordinates produces the
 tracelines.
 
-\code{\link[=endpoints]{endpoints()}} obtains the final time and locations of tracked particles
+\code{\link[=endpoints]{endpoints()}} obtains the final time and locations of tracked particles.
 }
 \details{
 \code{\link[deSolve:lsoda]{deSolve::lsoda()}} is used to numerically integrate the velocity vector.
@@ -90,21 +90,26 @@ The returned time value is the time of termination.
 
 The \code{tfunc} argument can be used to specify additional termination events. It is a function (or a list of functions) that
 takes arguments \code{t}, \code{coords} and \code{parms}. These are, respectively, a numeric value with the current tracking time,
-a numeric vector of length 3 with the current \code{x}, \code{y} and \code{z} coordinates of the particle, and a list with elements
-\code{aem} and \code{R}. It should return a single logical value indicating if the particle should terminate. See examples.
+a numeric vector of length 3 with the current \code{x}, \code{y} and \code{z} coordinate of the particle, and a list with elements
+\code{aem} and \code{R} (named as such). It should return a single logical value indicating if the particle should terminate. See examples.
 
 If initial particle locations are above the saturated aquifer level, they are reset to this elevation with a warning.
 Initial particle locations below the aquifer base are reset at the aquifer base with a warning. A small
 perturbation is added to these elevations to avoid the particle tracking algorithm to get stuck at these locations.
 If the algorithm does get stuck (i.e. excessive run-times), try resetting the \code{z0} values to elevations well inside the saturated domain.
 
+Initial particle locations inside a termination point are dropped with a warning.
+
 Backward particle tracking is performed by reversing the flow field (i.e. multiplying the velocities with \code{-1}).
 
 Traceline computation is embarrassingly parallel. When \code{ncores > 0}, the \code{parallel} package is used to set up the cluster with the requested nodes and
 the tracelines are computed using \code{\link[parallel:clusterApply]{parallel::parLapplyLB()}}. \code{ncores} should not exceed the number of available cores as returned by \code{\link[parallel:detectCores]{parallel::detectCores()}}.
 
+\subsection{Plotting}{
+
 The \code{marker} value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
 The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.
+}
 }
 \examples{
 k <- 10
@@ -157,6 +162,7 @@ termf <- function(t, coords, parms) {
              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
   return(in_poly)
 }
+
 paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
 contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(m, add = TRUE)

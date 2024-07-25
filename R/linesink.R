@@ -3,19 +3,20 @@
 #'
 #' [linesink()] creates a line-sink analytic element with constant specified strength.
 #'
-#' @param x0 numeric, starting x location of line-sink
-#' @param y0 numeric, starting y location of line-sink
-#' @param x1 numeric, ending x location of line-sink
-#' @param y1 numeric, ending y location of line-sink
-#' @param sigma numeric, specific strength of the line-sink, i.e. discharge per length of line-sink. Positive is out of aquifer.
-#' @param width numeric, width of the line-sink. Only used in [tracelines()] to determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).
+#' @param x0 numeric, starting x location of line-sink.
+#' @param y0 numeric, starting y location of line-sink.
+#' @param x1 numeric, ending x location of line-sink.
+#' @param y1 numeric, ending y location of line-sink.
+#' @param sigma numeric, specific strength of the line-sink, i.e. discharge per unit length of line-sink. Positive is out of aquifer.
+#' @param width numeric, width of the line-sink. Only used in [tracelines()] to determine if a particle has reached the line.
+#'   Defaults to zero (infinitesimally narrow line).
 #' @param ... ignored
 #'
 #' @return Strength-specified line-sink analytic element which is an object of class `linesink` and inherits from `element`.
 #' @export
 #' @seealso [headlinesink()]
 #' @examples
-#' linesink(-75, 50, 100, 50, sigma = 1)
+#' ls <- linesink(-75, 50, 100, 50, sigma = 1, width = 3)
 #'
 linesink <- function(x0, y0, x1, y1, sigma, width = 0, ...) {
   ls <- element(sigma)
@@ -32,11 +33,11 @@ linesink <- function(x0, y0, x1, y1, sigma, width = 0, ...) {
 #' [headlinesink()] creates a line-sink analytic element with constant specified head. The discharge
 #'    into the line-sink per unit length is computed by solving the corresponding `aem` model.
 #'
-#' @param x0 numeric, starting x location of line-sink
-#' @param y0 numeric, starting y location of line-sink
-#' @param x1 numeric, ending x location of line-sink
-#' @param y1 numeric, ending y location of line-sink
-#' @param hc numeric, specified hydraulic head of the line-sink
+#' @param x0 numeric, starting x location of line-sink.
+#' @param y0 numeric, starting y location of line-sink.
+#' @param x1 numeric, ending x location of line-sink.
+#' @param y1 numeric, ending y location of line-sink.
+#' @param hc numeric, specified hydraulic head of the line-sink.
 #' @param resistance numeric, hydraulic resistance of the line-sink at its connection with the aquifer. Defaults to 0 (no resistance).
 #' @param width numeric, width of the line-sink. Used with `resistance` to calculate the line-sink strength, and by [tracelines()] to
 #'    determine if a particle has reached the line. Defaults to zero (infinitesimally narrow line).
@@ -56,8 +57,8 @@ linesink <- function(x0, y0, x1, y1, sigma, width = 0, ...) {
 #' @export
 #' @seealso [linesink()]
 #' @examples
-#' headlinesink(-75, 50, 100, 50, hc = 10)
-#' headlinesink(-75, 50, 100, 50, hc = 10, res = 10, width = 4)
+#' hls <- headlinesink(-75, 50, 100, 50, hc = 10)
+#' hls <- headlinesink(-75, 50, 100, 50, hc = 10, resistance = 10, width = 4)
 #'
 headlinesink <- function(x0, y0, x1, y1, hc, resistance = 0, width = 0, ...) {
   hls <- linesink(x0 = x0, y0 = y0, x1 = x1, y1 = y1, sigma = 0, width = width)

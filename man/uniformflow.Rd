@@ -2,7 +2,7 @@
 % Please edit documentation in R/uniformflow.R
 \name{uniformflow}
 \alias{uniformflow}
-\title{Create a uniform-flow analytic element with specified recharge}
+\title{Create an analytic element with uniform flow}
 \usage{
 uniformflow(TR, gradient, angle, ...)
 }
@@ -11,7 +11,7 @@ uniformflow(TR, gradient, angle, ...)
 
 \item{gradient}{numeric, hydraulic gradient. Positive in the direction of flow.}
 
-\item{angle}{numeric, angle of the primary direction of background flow,
+\item{angle}{numeric, angle of the primary direction of background flow
 in degrees counterclockwise from the x-axis.}
 
 \item{...}{ignored}
@@ -20,15 +20,15 @@ in degrees counterclockwise from the x-axis.}
 Analytic element of constant uniform flow which is an object of class \code{uniformflow} and inherits from \code{element}.
 }
 \description{
-\code{\link[=uniformflow]{uniformflow()}} creates a analytic element of constant uniform background flow.
+\code{\link[=uniformflow]{uniformflow()}} creates an analytic element of constant uniform background flow.
 }
 \details{
 \code{TR} and \code{gradient} are multiplied to obtain the discharge which remains
 constant throughout the system, independent of the saturated thickness of the aquifer.
 
-Groundwater flow is in the direction of the \emph{negative} hydraulic gradient. Note that \code{gradient} is
+Groundwater flow is always in the direction of the \emph{negative} hydraulic gradient. Note that \code{gradient} is
 specified here as positive in the direction of flow for convenience.
 }
 \examples{
-uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
+uf <- uniformflow(TR = 100, gradient = 0.002, angle = -45) # South-eastern direction
 }

@@ -55,34 +55,34 @@ image_to_matrix <- function(m) {
   }
 }
 
-#' Plot contours of a computed variable of the analytic element model
+#' Plot contours of a state-variable of the analytic element model
 #'
-#' @description [contours()] creates a contour plot of a variable computed by the analytic element
+#' @description [contours()] creates a contour plot of a state-variable computed by the analytic element
 #'    model `aem`, or adds the contour lines to an existing plot.
 #'
-#' @param aem `aem` object
-#' @param x numeric x coordinates at which the values in `z` are computed. These must be in ascending order.
-#' @param y numeric x coordinates at which the values in `z` are computed. These must be in ascending order.
-#' @param variable character indicating which variable to plot. Possible values are `heads` (default),
+#' @param aem `aem` object.
+#' @param x numeric, vector or marginal x coordinates at which the gridded values are computed. These must be in ascending order.
+#' @param y numeric, vector or marginal y coordinates at which the gridded values are computed. These must be in ascending order.
+#' @param variable character indicating which state-variable to plot. Possible values are `heads` (default),
 #'    `streamfunction` and `potential`.
 #' @param asp the `y/x` aspect ratio, see [plot.window()]. Defaults to 1 (equal unit lengths).
 #' @param ... additional arguments passed to [contour()].
 #'
 #' @details [contours()] is a wrapper around [contour()]. It obtains the values of `variable` at
-#'    the supplied grid points and constructs the matrix supplied to [contour()] by reversing the rows and
+#'    the grid points defined by marginal vectors `x` and `y` and constructs the matrix supplied to [contour()] by reversing the rows and
 #'    transposing the matrix (see also the documentation of [image()]).
 #'
 #' @export
 #' @importFrom graphics contour
 #' @seealso [aem()] [contour()] [image()] [heads()]
 #' @examples
-#'
 #' w <- well(xw = 50, yw = 0, Q = 200)
 #' wi <- well(xw = -200, yw = 0, Q = -100)
 #' uf <- uniformflow(gradient = 0.002, angle = -45, TR = 100)
 #' rf <- constant(-1000, 0, hc = 10)
 #' ml <- aem(k = 10, top = 10, base = 0, n = 0.2, w, wi, uf, rf)
 #'
+#' # grid points
 #' xg <- seq(-350, 200, length = 100)
 #' yg <- seq(-125, 125, length = 100)
 #'
@@ -120,13 +120,15 @@ contours <- function(aem, x, y, variable = c('heads', 'streamfunction', 'potenti
 #' @param x `aem` object, or analytic element of class `element` to plot. If not a point or line geometry, nothing is plotted.
 #' @param y ignored
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
-#' @param pch numeric point symbol value, defaults to `16`. For a reference point, a value of 4 is used.
+#' @param pch numeric point symbol value, defaults to `16`. For a reference point, a value of `4` is used.
 #' @param cex numeric symbol size value, defaults to `0.75`.
 #' @param use.widths logical, if line elements with non-zero width are plotted, should they be plotted as polygons including
 #'    the width (`TRUE`; default) or as infinitesimally thin lines (`FALSE`)?
 #' @param col color of element. Defaults to `'black'`.
 #'
-#' @details If the analytic element has a point geometry and has a collocation point
+#' @details
+#' ## Plotting
+#' If the analytic element has a point geometry and has a collocation point
 #'    (e.g. [headwell()]), that point is also plotted with `pch = 1`.
 #'
 #' @export
@@ -191,7 +193,7 @@ plot.element <- function(x,
                        byrow = TRUE, ncol = 2)
 
         frame()
-        plot.window(range(c(xci, xco)), range(c(yci, yco)))
+        plot.window(xlim, ylim)
         polygon(poly, col = col, ...)
         axis(1); axis(2); box()
       } else {
@@ -234,7 +236,7 @@ plot.element <- function(x,
 }
 
 #'
-#' @description [plot.aem()] plots the planar locations of all analytic elements with a point or line geometry
+#' @description [plot.aem()] plots the locations of all analytic elements with a point or line geometry
 #'    in an `aem` object by calling [plot.element()] on them, or adds them to an existing plot.
 #'
 #' @param xlim numeric, plot limits along the x-axis. Required if `add = FALSE`.
@@ -249,7 +251,6 @@ plot.element <- function(x,
 #' @importFrom graphics frame plot.window axis box
 #' @rdname aem
 #' @include aem.R
-#' @seealso [contours()]
 #' @examples
 #' plot(m, xlim = c(-500, 500), ylim = c(-250, 250))
 #'
@@ -282,15 +283,17 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, ...) {
 }
 
 #'
-#' @param x object of class `tracelines`
+#' @param x object of class `tracelines`.
 #' @param y ignored
 #' @param add logical, should the plot be added to the existing plot? Defaults to `FALSE`.
 #' @param type character indicating what type of plot to draw. See [plot()]. Defaults to `'l'` (lines).
 #' @param arrows logical indicating if arrows should be drawn using [arrows()]. Defaults to `FALSE`.
 #' @param marker numeric, time interval at which to plot point markers. Defaults to `NULL` (no markers). See details.
-#' @param ... additional arguments passed to [plot()] or [arrows()].
+#' @param ... additional arguments passed to [plot()] or [arrows()] when plotting. Otherwise ignored.
 #'
-#' @details The `marker` value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
+#' @details
+#' ## Plotting
+#' The `marker` value can be used to plot point markers at given time intervals, e.g. every 365 days (see examples).
 #'    The x and y locations of each particle at the marked times are obtained by linearly interpolating from the computed particle locations.
 #'
 #' @export

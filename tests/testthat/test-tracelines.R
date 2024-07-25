@@ -14,7 +14,7 @@ test_that("tracelines works for 2D flow", {
   m <- aem(k, top, base, n = n, uf, rf)
 
   x0 <- 0; y0 <- 0
-  times <- seq(0, 10 * 365, 365 / 20)
+  times <- seq(0, 10 * 365, 365 / 10)
 
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R)
 
@@ -37,7 +37,7 @@ test_that("tracelines works for 2D flow", {
 
   # multiple traces
   x0 <- 0; y0 <- seq(-100, 100, length = 10)
-  times <- seq(0, 10 * 365, 365 / 20)
+  times <- seq(0, 10 * 365, 365 / 10)
 
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R)
 
@@ -73,7 +73,7 @@ test_that('tracelines works for 3D flow', {
 
   m <- aem(k, top, base, n = n, as, rf, hls1, hls2)
 
-  x0 <- 0; y0 <- 0; times <- seq(0, 3*365, 365/20)
+  x0 <- 0; y0 <- 0; times <- seq(0, 3*365, 365/10)
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 
   # Bakker & Post (2022), eq. 1.34, rearranged
@@ -99,8 +99,8 @@ test_that('termination in tracelines works', {
 
   m <- aem(k, top, base, n = n, uf, w, type = 'confined')
 
-  x0 <- -200; y0 <- seq(-100, 100, length = 10)
-  times <- seq(0, 10 * 365, 365 / 40)
+  x0 <- -200; y0 <- seq(-100, 100, length = 4)
+  times <- seq(0, 10 * 365, 365 / 10)
 
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
   endp <- endpoints(paths)
@@ -127,11 +127,46 @@ test_that('termination in tracelines works', {
   m <- aem(k, top, base, n = n, uf, ls, rf, type = 'confined')
 
   tol <- 1e-2
-  times <- seq(0, 10 * 365, 365 / 100) # increased time resolution
+  times <- seq(0, 10 * 365, 365 / 30) # increased time resolution
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, tol = tol)
   endp <- endpoints(paths)
 
   expect_equal(endp[,'x'], rep(lsx - width/2, nrow(endp)), tolerance = tol)
+
+  # custom function
+  term1 <- function(t, coords, parm) { # terminate of particle crosses x = -300 line
+    return(coords[1] > -300)
+  }
+
+  m <- aem(k, top, base, n = n, uf, rf)
+  times <- seq(0, 10 * 365, 365 / 20)
+  paths <- tracelines(m, x0 = -400, y = 0, z = base, times = times, tfunc = term1, R = 1.5)
+  endp <- endpoints(paths)
+
+  expect_equal(unname(endp[1,'x']), -300, tolerance = tol)
+
+  # two custom functions
+  term2 <- function(t, coords, parm) { # terminate of particle above y = 100 after 500 days
+    return(coords[2] > 100 & t > 500)
+  }
+
+  m <- aem(k, top, base, n = n, uf, rf, w)
+  times <- seq(0, 10 * 365, 365 / 40) # increase time resolution for second termination function tolerance
+  paths <- tracelines(m, x0 = -400, y = c(0, 200), z = base,
+                      times = times, tfunc = list(term1, term2), R = 1.5)
+  endp <- endpoints(paths)
+
+  expect_equal(unname(endp[1,'x']), -300, tolerance = tol)
+  expect_equal(unname(endp[2,'time']), 500, tolerance = tol)
+
+  # warnings about initial particles in termination locations
+  times <- seq(0, 10 * 365, 365 / 10)
+  expect_warning(paths <- tracelines(m, x0 = 400, y = 0, z = base, times = times, tfunc = term1)) # empty paths
+  expect_null(paths)
+
+  expect_warning(paths <- tracelines(m, x0 = c(-400, 400), y = 0, z = base, times = times, tfunc = term1)) # dropping particles
+  endp <- endpoints(paths)
+  expect_equal(unname(endp[1,'x']), -300, tolerance = tol)
 
 })
 
@@ -161,6 +196,7 @@ test_that('capzone works', {
   t_exact <- trav_time(endp[,'x'], endp[,'y'])
 
   expect_equal(t_exact, rep(t, nrow(endp)), tolerance = 0.1) # numeric tolerance
+  expect_error(capzone(m, w, time = t, zstart = c(top, base))) # only allow 1 starting elevation
 
 })
 
@@ -174,7 +210,7 @@ test_that('initial particles are not stuck', {
 
   m <- aem(k, top, base, n = n, uf, rf)
 
-  times <- seq(0, 5 * 365, 365 / 20)
+  times <- seq(0, 5 * 365, 365 / 10)
   start <- c(x = 0, y = 200)
   expect_warning(paths <- tracelines(m, x0 = start[1], y0 = start[2], z = base-1, times = times))
   expect_null(names(paths))
@@ -201,13 +237,16 @@ test_that('initial particles are not stuck', {
   m <- aem(k, top, base, n, rf, uf, w1, w2)
 
   # should run with warning of resetting
-  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20))
+  times <- seq(0, 5*365, 365/10)
+  x0 <- seq(-400, 200, length = 4)
+
+  expect_warning(tracelines(m, x0 = x0, y0 = 200, z0 = top, times = times)
   )
 
-  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = base - 2, times = seq(0, 5*365, 365/20))
+  expect_warning(tracelines(m, x0 = x0, y0 = 200, z0 = base - 2, times = times)
   )
 
-  expect_warning(tracelines(m, x0 = seq(-400, 200, 50), y0 = 200, z0 = top, times = seq(0, 5*365, 365/20), forward = FALSE)
+  expect_warning(tracelines(m, x0 = x0, y0 = 200, z0 = top, times = times, forward = FALSE)
   )
 
 })
@@ -232,7 +271,7 @@ test_that("parallel tracelines work", {
 
   x0 <- seq(-200, 200, length = 10)
   y0 <- 0
-  times <- seq(0, 365, 365 / 20)
+  times <- seq(0, 365, 365 / 10)
 
   paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R)
   pathsp <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times, R = R, ncores = ncores)

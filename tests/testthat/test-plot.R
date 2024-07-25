@@ -55,6 +55,13 @@ test_that("plotting elements work", {
   m <- aem(k, top, base, n, uf, rf, w, hw, as, hls)
   expect_invisible(plot(m, xlim = c(-600, 600), ylim = c(-300, 300)))
 
+  expect_invisible(plot(w, xlim = c(-600, 600), ylim = c(-300, 300)))
+  expect_invisible(plot(hls, xlim = c(-600, 600), ylim = c(-300, 300)))
+  expect_invisible(plot(hls, xlim = c(-600, 600), ylim = c(-300, 300), use.widths = FALSE))
+  expect_invisible(plot(as, xlim = c(-600, 600), ylim = c(-300, 300), col = adjustcolor('grey60', alpha = 0.6)))
+  expect_invisible(plot(uf))
+
+
 })
 
 test_that('plotting tracelines works', {

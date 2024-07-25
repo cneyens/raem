@@ -10,11 +10,11 @@ add_element(aem, element, name = NULL, solve = FALSE, ...)
 remove_element(aem, name = NULL, type = NULL, solve = FALSE, ...)
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{element}{analytic element of class \code{element}}
+\item{element}{analytic element of class \code{element}.}
 
-\item{name}{optional name of the element as character. Duplicate names in \code{aem} are not allowed.}
+\item{name}{optional name of the element as character. Duplicate element names in \code{aem} are not allowed..}
 
 \item{solve}{logical, should the model be solved after adding or removing the element? Defaults to \code{FALSE}.}
 
@@ -23,14 +23,14 @@ remove_element(aem, name = NULL, type = NULL, solve = FALSE, ...)
 \item{type}{class of the element(s) to remove. Either \code{name} or \code{type} should be specified in \code{\link[=remove_element]{remove_element()}}.}
 }
 \value{
-The \code{aem} model with the addition of \code{element} or with the removal of an element. If \code{solve = TRUE},
+The \code{aem} model with the addition of \code{element} or with the removal of element(s). If \code{solve = TRUE},
 the model is solved using \code{\link[=solve.aem]{solve.aem()}}. The name of the new element is taken from the \code{name} argument,
 the object name or set to \code{element_1} with \code{1} being the index of the new element in the element list. See examples.
 }
 \description{
-\code{\link[=add_element]{add_element()}} adds a new element to or from an \code{aem} object.
+\code{\link[=add_element]{add_element()}} adds a new element to an \code{aem} object.
 
-\code{\link[=remove_element]{remove_element()}} removes an element from the \code{aem} object based on its name or type.
+\code{\link[=remove_element]{remove_element()}} removes an element from an \code{aem} object based on its name or type.
 }
 \examples{
 m <- aem(k = 10, top = 10, base = 0, n = 0.2)
@@ -42,13 +42,15 @@ mnew <- add_element(m, rf)
 
 # or else sets it sequentially from number of elements
 mnew <- add_element(m, constant(xc = 0, yc = 1000, hc = 12))
+
 \dontshow{if (getRversion() >= '4.1.0') (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# add_element() is pipe-friendly
+# add_element() adn remove_element() are pipe-friendly
 mnew <- aem(k = 10, top = 10, base = 0, n = 0.2) |>
     add_element(rf, name = 'rf') |>
     add_element(headwell(xw = 0, yw = 100, rw = 0.3, hc = 8),
                 name = 'headwell', solve = TRUE)
 \dontshow{\}) # examplesIf}
+
 # removing elements
 mnew <- remove_element(mnew, name = 'rf')
 mnew <- remove_element(mnew, type = 'headwell')

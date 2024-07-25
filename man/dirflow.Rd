@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{dirflow}
 \alias{dirflow}
-\title{Compute flow at a point in the direction of a given angle}
+\title{Compute flow in the direction of a given angle}
 \usage{
 dirflow(
   aem,
@@ -15,19 +15,19 @@ dirflow(
 )
 }
 \arguments{
-\item{aem}{\code{aem} object}
+\item{aem}{\code{aem} object.}
 
-\item{x}{numeric x coordinates to evaluate \code{flow} at}
+\item{x}{numeric x coordinates to evaluate \code{flow} at.}
 
-\item{y}{numeric y coordinates to evaluate \code{flow} at}
+\item{y}{numeric y coordinates to evaluate \code{flow} at.}
 
-\item{angle}{numeric, angle of the direction to evaluate \code{flow}, in degrees counterclockwise from the x-axis}
+\item{angle}{numeric, angle of the direction to evaluate \code{flow}, in degrees counterclockwise from the x-axis.}
 
 \item{flow}{character specifying which flow variable to use. Possible values are \code{discharge} (default), \code{darcy} and \code{velocity}. See \code{\link[=flow]{flow()}}.}
 
 \item{as.grid}{logical, should a matrix be returned? Defaults to FALSE. See details.}
 
-\item{...}{additional arguments passed to \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}}}
+\item{...}{additional arguments passed to \code{\link[=discharge]{discharge()}}, \code{\link[=darcy]{darcy()}} or \code{\link[=velocity]{velocity()}}.}
 }
 \value{
 A vector of \code{length(x)} (equal to \code{length(y)}) with the flow values at \code{x} and \code{y} in the direction of \code{angle}.
@@ -35,7 +35,7 @@ If \code{as.grid = TRUE}, a matrix of dimensions \code{c(length(y), length(x))} 
 marginal vectors \code{x} and \code{y} containing the directed flow values at the grid points.
 }
 \description{
-\code{\link[=dirflow]{dirflow()}} computes a flow variable at the given points in the direction of the supplied angle
+\code{\link[=dirflow]{dirflow()}} computes a flow variable at the given points in the direction of the supplied angle.
 }
 \details{
 The x and y components of \code{flow} are used to calculate the directed value using \code{angle}.
@@ -51,7 +51,8 @@ m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf)
 dirflow(m, x = c(0, 100), y = 50, angle = -45)
 
 m <- aem(k = 10, top = 10, base = 0, n = 0.2, rf, uf, w, type = 'confined')
-dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90, flow = 'velocity', as.grid = TRUE)
+dirflow(m, x = c(0, 50, 100), y = c(0, 50), angle = -90,
+flow = 'velocity', as.grid = TRUE)
 
 }
 \seealso{
