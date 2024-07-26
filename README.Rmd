@@ -17,7 +17,7 @@ knitr::opts_knit$set(
 )
 ```
 
-# raem
+# raem <a href="https://cneyens.github.io/raem/"><img src="man/figures/logo.png" align="right" height="138" alt="raem website" /></a>
 
 <!-- badges: start -->
 
