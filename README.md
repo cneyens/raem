@@ -18,7 +18,13 @@ elements.
 
 ## Installation
 
-You can install the development version of `raem` from
+To install the released version:
+
+``` r
+install.packages("raem")
+```
+
+The development version of `raem` can be installed from
 [GitHub](https://github.com/cneyens/raem) with:
 
 ``` r
