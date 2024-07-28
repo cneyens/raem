@@ -40,6 +40,7 @@
     <li><a class="dropdown-item" href="articles/vign-02-export-spatial.html">Exporting spatial data</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -65,8 +66,11 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of <code>raem</code> from <a href="https://github.com/cneyens/raem" class="external-link">GitHub</a> with:</p>
+<p>To install the released version:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"raem"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version of <code>raem</code> can be installed from <a href="https://github.com/cneyens/raem" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"cneyens/raem"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -80,7 +84,7 @@
 </h2>
 <p>Construct an analytic element model of an aquifer with uniform background flow, two extraction wells and a reference point.</p>
 <p>Specify the aquifer parameters and create the elements:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cneyens/raem" class="external-link">raem</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># aquifer parameters ----</span></span>
@@ -98,28 +102,28 @@
 <span><span class="va">w1</span> <span class="op">=</span> <span class="fu"><a href="reference/well.html">well</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="fl">200</span>, yw <span class="op">=</span> <span class="fl">0</span>, Q <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
 <span><span class="va">w2</span> <span class="op">=</span> <span class="fu"><a href="reference/well.html">well</a></span><span class="op">(</span>xw <span class="op">=</span> <span class="op">-</span><span class="fl">200</span>, yw <span class="op">=</span> <span class="op">-</span><span class="fl">150</span>, Q <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
 <p>Create the model. This automatically solves the system of equations.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="reference/aem.html">aem</a></span><span class="op">(</span>k <span class="op">=</span> <span class="va">k</span>, top <span class="op">=</span> <span class="va">top</span>, base <span class="op">=</span> <span class="va">base</span>, n <span class="op">=</span> <span class="va">n</span>, <span class="va">uf</span>, <span class="va">rf</span>, <span class="va">w1</span>, <span class="va">w2</span><span class="op">)</span></span></code></pre></div>
 <p>Find the head and discharge at two locations: <code>x = -200, y = 200</code> and <code>x = 100, y = 200</code>. Note that there are no vertical flow components in this model:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 13.64573 13.33314</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fl">200</span>, z <span class="op">=</span> <span class="va">top</span><span class="op">)</span> <span class="co"># m^2/d</span></span>
 <span><span class="co">#&gt;              Qx         Qy Qz</span></span>
 <span><span class="co">#&gt; [1,] 0.15028815 -0.2923908  0</span></span>
 <span><span class="co">#&gt; [2,] 0.06041242 -0.3347206  0</span></span></code></pre></div>
 <p>Plot the head contours and element locations. First, specify the contouring grid:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">500</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">250</span>, <span class="fl">250</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p>Now plot:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, <span class="st">'heads'</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-head-1.png" width="100%"></p>
 <p>Compute particle traces starting along <code>y = 200</code> at 20 intervals per year for 5 years and add to the plot:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
 <span>                   x0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">450</span>, <span class="fl">450</span>, <span class="fl">50</span><span class="op">)</span>, </span>
 <span>                   y0 <span class="op">=</span> <span class="fl">200</span>, </span>
