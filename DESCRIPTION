@@ -1,14 +1,14 @@
 Package: raem
 Title: Analytic Element Modeling of Steady Single-Layer Groundwater Flow
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre", "cph"))
 Description: Analytic element modeling of steady-state, single-layer
-    groundwater flow under the Dupuit-Forchheimer assumption. Elements
-    such as wells, area-sinks and line-sinks can be placed at arbitrary 
-    locations in the flow field. Output variables include hydraulic head 
-    and the discharge vector. Tracelines can be computed numerically in 
-    three dimensions.
+    groundwater flow under the 'Dupuit-Forchheimer' assumption. Elements
+    such as wells, area-sinks and line-sinks can be placed at arbitrary
+    locations in the flow field. Output variables include hydraulic head
+    and the discharge vector. Particle traces can be computed numerically
+    in three dimensions.
 License: MIT + file LICENSE
 URL: https://github.com/cneyens/raem, https://cneyens.github.io/raem/
 BugReports: https://github.com/cneyens/raem/issues
@@ -24,6 +24,8 @@ Suggests:
     sf,
     terra,
     testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -40,4 +42,3 @@ Collate:
     'uniformflow.R'
     'utils.R'
     'well.R'
-VignetteBuilder: knitr

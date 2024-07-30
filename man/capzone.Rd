@@ -37,41 +37,31 @@ or decreasing \code{dt}.
 Note that different \code{zstart} values only have an effect in models with vertical flow components.
 }
 \examples{
+# A model with vertical flow components
 k <- 10
 top <- 10; base <- 0
 n <- 0.3
 
 uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
-w1 = well(200, 50, Q = 250)
-w2 = well(-200, -100, Q = 450)
+w1 <- well(200, 50, Q = 250)
+w2 <- well(-200, -100, Q = 450)
+as <- areasink(0, 0, N = 0.001, R = 1500)
 
-m <- aem(k, top, base, n = n, uf, rf, w1, w2)
+m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 
-# 5-year and 10-year capture zones
-cp5 <- capzone(m, w1, time = 5*365)
-cp10 <- capzone(m, w2, time = 10*365)
+# 5-year capture zone at two different starting levels
+cp5a <- capzone(m, w1, time = 5 * 365, zstart = base, npar = 6, dt = 365 / 4)
+cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8, npar = 6, dt = 365 / 4)
 
 xg <- seq(-800, 800, length = 100)
 yg <- seq(-500, 500, length = 100)
-
-contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-plot(cp5, add = TRUE)
-plot(cp10, add = TRUE, col = 'orange')
-
-# model with vertical flow components
-as <- areasink(0, 0, N = 0.001, R = 1500)
-m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
-
-# two different starting levels
-cp5a <- capzone(m, w1, time = 5*365, zstart = base)
-cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
-
 contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(cp5a, add = TRUE)
 plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 
 # plot the convex hull of the endpoints as a polygon
+# increase the number of particles to obtain a sharper delineation of the envelope
 endp <- endpoints(cp5b)
 hull <- chull(endp[, c('x', 'y')])
 polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))

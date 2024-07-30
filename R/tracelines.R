@@ -188,6 +188,8 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @export
 #' @seealso [capzone()]
 #' @examples
+#' # -------
+#' # create a model with uniform background flow
 #' k <- 10
 #' top <- 10; base <- 0
 #' n <- 0.2
@@ -199,7 +201,8 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'
 #' m <- aem(k, top, base, n = n, uf, rf)
 #'
-#' x0 <- -200; y0 <- seq(-200, 200, 50)
+#' # calculate forward particle traces
+#' x0 <- -200; y0 <- seq(-200, 200, 200)
 #' times <- seq(0, 25 * 365, 365 / 4)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z = top, times = times)
 #' endp <- endpoints(paths)
@@ -207,6 +210,7 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' xg <- seq(-500, 500, length = 100)
 #' yg <- seq(-300, 300, length = 100)
 #'
+#' # plot
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange')
 #' points(endp[, c('x', 'y')])
@@ -215,19 +219,13 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' paths_back <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, R = R, forward = FALSE)
 #' plot(paths_back, add = TRUE, col = 'forestgreen', marker = 5*365, cex = 0.5)
 #'
-#' # Termination at wells and line-sinks
+#' # -------
+#' # Termination at wells, line-sinks and user-defined zone
 #' w1 <- well(200, 50, Q = 250)
 #' w2 <- well(-200, -100, Q = 450)
 #' ls <- headlinesink(x0 = -100, y0 = 100, x1 = 400, y1 = -300, hc = 7)
 #'
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, ls)
-#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-#' plot(m, add = TRUE)
-#'
-#' x0 <- seq(-400, 400, 50); y0 <- 200
-#' times <- seq(0, 5 * 365, 365 / 20)
-#' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times)
-#' plot(paths, add = TRUE, col = 'orange')
 #'
 #' # User-defined termination in rectangular zone
 #' tzone <- cbind(x = c(-300, -200, -200, -300), y = c(150, 150, 100, 100))
@@ -235,37 +233,54 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #'   x <- coords[1]
 #'   y <- coords[2]
 #'   in_poly <- x <= max(tzone[,'x']) & x >= min(tzone[,'x']) &
-#'              y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
+#'     y <= max(tzone[,'y']) & y >= min(tzone[,'y'])
 #'   return(in_poly)
 #' }
 #'
+#' x0 <- c(-300, -200, 0, 200, 300)
+#' y0 <- 200
+#' times <- seq(0, 5 * 365, 365 / 15)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top, times = times, tfunc = termf)
+#'
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(m, add = TRUE)
 #' polygon(tzone)
 #' plot(paths, add = TRUE, col = 'orange')
 #'
+#' # -------
 #' # model with vertical flow due to area-sink
 #' as <- areasink(xc = 0, yc = 0, N = 0.001, R = 1500)
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'
 #' # starting z0 locations are above aquifer top and will be reset to top with warning
+#' x0 <- seq(-400, 200, 200); y0 <- 200
+#' times <- seq(0, 5 * 365, 365 / 4)
 #' paths <- tracelines(m, x0 = x0, y0 = y0, z0 = top + 0.5, times = times)
 #'
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(m, add = TRUE)
 #' plot(paths, add = TRUE, col = 'orange')
 #'
+#' # -------
 #' # plot vertical cross-section of traceline 4 along increasing y-axis (from south to north)
 #' plot(paths[[4]][,c('y', 'z')], type = 'l')
 #'
-#' @examplesIf parallel::detectCores() > 1
+#' # -------
 #' # parallel computing by setting ncores > 0
 #' mp <- aem(k, top, base, n = n, uf, rf)
-#'
-#' x0 <- -200; y0 <- seq(-200, 200, 50)
-#' times <- seq(0, 25 * 365, 365 / 4)
 #' pathsp <- tracelines(mp, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
+#'
+#' # -------
+#' # plot arrows
+#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
+#'
+#' # plot point markers every 2.5 years
+#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
+#' plot(paths, add = TRUE, col = 'orange', marker = 2.5 * 365, pch = 20)
+#'
+#' # plot point markers every 600 days
+#' plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
 #'
 tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ncores = 0, ...) {
 
@@ -412,41 +427,31 @@ endpoints <- function(tracelines, ...) {
 #' @export
 #' @seealso [tracelines()]
 #' @examples
+#' # A model with vertical flow components
 #' k <- 10
 #' top <- 10; base <- 0
 #' n <- 0.3
 #'
 #' uf <- uniformflow(TR = 100, gradient = 0.001, angle = -10)
 #' rf <- constant(TR, xc = -1000, yc = 0, hc = 20)
-#' w1 = well(200, 50, Q = 250)
-#' w2 = well(-200, -100, Q = 450)
+#' w1 <- well(200, 50, Q = 250)
+#' w2 <- well(-200, -100, Q = 450)
+#' as <- areasink(0, 0, N = 0.001, R = 1500)
 #'
-#' m <- aem(k, top, base, n = n, uf, rf, w1, w2)
+#' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'
-#' # 5-year and 10-year capture zones
-#' cp5 <- capzone(m, w1, time = 5*365)
-#' cp10 <- capzone(m, w2, time = 10*365)
+#' # 5-year capture zone at two different starting levels
+#' cp5a <- capzone(m, w1, time = 5 * 365, zstart = base, npar = 6, dt = 365 / 4)
+#' cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8, npar = 6, dt = 365 / 4)
 #'
 #' xg <- seq(-800, 800, length = 100)
 #' yg <- seq(-500, 500, length = 100)
-#'
-#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-#' plot(cp5, add = TRUE)
-#' plot(cp10, add = TRUE, col = 'orange')
-#'
-#' # model with vertical flow components
-#' as <- areasink(0, 0, N = 0.001, R = 1500)
-#' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
-#'
-#' # two different starting levels
-#' cp5a <- capzone(m, w1, time = 5*365, zstart = base)
-#' cp5b <- capzone(m, w1, time = 5*365, zstart = 8)
-#'
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(cp5a, add = TRUE)
 #' plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 #'
 #' # plot the convex hull of the endpoints as a polygon
+#' # increase the number of particles to obtain a sharper delineation of the envelope
 #' endp <- endpoints(cp5b)
 #' hull <- chull(endp[, c('x', 'y')])
 #' polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))
