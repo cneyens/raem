@@ -51,6 +51,8 @@ as <- areasink(0, 0, N = 0.001, R = 1500)
 m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 
 # 5-year capture zone at two different starting levels
+# here, the number of particles are set to small values to speed up the examples
+# increase the number of particles to obtain a sharper delineation of the envelope
 cp5a <- capzone(m, w1, time = 5 * 365, zstart = base, npar = 6, dt = 365 / 4)
 cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8, npar = 6, dt = 365 / 4)
 
@@ -61,7 +63,6 @@ plot(cp5a, add = TRUE)
 plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 
 # plot the convex hull of the endpoints as a polygon
-# increase the number of particles to obtain a sharper delineation of the envelope
 endp <- endpoints(cp5b)
 hull <- chull(endp[, c('x', 'y')])
 polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))

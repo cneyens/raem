@@ -188,7 +188,6 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' @export
 #' @seealso [capzone()]
 #' @examples
-#' # -------
 #' # create a model with uniform background flow
 #' k <- 10
 #' top <- 10; base <- 0
@@ -269,18 +268,6 @@ outside_vertical <- function(aem, x, y, z, ...) {
 #' # parallel computing by setting ncores > 0
 #' mp <- aem(k, top, base, n = n, uf, rf)
 #' pathsp <- tracelines(mp, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
-#'
-#' # -------
-#' # plot arrows
-#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
-#'
-#' # plot point markers every 2.5 years
-#' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-#' plot(paths, add = TRUE, col = 'orange', marker = 2.5 * 365, pch = 20)
-#'
-#' # plot point markers every 600 days
-#' plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
 #'
 tracelines <- function(aem, x0, y0, z0, times, forward = TRUE, R = 1, tfunc = NULL, tol = 1e-3, ncores = 0, ...) {
 
@@ -441,6 +428,8 @@ endpoints <- function(tracelines, ...) {
 #' m <- aem(k, top, base, n = n, uf, rf, w1, w2, as)
 #'
 #' # 5-year capture zone at two different starting levels
+#' # here, the number of particles are set to small values to speed up the examples
+#' # increase the number of particles to obtain a sharper delineation of the envelope
 #' cp5a <- capzone(m, w1, time = 5 * 365, zstart = base, npar = 6, dt = 365 / 4)
 #' cp5b <- capzone(m, w1, time = 5 * 365, zstart = 8, npar = 6, dt = 365 / 4)
 #'
@@ -451,7 +440,6 @@ endpoints <- function(tracelines, ...) {
 #' plot(cp5b, add = TRUE, col = 'forestgreen') # smaller zone
 #'
 #' # plot the convex hull of the endpoints as a polygon
-#' # increase the number of particles to obtain a sharper delineation of the envelope
 #' endp <- endpoints(cp5b)
 #' hull <- chull(endp[, c('x', 'y')])
 #' polygon(endp[hull, c('x', 'y')], col = adjustcolor('forestgreen', alpha.f = 0.7))

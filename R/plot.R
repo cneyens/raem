@@ -302,7 +302,7 @@ plot.aem <- function(x, y = NULL, add = FALSE, xlim, ylim, ...) {
 #' @rdname tracelines
 #' @include tracelines.R
 #' @examples
-#'
+#' # -------
 #' # plot arrows
 #' contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 #' plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)

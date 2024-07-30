@@ -112,7 +112,6 @@ The x and y locations of each particle at the marked times are obtained by linea
 }
 }
 \examples{
-# -------
 # create a model with uniform background flow
 k <- 10
 top <- 10; base <- 0
@@ -195,18 +194,6 @@ mp <- aem(k, top, base, n = n, uf, rf)
 pathsp <- tracelines(mp, x0 = x0, y0 = y0, z = top, times = times, ncores = 2)
 
 # -------
-# plot arrows
-contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
-
-# plot point markers every 2.5 years
-contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
-plot(paths, add = TRUE, col = 'orange', marker = 2.5 * 365, pch = 20)
-
-# plot point markers every 600 days
-plot(paths, add = TRUE, col = 'forestgreen', marker = 600, pch = 1)
-
-
 # plot arrows
 contours(m, xg, yg, col = 'dodgerblue', nlevels = 20)
 plot(paths, add = TRUE, col = 'orange', arrows = TRUE, length = 0.05)
