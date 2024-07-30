@@ -193,8 +193,7 @@ The x and y locations of each particle at the marked times are obtained by linea
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># -------</span></span></span>
-<span class="r-in"><span><span class="co"># create a model with uniform background flow</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a model with uniform background flow</span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">top</span> <span class="op">&lt;-</span> <span class="fl">10</span>; <span class="va">base</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span></span>
@@ -293,20 +292,6 @@ The x and y locations of each particle at the marked times are obtained by linea
 <span class="r-in"><span><span class="co"># plot point markers every 600 days</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, marker <span class="op">=</span> <span class="fl">600</span>, pch <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="tracelines-6.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># plot arrows</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span>, arrows <span class="op">=</span> <span class="cn">TRUE</span>, length <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="tracelines-7.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># plot point markers every 2.5 years</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="contours.html">contours</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">xg</span>, <span class="va">yg</span>, col <span class="op">=</span> <span class="st">'dodgerblue'</span>, nlevels <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'orange'</span>, marker <span class="op">=</span> <span class="fl">2.5</span> <span class="op">*</span> <span class="fl">365</span>, pch <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># plot point markers every 600 days</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">paths</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'forestgreen'</span>, marker <span class="op">=</span> <span class="fl">600</span>, pch <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="tracelines-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
