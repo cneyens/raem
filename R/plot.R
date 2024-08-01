@@ -71,7 +71,7 @@ image_to_matrix <- function(m) {
 #' @details [contours()] is a wrapper around [contour()]. It obtains the values of `variable` at
 #'    the grid points defined by marginal vectors `x` and `y` and constructs the matrix supplied to [contour()] by reversing the rows and
 #'    transposing the matrix (see also the documentation of [image()]).
-#'
+#' @return A contour plot of the selected variable.
 #' @export
 #' @importFrom graphics contour
 #' @seealso [aem()] [contour()] [image()] [heads()]

@@ -27,6 +27,9 @@ contours(
 
 \item{...}{additional arguments passed to \code{\link[=contour]{contour()}}.}
 }
+\value{
+A contour plot of the selected variable.
+}
 \description{
 \code{\link[=contours]{contours()}} creates a contour plot of a state-variable computed by the analytic element
 model \code{aem}, or adds the contour lines to an existing plot.

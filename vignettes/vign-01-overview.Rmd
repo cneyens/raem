@@ -275,9 +275,7 @@ As an example, an analytic element model is created for a phreatic system with t
 
 The `add_element()` function is used to add elements to an initially empty model. After all the elements are added, the model needs to be solved with an explicit call to `solve.aem()`. This is useful for adding elements to a model in a loop or pipeline.
 
-A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A (green rectangular in the first plot).
-
-```{r example-model, fig.show="hold", out.width="75%"}
+```{r example-model, fig.show="hold"}
 # aquifer parameters ----
 k = 15          # hydraulic conductivity, m/d
 top = 20        # aquifer top elevation, m
@@ -328,8 +326,6 @@ for(i in seq(nls - 1)) {
 m = solve(m)
 
 # view head contours ----
-par(mar = c(4, 4, .3, .3))
-
 xg = seq(-800, 300, length = 100)
 yg = seq(-600, 300, length = 100)
 
@@ -338,6 +334,12 @@ contours(m, xg, yg, col = 'dodgerblue', levels = seq(16, 18.5, 0.1), labcex = 0.
 plot(m, add = TRUE)
 polygon(x = c(-500, 50, 50, -500), y = c(-200, -200, 150, 150), border = 'forestgreen')
 grid() # add gridlines to plot
+
+```
+
+A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A (green rectangular in the first plot).
+
+```{r fig-inset-well}
 
 # view inset near well A
 xg = seq(-500, 50, length = 100)
@@ -376,7 +378,6 @@ To plot a cross-section of the water-table, simply compute the head values at th
 xprofile = seq(-800, 400, length = 1000)
 hprofile = heads(m, x = xprofile, y = -100)
 
-par(mar=c(4, 4, 0.3, 0.3))
 plot(xprofile, hprofile, type = 'l', xlab = 'x (m)', ylab = 'head (m)')
 ```
 

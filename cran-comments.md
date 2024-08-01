@@ -1,10 +1,17 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
- * Reduced the elapsed time of some examples.
+ * Removed single quotes around words in the description.
  
- * Handled words flagged as possibly misspelled in DESCRIPTION. 
-
+ * Updated the description to not start with the title.
+ 
+ * Added a general reference to analytic element modeling theory in the description field.
+ 
+ * Added a \value field to contours.Rd.
+ 
+ * Removed the setting of graphical parameters using par() in the vignettes.
+ 
+ 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
