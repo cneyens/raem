@@ -716,10 +716,6 @@ recharge is simulated using an area-sink.</p>
 initially empty model. After all the elements are added, the model needs
 to be solved with an explicit call to <code><a href="../reference/aem.html">solve.aem()</a></code>. This is
 useful for adding elements to a model in a loop or pipeline.</p>
-<p>A major benefit of the AEM approach is that no numerical grid of the
-domain is needed. This allows to zoom in on an area of interest without
-altering or rerunning the model, as illustrated by the plot of the inset
-area around well A (green rectangular in the first plot).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># aquifer parameters ----</span></span>
 <span><span class="va">k</span> <span class="op">=</span> <span class="fl">15</span>          <span class="co"># hydraulic conductivity, m/d</span></span>
@@ -771,8 +767,6 @@ area around well A (green rectangular in the first plot).</p>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># view head contours ----</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">.3</span>, <span class="fl">.3</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">600</span>, <span class="fl">300</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
@@ -780,8 +774,14 @@ area around well A (green rectangular in the first plot).</p>
 <span>         xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'y (m)'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, <span class="fl">50</span>, <span class="op">-</span><span class="fl">500</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, <span class="fl">150</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'forestgreen'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># add gridlines to plot</span></span>
-<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># add gridlines to plot</span></span></code></pre></div>
+<p><img src="vign-01-overview_files/figure-html/example-model-1.png" width="672"></p>
+<p>A major benefit of the AEM approach is that no numerical grid of the
+domain is needed. This allows to zoom in on an area of interest without
+altering or rerunning the model, as illustrated by the plot of the inset
+area around well A (green rectangular in the first plot).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># view inset near well A</span></span>
 <span><span class="va">xg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">500</span>, <span class="fl">50</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">yg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">200</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -797,7 +797,7 @@ area around well A (green rectangular in the first plot).</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">i</span><span class="op">$</span><span class="va">xc</span>, <span class="va">i</span><span class="op">$</span><span class="va">yc</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> </span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="vign-01-overview_files/figure-html/example-model-1.png" width="75%"><img src="vign-01-overview_files/figure-html/example-model-2.png" width="75%"></p>
+<p><img src="vign-01-overview_files/figure-html/fig-inset-well-1.png" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a>
@@ -809,7 +809,7 @@ and <code>y</code> arguments are recycled. By setting
 <code>as.grid = TRUE</code>, a grid of head values is obtained by using
 the <code>x</code> and <code>y</code> values as marginal grid
 vectors:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 17.46994 17.44073</span></span>
 <span></span>
@@ -834,11 +834,10 @@ argument in <code><a href="../reference/contours.html">contours()</a></code> (de
 <code>"heads"</code>).</p>
 <p>To plot a cross-section of the water-table, simply compute the head
 values at the points along the profile line and plot:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xprofile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">800</span>, <span class="fl">400</span>, length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="va">hprofile</span> <span class="op">=</span> <span class="fu"><a href="../reference/state-variables.html">heads</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="va">xprofile</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xprofile</span>, <span class="va">hprofile</span>, type <span class="op">=</span> <span class="st">'l'</span>, xlab <span class="op">=</span> <span class="st">'x (m)'</span>, ylab <span class="op">=</span> <span class="st">'head (m)'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vign-01-overview_files/figure-html/cross-section-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>The components of the discharge vector
@@ -855,7 +854,7 @@ the state-variables discussed above, <code>as.grid</code> can be set to
 <code>magnitude = TRUE</code> will return an additional column with the
 vector’s magnitude, defined as the Euclidean norm of the vector
 components.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/flow.html">discharge</a></span><span class="op">(</span><span class="va">m</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">350</span>, <span class="op">-</span><span class="fl">200</span><span class="op">)</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">100</span>, z <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              Qx        Qy          Qz</span></span>
 <span><span class="co">#&gt; [1,]  0.5337762 0.5528572 -0.01500301</span></span>
@@ -929,7 +928,7 @@ the output of <code><a href="../reference/tracelines.html">tracelines()</a></cod
 <code><a href="../reference/tracelines.html">tracelines()</a></code> can be plotted using
 <code><a href="../reference/tracelines.html">plot.tracelines()</a></code>. The endpoints can simply be added by
 using <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate particle traces</span></span>
 <span><span class="va">paths</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
 <span>                   x0 <span class="op">=</span> <span class="op">-</span><span class="fl">600</span>, </span>
@@ -959,7 +958,7 @@ can be passed to <code><a href="../reference/flow.html">velocity()</a></code>. W
 with <code><a href="../reference/tracelines.html">plot.tracelines()</a></code>, markers at a specified time
 interval can be placed by setting <code>marker</code> to the desired
 interval, e.g. every 180 days.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute backward particle tracking with retardation</span></span>
 <span><span class="va">backward</span> <span class="op">=</span> <span class="fu"><a href="../reference/tracelines.html">tracelines</a></span><span class="op">(</span><span class="va">m</span>, </span>
 <span>                      x0 <span class="op">=</span> <span class="op">-</span><span class="fl">250</span>, </span>
@@ -1000,7 +999,7 @@ may be obtained in models with vertical flow components by placing
 initial particle locations at different <code>zstart</code> values. By
 increasing the amount of particles or decreasing the time step length, a
 sharper delineation of the capture zone envelope may be obtained.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 5-year capture zone of well A</span></span>
 <span><span class="va">cpA_5</span> <span class="op">=</span> <span class="fu"><a href="../reference/capzone.html">capzone</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wA</span>, time <span class="op">=</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">365</span>, npar <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span>
 <span></span>
