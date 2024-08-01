@@ -337,10 +337,9 @@ grid() # add gridlines to plot
 
 ```
 
-A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by the plot of the inset area around well A (green rectangular in the first plot).
+A major benefit of the AEM approach is that no numerical grid of the domain is needed. This allows to zoom in on an area of interest without altering or rerunning the model, as illustrated by a plot of the inset area around well A (green rectangle in the first plot).
 
 ```{r fig-inset-well}
-
 # view inset near well A
 xg = seq(-500, 50, length = 100)
 yg = seq(-200, 150, length = 100)
