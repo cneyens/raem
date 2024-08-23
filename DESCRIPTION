@@ -1,6 +1,6 @@
 Package: raem
 Title: Analytic Element Modeling of Steady Single-Layer Groundwater Flow
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: 
     person("Cas", "Neyens", , "cas.neyens@gmail.com", role = c("aut", "cre", "cph"))
 Description: A model of single-layer groundwater flow in steady-state
